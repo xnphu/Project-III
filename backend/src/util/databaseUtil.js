@@ -6,7 +6,7 @@ import config from '../config';
 var pool  = mysql.createPool({
   connectionLimit : 10,
   host            : 'localhost',
-  port            : '3306',
+  port            : '3307',
   user            : 'admin',
   password        : '123456',
   database        : 'library_management'
