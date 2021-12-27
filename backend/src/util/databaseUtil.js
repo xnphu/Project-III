@@ -98,6 +98,7 @@ export const query = async (sql, params) => {
  */
 export const queryOne = async (sql, params) => {
   const results = await query(sql, params);
+  console.log('lalal ',results[0]);
   return results[0];
 };
 

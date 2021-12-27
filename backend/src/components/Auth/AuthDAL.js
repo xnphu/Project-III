@@ -1,26 +1,27 @@
 import * as dbUtil from '../../util/databaseUtil';
+import * as generateIdUtil from '../../util/generateIdUtil';
 import uuidv4 from 'uuid/v4';
-import { ERRORS, REDIS, TOKEN } from '../../constant';
+import { ERRORS, REDIS, TOKEN, TYPE_ID } from '../../constant';
 import redisUtil from '../../util/redisUtil';
 import * as common from './common';
 
 export const getUserByUsername = async (username) => {
-  const sql = 'SELECT id,username,password FROM admin WHERE username = ? LIMIT 1';
+  const sql = 'SELECT id,username,password,role FROM member WHERE username = ? LIMIT 1';
   return dbUtil.queryOne(sql, [username]);
 };
 
-export const signUp = async ({ username, passwordHash }) => {
+export const signUp = async ({ username, passwordHash, role }) => {
   const check = await checkUserExist(username);
   if (check) {
     return Promise.reject(ERRORS.USER_EXIST);
   }
-  const sql = 'INSERT INTO admin(id, username, password) VALUES (?, ?, ?)';
-  const id = uuidv4();
-  await dbUtil.query(sql, [id, username, passwordHash]);
+  const sql = 'INSERT INTO member(id, username, password, role) VALUES (?, ?, ?, ?)';
+  const id = await generateIdUtil.generate(TYPE_ID.MEMBER);
+  await dbUtil.query(sql, [id, username, passwordHash, role]);
 };
 
 export const checkUserExist = async (username) => {
-  const sql = 'SELECT username FROM admin WHERE username = ?';
+  const sql = 'SELECT username FROM member WHERE username = ?';
   const result = await dbUtil.query(sql, [username]);
   if (result.length > 0) {
     return true;

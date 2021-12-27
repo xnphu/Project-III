@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as controller from './BookController';
-import { throwAsNext, authMiddleware, requireLogin } from '../../middleware';
+import { throwAsNext, authMiddleware, requireLogin, requireAdminRole, checkNotUserRole } from '../../middleware';
 
 const path = '/books';
 const router = Router();

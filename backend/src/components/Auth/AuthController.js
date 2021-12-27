@@ -16,7 +16,7 @@ export const login = async (req, res) => {
   if (user) {
     const passwordValid = await common.checkPassword(password, user.password);
     if (passwordValid) {
-      const token = await common.generateToken(user.id);
+      const token = await common.generateToken(user.id, username, password, user.role);
       // const refreshToken = await dbAccess.getRefreshToken(token);
       return res.json({ token });
     }
@@ -26,14 +26,14 @@ export const login = async (req, res) => {
 };
 
 export const signUp = async (req, res) => {
-  const { username, password, rePassword } = req.body;
+  const { username, password, rePassword, role } = req.body;
   if (password !== rePassword) {
     res.status(401).send('WRONG_REPASS');
     return;
   }
   const passwordHash = hash(password);
   
-  await dbAccess.signUp({ username, passwordHash });
+  await dbAccess.signUp({ username, passwordHash, role });
   res.ok();
 };
 
