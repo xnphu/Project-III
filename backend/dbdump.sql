@@ -149,7 +149,7 @@ CREATE TABLE `feedback` (
   `answer` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `member_id` (`member_id`),
-  CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
+  CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member_info` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,7 +175,7 @@ CREATE TABLE `library_card` (
   `issue_date` varchar(45) NOT NULL,
   `active_flg` int NOT NULL,
   KEY `member_id` (`member_id`),
-  CONSTRAINT `library_card_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
+  CONSTRAINT `library_card_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member_info` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -197,17 +197,9 @@ DROP TABLE IF EXISTS `member`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
   `id` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `phone` int NOT NULL,
-  `sex` int NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `street` varchar(45) NOT NULL,
-  `city` varchar(45) NOT NULL,
-  `zip_code` varchar(45) NOT NULL,
-  `country` varchar(45) NOT NULL,
-  `status` int NOT NULL,
+  `username` varchar(45) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `role` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -218,7 +210,41 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES ('00205e4f-3663-46e2-8dc0-376677466bf1','librarian1','$2b$12$zSg/80IEGQdxFfHEXIPc..hLBeNWRJzxQngidY.KA9xW872zYYeya',1),('21120001','librarian2','$2b$12$RkkSj9YHWPLv0bO1CnwtweC9zjr3xCeZ/z3JtM/cN4IAjXVDIpXUO',1),('21120002','librarian3','$2b$12$tgCbXQJiAhyTgJ6RD6M93OmSHiHUBZhijuB0hUnVrlptohcAzDUAu',1),('21120003','user1','$2b$12$szMFnMKmzLg0JJ3B2tNfN.KZyzeJ8dET2sF4ktqawRElvUyXMK9jq',2),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','admin','$2b$12$gLUfkvf27PnB3QgVvrJAmeN1qdmRMJXH4fx8gGJN9r8LGxtQLvmOq',0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `member_info`
+--
+
+DROP TABLE IF EXISTS `member_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `member_info` (
+  `id` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `phone` int NOT NULL,
+  `sex` int NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `street` varchar(45) NOT NULL,
+  `city` varchar(45) NOT NULL,
+  `zip_code` varchar(45) NOT NULL,
+  `country` varchar(45) NOT NULL,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `member_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `member` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member_info`
+--
+
+LOCK TABLES `member_info` WRITE;
+/*!40000 ALTER TABLE `member_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `member_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -243,6 +269,32 @@ LOCK TABLES `rack` WRITE;
 /*!40000 ALTER TABLE `rack` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rack` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `serial_number`
+--
+
+DROP TABLE IF EXISTS `serial_number`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `serial_number` (
+  `id` int NOT NULL,
+  `type` int NOT NULL,
+  `type_name` varchar(45) NOT NULL,
+  `current_value` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `serial_number`
+--
+
+LOCK TABLES `serial_number` WRITE;
+/*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
+INSERT INTO `serial_number` VALUES (1,1,'member',3),(2,2,'book',0);
+/*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -253,4 +305,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-24 16:46:26
+-- Dump completed on 2021-12-27 14:26:42
