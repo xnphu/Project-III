@@ -1,5 +1,6 @@
 import * as dbUtil from '../../util/databaseUtil';
 import { ERRORS } from '../../constant';
+import { filename } from 'winston-daily-rotate-file';
 
 export const getAllBook = async () => {
     const sql = 'SELECT * FROM books';
@@ -51,4 +52,23 @@ export const getBookById = async (id) => {
     const sql = 'SELECT * FROM books WHERE id = ?';
     const book = await dbUtil.queryOne(sql, [id]);
     return book;
+};
+
+export const searchBook = async (author_id,title,subject) => {
+    const sql = 'SELECT * from books WHERE ? = ?';
+    var fieldName = 1;
+    var fieldValue = 1;
+    if(author_id !=null){
+        const sql2 = 'SELECT * from books,author WHERE books.author_id = author.id AND books.author_id = ?';
+        const books2 = await dbUtil.queryOne(sql, [author_id]);
+        return books2;
+    }else if(title != null){
+        fieldName = "title";
+        fieldValue = title;
+    }else if(subject != null){
+        fieldName = "subject";
+        fieldValue = subject;
+    }
+    const books = await dbUtil.queryOne(sql, [fieldName,fieldValue]);
+    return books;
 };

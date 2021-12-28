@@ -30,3 +30,9 @@ export const deleteBook = async (req, res) => {
     const book = await dbAccess.deleteBook(id);
     res.status(202).json({ success: 1 });
 };
+
+export const searchBook = async (req, res) => {
+    const {author_id , title , subject} = req.body;
+    const books = await dbAccess.searchBook({author_id,title,subject});
+    res.status(201).json(books);
+};

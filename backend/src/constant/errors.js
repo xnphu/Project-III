@@ -12,8 +12,8 @@ export const ERRORS = {
   BOOK_NOT_EXIST: createError.BadRequest('Sách không tồn tại'),
   SERVICE_EXIST: createError.BadRequest('Dịch vụ đã tồn tại'),
   SERVICE_NOT_EXIST: createError.BadRequest('Dịch vụ không tồn tại'),
-  CONTRACT_EXIST: createError.BadRequest('Hợp đồng đã tồn tại'),
-  CONTRACT_NOT_EXIST: createError.BadRequest('Hợp đồng không tồn tại'),
+  LIBRARYCARD_EXIST: createError.BadRequest('Thẻ thư viện đã tồn tại'),
+  LIBRARYCARD_NOT_EXIST: createError.BadRequest('Thẻ thư viện không tồn tại'),
   BILL_EXIST: createError.BadRequest('Hóa đơn đã tồn tại'),
   BILL_NOT_EXIST: createError.BadRequest('Hóa đơn không tồn tại'),
 };

@@ -11,6 +11,7 @@ router.get('/:id', throwAsNext(controller.getBookById));
 router.post('', throwAsNext(controller.createBook));
 router.put('/:id', throwAsNext(controller.updateBook));
 router.delete('/:id', throwAsNext(controller.deleteBook));
+router.post('/search',throwAsNext(controller.searchBook));
 
 // export
 export default { path, router };
