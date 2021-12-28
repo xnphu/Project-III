@@ -18,7 +18,7 @@ export const login = async (req, res) => {
     if (passwordValid) {
       const token = await common.generateToken(user.id, username, password, user.role);
       // const refreshToken = await dbAccess.getRefreshToken(token);
-      return res.json({ token });
+      return res.json({ token, role: user.role });
     }
     return Promise.reject(ERRORS.INVALID_PASSWORD_ERROR);
   }
