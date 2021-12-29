@@ -26,6 +26,8 @@ import { updateAccessToken, updateRefreshToken, updateRole } from '../../utils/R
 import profile from "../../assets/images/profile-img.png";
 import logo from "../../assets/images/logo.svg";
 
+import { BASE_API_URL } from '../../constant';
+
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +46,7 @@ class Login extends Component {
         // await callSagaRequest(loginWithEmail, {
         //     email: values.email, password: values.password
         // });
-        axios.post('http://localhost:8080/auth/login', {
+        axios.post(`${BASE_API_URL}/auth/login`, {
             username: values.username, password: values.password
         })
             .then((response) => {

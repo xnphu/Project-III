@@ -121,9 +121,15 @@ import ContactsGrid from "../pages/Contacts/contacts-grid";
 import ContactsList from "../pages/Contacts/contacts-list";
 import ContactsProfile from "../pages/Contacts/contacts-profile";
 
+//Members
+import MemberProfile from "../pages/Member/MemberProfile";
+
 const authProtectedRoutes = [
 
 	{ path: "/dashboard", component: Dashboard },
+
+	//Member
+	{ path: "/profile/:id", component: MemberProfile },
 
 	//chat
 	{ path: "/chat", component: Chat },

@@ -8,3 +8,7 @@ export const ROLE = {
     LIBRARIAN: 1,
     MEMBER: 2,
 };
+
+export const FORMAT = {
+    DATE: 'YYYY-MM-DD',
+};

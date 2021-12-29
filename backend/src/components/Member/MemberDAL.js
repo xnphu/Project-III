@@ -1,26 +1,27 @@
 import * as dbUtil from '../../util/databaseUtil';
-import { ERRORS } from '../../constant';
+import { ERRORS, FORMAT } from '../../constant';
+import moment from 'moment';
 
 export const getAllMember = async () => {
-    const sql = 'SELECT * FROM member';
+    const sql = 'SELECT mi.*, m.username, m.role FROM member_info mi, member m where mi.id = m.id';
     return dbUtil.query(sql, []);
 };
 
-export const createMember = async ({ id, password, name , email , phone , sex , date_of_birth , street , city , zip_code , country , status }) => {
+export const createMember = async ({ id, student_id, name , email , phone , sex , date_of_birth , street , city , country , status }) => {
     const check = await checkMemberExist(id);
     if (check) {
         return Promise.reject(ERRORS.USER_EXIST);
     }
-    const sql = 'INSERT INTO member(id, password, name , email , phone , sex , date_of_birth , street , city , zip_code , country , status ) VALUES (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?)';
-    await dbUtil.query(sql, [id, password, name , email , phone , sex , date_of_birth , street , city , zip_code , country , status ]);
+    const sql = 'INSERT INTO member_info(id, student_id, name , email , phone , sex , date_of_birth , street , city , country , status ) VALUES (?, ?, ?,?, ?, ?,?, ?, ?,?, ?)';
+    await dbUtil.query(sql, [id, student_id, name , email , phone , sex , date_of_birth , street , city , country , status ]);
     const member = await getMemberById(id);
     return member;
 };
 
-export const updateMember = async ({ id, password, name , email , phone , sex , date_of_birth , street , city , zip_code , country , status }) => {
+export const updateMember = async ({ id, student_id, name , email , phone , sex , date_of_birth , street , city , country , status }) => {
     const check = await checkMemberExist(id);
     if (check) {
-        const memberData = { id, password, name , email , phone , sex , date_of_birth , street , city , zip_code , country , status }
+        const memberData = { id, student_id, name , email , phone , sex , date_of_birth , street , city , country , status }
         const sql = 'UPDATE member SET ? WHERE id = ?';
         await dbUtil.query(sql, [memberData, id]);
         const member = await getMemberById(id);
@@ -39,7 +40,7 @@ export const deleteMember = async (id) => {
 };
 
 export const checkMemberExist = async (id) => {
-    const sql = 'SELECT * FROM member WHERE id = ?';
+    const sql = 'SELECT * FROM member_info WHERE id = ?';
     const result = await dbUtil.query(sql, [id]);
     if (result.length > 0) {
         return true;
@@ -48,7 +49,13 @@ export const checkMemberExist = async (id) => {
 };
 
 export const getMemberById = async (id) => {
-    const sql = 'SELECT * FROM member WHERE id = ?';
-    const member = await dbUtil.queryOne(sql, [id]);
+    const sql = `SELECT * FROM 
+                    (SELECT mi.*, m.username, m.role  
+                        FROM library_management.member_info mi, library_management.member m 
+                        where mi.id = m.id) a 
+                    WHERE a.id = ?
+                `;
+    var member = await dbUtil.queryOne(sql, [id]);
+    member.date_of_birth = moment(member.date_of_birth).format(FORMAT.DATE);
     return member;
 };

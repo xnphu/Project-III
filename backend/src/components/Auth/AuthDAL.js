@@ -30,7 +30,7 @@ export const checkUserExist = async (username) => {
 };
 
 export const getUserById = async (userId) => {
-  const sql = 'SELECT username, name, createdAt FROM users WHERE id = ?';
+  const sql = 'SELECT * FROM member WHERE id = ?';
   const user = await dbUtil.queryOne(sql, [userId]);
   return user;
 };

@@ -6,8 +6,8 @@ const path = '/members';
 const router = Router();
 
 // route
-router.get('', throwAsNext(controller.getAllMember));
-router.get('/:id', throwAsNext(controller.getMemberById));
+router.get('/all', throwAsNext(controller.getAllMember));
+router.get('/', throwAsNext(controller.getMemberById));
 router.post('', throwAsNext(controller.createMember));
 router.put('/:id', throwAsNext(controller.updateMember));
 router.delete('/:id', throwAsNext(controller.deleteMember));

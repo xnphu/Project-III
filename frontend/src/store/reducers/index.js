@@ -39,15 +39,15 @@ const searchPersistConfig = {
 const reducers = combineReducers({
   token,
   me,
-  notification,
-  article,
-  reportReducer,
-  mentionDetailsReducer,
-  folder,
+  // notification,
+  // article,
+  // reportReducer,
+  // mentionDetailsReducer,
+  // folder,
   layout,
-  form: persistReducer(formPersistConfig, form),
-  searchReducer: persistReducer(searchPersistConfig, searchReducer),
-  bookmarkReducer,
+  // form: persistReducer(formPersistConfig, form),
+  // searchReducer: persistReducer(searchPersistConfig, searchReducer),
+  // bookmarkReducer,
 });
 
 export default persistReducer(config, reducers);

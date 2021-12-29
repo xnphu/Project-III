@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { withRouter, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 // users
-import user1 from '../../../assets/images/users/avatar-1.jpg';
+import user1 from '../../../assets/images/users/avatar-dummy.jpeg';
 
 class ProfileMenu extends Component {
 
@@ -33,10 +35,13 @@ class ProfileMenu extends Component {
                         <i className="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                     </DropdownToggle>
                     <DropdownMenu right>
-                        <DropdownItem tag="a" href="#"><i className="bx bx-user font-size-16 align-middle mr-1"></i>Tài khoản</DropdownItem>
-                        <DropdownItem tag="a" href="#"><i className="bx bx-wallet font-size-16 align-middle mr-1"></i>Token</DropdownItem>
-                        <DropdownItem tag="a" href="#"><span className="badge badge-success float-right">11</span><i className="mdi mdi-settings font-size-17 align-middle mr-1"></i>Cài đặt</DropdownItem>
-                        <DropdownItem tag="a" href="#"><i className="bx bx-lock-open font-size-16 align-middle mr-1"></i>Xóa tài khoản</DropdownItem>
+                        <Link to={`/profile/${this.props.token}`} className="dropdown-item">
+                            <i className="bx bx-user font-size-16 align-middle mr-1">
+                            </i>Tài khoản
+                        </Link>
+                        {/* <DropdownItem tag="a" href="#"><i className="bx bx-wallet font-size-16 align-middle mr-1"></i>Token</DropdownItem>
+                        <DropdownItem tag="a" href="#"><span className="badge badge-success float-right">11</span><i className="mdi mdi-settings font-size-17 align-middle mr-1"></i>Cài đặt</DropdownItem> */}
+                        {/* <DropdownItem tag="a" href="#"><i className="bx bx-lock-open font-size-16 align-middle mr-1"></i>Xóa tài khoản</DropdownItem> */}
                         <div className="dropdown-divider"></div>
                         <Link to="/logout" className="dropdown-item">
                             <i className="bx bx-power-off font-size-16 align-middle mr-1 text-danger"></i>
@@ -49,6 +54,17 @@ class ProfileMenu extends Component {
     }
 }
 
-export default withRouter(ProfileMenu);
+const mapStateToProps = state => {
+	const { token } = state.token;
+	return {
+		layout: state.layout,
+		token: token
+	};
+};
+
+export default compose(
+    withRouter,
+    connect(mapStateToProps, null)
+)(ProfileMenu);
 
 
