@@ -210,7 +210,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES ('00205e4f-3663-46e2-8dc0-376677466bf1','librarian1','$2b$12$zSg/80IEGQdxFfHEXIPc..hLBeNWRJzxQngidY.KA9xW872zYYeya',1),('21120001','librarian2','$2b$12$RkkSj9YHWPLv0bO1CnwtweC9zjr3xCeZ/z3JtM/cN4IAjXVDIpXUO',1),('21120002','librarian3','$2b$12$tgCbXQJiAhyTgJ6RD6M93OmSHiHUBZhijuB0hUnVrlptohcAzDUAu',1),('21120003','user1','$2b$12$szMFnMKmzLg0JJ3B2tNfN.KZyzeJ8dET2sF4ktqawRElvUyXMK9jq',2),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','admin','$2b$12$gLUfkvf27PnB3QgVvrJAmeN1qdmRMJXH4fx8gGJN9r8LGxtQLvmOq',0);
+INSERT INTO `member` VALUES ('00205e4f-3663-46e2-8dc0-376677466bf1','librarian1','$2b$12$zSg/80IEGQdxFfHEXIPc..hLBeNWRJzxQngidY.KA9xW872zYYeya',1),('21120001','librarian2','$2b$12$RkkSj9YHWPLv0bO1CnwtweC9zjr3xCeZ/z3JtM/cN4IAjXVDIpXUO',1),('21120002','librarian3','$2b$12$tgCbXQJiAhyTgJ6RD6M93OmSHiHUBZhijuB0hUnVrlptohcAzDUAu',1),('21120003','user1','$2b$12$szMFnMKmzLg0JJ3B2tNfN.KZyzeJ8dET2sF4ktqawRElvUyXMK9jq',2),('21120004','phu','$2b$12$jVcDv4lz5xd.cm199BdFVeyjf.rOoMS6T0rQ4K1K6qrrNhiBU4CyW',2),('21120005','phu1','$2b$12$JlrLIIqrywuMzqja6WDh3umqHOpv4EgCcwdpntptwsDaPzsP122H2',2),('21120006','phu2','$2b$12$fyoSccBTShLwKoKw4obg3eks7ETQi9SzzzWd6/8ln1D2BnOrW62v6',2),('21120007','phu3','$2b$12$vmveTec89Vltzz0aLTZCt.Ck1GzVp.gxzbBuw.0O/HKq8w0pZNj0S',2),('21120008','phu4','$2b$12$HdycSD2HNevzxR9oCQmjNeGgBX4J9jXizNRq.O499JL2HKE88.zVO',2),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','admin','$2b$12$gLUfkvf27PnB3QgVvrJAmeN1qdmRMJXH4fx8gGJN9r8LGxtQLvmOq',0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,15 +223,15 @@ DROP TABLE IF EXISTS `member_info`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member_info` (
   `id` varchar(45) NOT NULL,
+  `student_id` varchar(45) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
-  `phone` int NOT NULL,
+  `phone` varchar(15) NOT NULL,
   `sex` int NOT NULL,
   `date_of_birth` date NOT NULL,
-  `street` varchar(45) NOT NULL,
-  `city` varchar(45) NOT NULL,
-  `zip_code` varchar(45) NOT NULL,
-  `country` varchar(45) NOT NULL,
+  `street` varchar(1000) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `country` varchar(100) NOT NULL,
   `status` int NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `member_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `member` (`id`)
@@ -244,6 +244,7 @@ CREATE TABLE `member_info` (
 
 LOCK TABLES `member_info` WRITE;
 /*!40000 ALTER TABLE `member_info` DISABLE KEYS */;
+INSERT INTO `member_info` VALUES ('21120005','20168411','Nguyễn Xuân Phú','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('21120008','20160001','Nguyễn Xuân Phú','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','','Nguyễn Xuân Phú','admin@gmail.com','0123456789',1,'1988-01-01','Đống Đa','Hà Nội','Việt Nam',1);
 /*!40000 ALTER TABLE `member_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +293,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',3),(2,2,'book',0);
+INSERT INTO `serial_number` VALUES (1,1,'member',8),(2,2,'book',0);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -305,4 +306,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-27 14:26:42
+-- Dump completed on 2021-12-29 17:09:51
