@@ -53,6 +53,7 @@ export const ACTION_UPDATE_MENTION_DETAILS = 'mention-details/update';
 
 export const ACTION_REGISTER = 'auth/registration';
 export const REQUEST_ME = 'user';
+export const ACTION_SAVE_USER_ID = 'me/save/user/id';
 export const ACTION_SAVE_ME = 'me/save';
 export const ACTION_SAVE_ME1 = 'me/save1';
 export const REQUEST_UPDATE_PROFILE = 'user/updateProfile';

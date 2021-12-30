@@ -1,5 +1,6 @@
 import {
   REQUEST_ME,
+  ACTION_SAVE_USER_ID,
   ACTION_SAVE_ME,
   ACTION_SAVE_ME1,
   ACTION_REMOVE_ME,
@@ -16,7 +17,7 @@ export const me = callback => ({
   args: [callback]
 });
 // xep du lieu vao store profile
-export const saveMe = profile => ({
+export const updateProfile = profile => ({
   type: ACTION_SAVE_ME,
   payload: {
     ...profile
@@ -28,20 +29,28 @@ export const saveMe1 = profile => ({
     ...profile
   }
 });
-export const updateProfile = ({ username, root_folder, first_name, last_name, profile , id}, callback) => ({
-  type: REQUEST_UPDATE_PROFILE,
-  args: [
-    {
-      username,
-      root_folder,
-      first_name,
-      last_name,
-      profile,
-      id
-    },
-    callback
-  ]
+
+export const updateUserId = ({ id }) => ({
+  type: ACTION_SAVE_USER_ID,
+  payload: {
+    id
+  }
 });
+
+// export const updateProfile = ({ username, root_folder, first_name, last_name, profile , id}, callback) => ({
+//   type: REQUEST_UPDATE_PROFILE,
+//   args: [
+//     {
+//       username,
+//       root_folder,
+//       first_name,
+//       last_name,
+//       profile,
+//       id
+//     },
+//     callback
+//   ]
+// });
 
 
 export const updateMe = profile => ({

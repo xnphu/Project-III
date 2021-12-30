@@ -1,4 +1,5 @@
 import {
+  ACTION_SAVE_USER_ID,
   ACTION_SAVE_ME,
   ACTION_SAVE_ME1,
   ACTION_REMOVE_ME,
@@ -10,8 +11,19 @@ import {
 } from '../constants';
 
 const defaultState = {
-  profile: {},
-  password: ""
+  city: '',
+  country: '',
+  date_of_birth: '',
+  email: '',
+  id: '',
+  name: '',
+  phone: '',
+  role: 2,
+  sex: 1,
+  status: 1,
+  street: '',
+  student_id: '',
+  username: '',
 };
 
 export default (state = defaultState, action) => {
@@ -21,7 +33,7 @@ export default (state = defaultState, action) => {
   if (type === ACTION_LOGIN) {
     return {
       ...state,
-      password: args[0].password
+      // password: args[0].password
     };
   }
   if (type === ACTION_REGISTER) {
@@ -33,13 +45,13 @@ export default (state = defaultState, action) => {
   if (type === ACTION_SUCCESS_UPDTATE_PW) {
     return {
       ...state,
-      password: args[0].password 
+      password: args[0].password
     };
   }
   if (type === ACTION_SAVE_ME) {
     return {
       ...state,
-      profile: { ...payload.results }
+      ...payload
     };
   }
   if (type === ACTION_SAVE_ME1) {
@@ -63,7 +75,7 @@ export default (state = defaultState, action) => {
   }
 
   if (type === ACTION_LOGOUT) {
-    return defaultState;
+    return {};
   }
 
   return state;

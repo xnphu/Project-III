@@ -10,7 +10,7 @@ import {
 import UserAPIs from '../APIs/user';
 import { createRequestSaga } from '../../utils/RequestSagaUtils';
 
-import { saveMe, updateMe,saveMe1 } from '../actions/user';
+import { updateProfile, updateMe,saveMe1 } from '../actions/user';
 import { noop } from '../actions/common';
 import {
   updateAccessToken,
@@ -26,7 +26,7 @@ const requestMe = createRequestSaga({
   key: REQUEST_ME,
   tokenRequired: 'required',
   onSuccessActionCreators: [
-    saveMe,
+    updateProfile,
     params => {
       return noop();
     }

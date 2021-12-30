@@ -31,11 +31,11 @@ class ProfileMenu extends Component {
                 <Dropdown isOpen={this.state.menu} toggle={this.toggle} className="d-inline-block" >
                     <DropdownToggle className="btn header-item waves-effect" id="page-header-user-dropdown" tag="button">
                         <img className="rounded-circle header-profile-user" src={user1} alt="Header Avatar" />
-                        <span className="d-none d-xl-inline-block ml-2 mr-1">Trang</span>
+                        <span className="d-none d-xl-inline-block ml-2 mr-1">{this.props.username}</span>
                         <i className="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                     </DropdownToggle>
                     <DropdownMenu right>
-                        <Link to={`/profile/${this.props.token}`} className="dropdown-item">
+                        <Link to={`/profile/${this.props.userId}`} className="dropdown-item">
                             <i className="bx bx-user font-size-16 align-middle mr-1">
                             </i>Tài khoản
                         </Link>
@@ -55,10 +55,11 @@ class ProfileMenu extends Component {
 }
 
 const mapStateToProps = state => {
-	const { token } = state.token;
+	const { id, username } = state.profile;
 	return {
 		layout: state.layout,
-		token: token
+		userId: id,
+        username
 	};
 };
 

@@ -12,8 +12,8 @@ export const getAllMember = async (req, res) => {
 };
 
 export const getMemberById = async (req, res) => {
-    const { userId } = req;
-    const member = await dbAccess.getMemberById(userId);
+    const { id } = req.params;
+    const member = await dbAccess.getMemberById(id);
     res.send(member);
 };
 

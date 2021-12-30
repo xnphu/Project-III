@@ -19,6 +19,7 @@ import {
     loginWithFacebook
 } from '../../../src/store/actions/auth';
 import { updateAccessToken, updateRefreshToken, updateRole } from '../../utils/RequestSagaUtils/token/actions';
+import { updateProfile } from '../../store/actions/user';
 // actions
 //import { loginUser,apiError } from '../../store/actions';
 
@@ -46,13 +47,15 @@ class Login extends Component {
         // await callSagaRequest(loginWithEmail, {
         //     email: values.email, password: values.password
         // });
-        axios.post(`${BASE_API_URL}/auth/login`, {
-            username: values.username, password: values.password
-        })
+        this.login(values.username, values.password);
+    }
+
+    login = (username, password) => {
+        axios.post(`${BASE_API_URL}/auth/login`, {username, password})
             .then((response) => {
                 if (response.status == 200) {
                     this.props.onUpdateAccessTokens(response.data);
-                    this.props.onUpdateRefreshToken(response.data);
+                    this.props.onUpdateProfile({id: response.data.id, username});
                     this.props.onUpdateRole(response.data);
                     this.setState({ redirect: true })
                 }
@@ -65,9 +68,8 @@ class Login extends Component {
                     }, 3000)
                 });
             });
-        // console.log("event", event);
-        // console.log("values", values);
     }
+
     handleInputChange = async (event) => {
         this.setState({
             [event.target.name]: event.target.value
@@ -163,8 +165,8 @@ const mapDispatchToProps = dispatch => {
         onUpdateAccessTokens: (token) => {
             dispatch(updateAccessToken(token));
         },
-        onUpdateRefreshToken: (token) => {
-            dispatch(updateRefreshToken(token));
+        onUpdateProfile: (profile) => {
+            dispatch(updateProfile(profile));
         },
         onUpdateRole: (role) => {
             dispatch(updateRole(role));

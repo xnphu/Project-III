@@ -56,6 +56,8 @@ export const getMemberById = async (id) => {
                     WHERE a.id = ?
                 `;
     var member = await dbUtil.queryOne(sql, [id]);
-    member.date_of_birth = moment(member.date_of_birth).format(FORMAT.DATE);
+    if (member) {
+        member.date_of_birth = moment(member.date_of_birth).format(FORMAT.DATE);
+    }
     return member;
 };

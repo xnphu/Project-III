@@ -13,12 +13,12 @@ import mentionDetailsReducer from './mention';
 import folder from './folder'
 import layout from './layout'
 import { tokenReducer as token } from '../../utils/RequestSagaUtils';
-import me from './me';
+import profile from './me';
 const config = {
   key: 'root',
   timeout: 30000,
   storage: storage,
-  whitelist: ['token', 'me'],
+  whitelist: ['token', 'profile'],
   blacklist: ['form']
 };
 
@@ -38,7 +38,7 @@ const searchPersistConfig = {
 
 const reducers = combineReducers({
   token,
-  me,
+  profile,
   // notification,
   // article,
   // reportReducer,
