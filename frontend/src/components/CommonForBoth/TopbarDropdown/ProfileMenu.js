@@ -37,7 +37,7 @@ class ProfileMenu extends Component {
                     <DropdownMenu right>
                         <Link to={`/profile/${this.props.userId}`} className="dropdown-item">
                             <i className="bx bx-user font-size-16 align-middle mr-1">
-                            </i>Tài khoản
+                            </i>Profile
                         </Link>
                         {/* <DropdownItem tag="a" href="#"><i className="bx bx-wallet font-size-16 align-middle mr-1"></i>Token</DropdownItem>
                         <DropdownItem tag="a" href="#"><span className="badge badge-success float-right">11</span><i className="mdi mdi-settings font-size-17 align-middle mr-1"></i>Cài đặt</DropdownItem> */}
@@ -45,7 +45,7 @@ class ProfileMenu extends Component {
                         <div className="dropdown-divider"></div>
                         <Link to="/logout" className="dropdown-item">
                             <i className="bx bx-power-off font-size-16 align-middle mr-1 text-danger"></i>
-                            <span>Đăng xuất</span>
+                            <span>Log out</span>
                         </Link>
                     </DropdownMenu>
                 </Dropdown>

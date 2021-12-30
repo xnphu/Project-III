@@ -60,34 +60,34 @@ class Navbar extends Component {
                             <Collapse isOpen={this.props.menuOpen} className="navbar-collapse" id="topnav-menu-content">
                                 <ul className="navbar-nav">
                                     <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Tổng quan {this.props.menuOpen}
+                                        <Link className="nav-link" to="/dashboard">
+                                            <i className="bx bx-home-circle mr-2"></i>Home {this.props.menuOpen}
                                         </Link>
                                     </li>
 
                                     <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Thiết lập cảnh báo {this.props.menuOpen}
+                                        <Link className="nav-link" to="/dashboard">
+                                            <i className="bx bx-home-circle mr-2"></i>Book Reserve {this.props.menuOpen}
                                         </Link>
                                     </li>
 
                                     <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Bổ sung nguồn tin {this.props.menuOpen}
+                                        <Link className="nav-link" to="/dashboard">
+                                            <i className="bx bx-home-circle mr-2"></i>Request Library Card {this.props.menuOpen}
                                         </Link>
                                     </li>
 
                                     <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Báo cáo {this.props.menuOpen}
+                                        <Link className="nav-link" to="/dashboard">
+                                            <i className="bx bx-home-circle mr-2"></i>Admin {this.props.menuOpen}
                                         </Link>
                                     </li>
 
-                                    <li className="nav-item dropdown">
+                                    {/* <li className="nav-item dropdown">
                                         <Link className="nav-link" to="dashboard">
                                             <i className="bx bx-home-circle mr-2"></i>Cấu hình {this.props.menuOpen}
                                         </Link>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </Collapse>
                         </nav>

@@ -55,6 +55,30 @@ export const getBookById = async (id) => {
 };
 
 export const searchBook = async (author_id,title,subject) => {
+    // SELECT * FROM library_management.books WHERE author LIKE '%a' OR title LIKE '%a';
+
+    // var numPerPage = 20;
+    // var skip = (page - 1) * numPerPage;
+    // var limit = skip + ',' + numPerPage; // Here we compute the LIMIT parameter for MySQL query
+    // sql.query('SELECT count(*) as numRows FROM users', function (err, rows, fields) {
+    //     if (err) {
+    //         console.log("error: ", err);
+    //         result(err, null);
+    //     } else {
+    //         var numRows = rows[0].numRows;
+    //         var numPages = Math.ceil(numRows / numPerPage);
+    //         sql.query('SELECT * FROM users LIMIT ' + limit, function (err, rows, fields) {
+    //             if (err) {
+    //                 console.log("error: ", err);
+    //                 result(err, null);
+    //             } else {
+    //                 console.log(rows)
+    //                 result(null, rows, numPages);
+    //             }
+    //         });
+    //     }
+    // });
+
     const sql = 'SELECT * from books WHERE ? = ?';
     var fieldName = 1;
     var fieldValue = 1;

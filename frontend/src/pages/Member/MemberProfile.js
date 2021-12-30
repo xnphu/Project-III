@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card, CardBody, CardTitle, Media, Table } from "reactstrap";
+import { Container, Row, Col, Card, CardBody, CardTitle, Media, Table, Modal } from "reactstrap";
+import { AvForm, AvField } from "availity-reactstrap-validation";
 
 //Import Breadcrumb
 import Breadcrumbs from '../../components/Common/Breadcrumb';
@@ -11,9 +12,6 @@ import MiniCards from "../../components/Common/mini-card";
 //Import Images
 import profile1 from "../../assets/images/profile-img.png"
 import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
-
-// import charts
-// import ApexRevenue from "./ApexRevenue";
 
 import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
@@ -37,6 +35,7 @@ const MemberProfile = () => {
         { title: "Total book reserve", iconClass: "bx-hourglass", text: "12" },
         { title: "Total fine", iconClass: "bx-package", text: "$36,524" }
     ]);
+    const [modalVisibility, setModalVisibility] = useState(false);
 
     useEffect(() => {
         fetchMemberProfile();
@@ -100,7 +99,7 @@ const MemberProfile = () => {
                                                 </Col>
                                             </Row>
                                             <div className="mt-4">
-                                                <Link to="" className="btn btn-primary waves-effect waves-light btn-sm">Edit Profile <i className="mdi mdi-arrow-right ml-1"></i></Link>
+                                                <div onClick={() => setModalVisibility(true)} className="btn btn-primary waves-effect waves-light btn-sm">Edit Profile <i className="mdi mdi-arrow-right ml-1"></i></div>
                                             </div>
                                         </div>
                                     </Col>
@@ -125,7 +124,7 @@ const MemberProfile = () => {
                                             </tr>
                                             <tr>
                                                 <th scope="row">Gender :</th>
-                                                <td>{profile.sex == 1 ? 'Male' : 'Female' }</td>
+                                                <td>{profile.sex == 1 ? 'Male' : 'Female'}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Mobile :</th>
@@ -269,6 +268,98 @@ const MemberProfile = () => {
                         </Card>
                     </Col>
                 </Row>
+                <Modal
+                    className="modal-lg"
+                    isOpen={modalVisibility}
+                    toggle={() => setModalVisibility(!modalVisibility)}
+                >
+                    <div className="modal-header">
+                        <h5
+                            className="modal-title mt-0"
+                            id="myLargeModalLabel"
+                        >
+                            Edit Profile
+                        </h5>
+                        <button
+                            onClick={() =>
+                                setModalVisibility(false)
+                            }
+                            type="button"
+                            className="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        <AvForm>
+                            <AvField
+                                name="username"
+                                label="Fullname"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                            <AvField
+                                name="dob"
+                                label="DOB"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                            <AvField
+                                name="gender"
+                                label="Gender"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                            <AvField
+                                name="phone"
+                                label="Phone"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                            <AvField
+                                name="email"
+                                label="Email"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                            <AvField
+                                name="location"
+                                label="Location"
+                                placeholder="Type fullname"
+                                type="text"
+                                errorMessage="Enter fullname"
+                                validate={{ required: { value: true } }}
+                            />
+                        </AvForm>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary">
+                            Save changes
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() =>
+                                setModalVisibility(false)
+                            }
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </Modal>
 
             </Container>
         </div>
