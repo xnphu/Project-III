@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import {  Collapse } from "reactstrap";
 import { Link, withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 // import classname from "classnames";
 
 class Navbar extends Component {
@@ -77,11 +79,15 @@ class Navbar extends Component {
                                         </Link>
                                     </li>
 
-                                    <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="/dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Admin {this.props.menuOpen}
-                                        </Link>
-                                    </li>
+                                    {
+                                        this.props.role == 0 || this.props.role == 1 
+                                            ? <li className="nav-item dropdown">
+                                                <Link className="nav-link" to="/admin">
+                                                    <i className="bx bx-home-circle mr-2"></i>Management {this.props.menuOpen}
+                                                </Link>
+                                            </li>
+                                            : <></>
+                                    }
 
                                     {/* <li className="nav-item dropdown">
                                         <Link className="nav-link" to="dashboard">
@@ -98,4 +104,14 @@ class Navbar extends Component {
     }
 }
 
-export default withRouter(Navbar);
+const mapStateToProps = state => {
+	const { role } = state.token;
+	return {
+		role: role
+	};
+};
+
+export default compose(
+    withRouter,
+    connect(mapStateToProps, null)
+)(Navbar);

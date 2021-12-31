@@ -125,6 +125,8 @@ import ContactsProfile from "../pages/Contacts/contacts-profile";
 import Home from "../pages/Home/index";
 //Members
 import MemberProfile from "../pages/Member/MemberProfile";
+//Admin
+import Admin from "../pages/Admin/index";
 
 const authProtectedRoutes = [
 
@@ -132,6 +134,9 @@ const authProtectedRoutes = [
 
 	//Member
 	{ path: "/profile/:id", component: MemberProfile },
+
+	//Admin
+	{ path: "/admin", component: Admin },
 
 	//chat
 	{ path: "/chat", component: Chat },

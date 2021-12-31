@@ -122,7 +122,7 @@ class Login extends Component {
 
                                             <AvForm className="form-horizontal" onValidSubmit={this.handleValidSubmit}>
 
-                                                {this.state.error ? <Alert color="danger" isOpen={this.state.visible}>{'Tài khoản hoặc mật khẩu không chính xác'}</Alert> : null}
+                                                {this.state.error ? <Alert color="danger" isOpen={this.state.visible}>{'Username or password not correct!'}</Alert> : null}
 
                                                 <div className="form-group">
                                                     <AvField name="username" label="Username" className="form-control" placeholder="Enter username" required onChange={this.handleInputChange} />
