@@ -15,6 +15,7 @@ import { BASE_API_URL, BOOK_STATUS, BOOK_STATUS_LABEL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
+import { Formik } from 'formik';
 
 const Admin = () => {
     const dispatch = useDispatch();
@@ -312,167 +313,203 @@ const AdminBody = (props) => {
                     </Card>
                 </Col>
             </Row>
-            <Modal
-                className="modal-lg"
-                scrollable={true}
-                isOpen={modalVisibility}
-                toggle={() => setModalVisibility(!modalVisibility)}
+            <Formik
+                initialValues={{
+                    isbn: '',
+                    title: '',
+                    author: 'Something',
+                    publisher: '',
+                    publish_date: `${dayjs(Date.now()).format('YYYY-MM-DD')}`,
+                    number_of_pages: 0,
+                    description: '',
+                    book_status: BOOK_STATUS.AVAILABLE,
+                    borrow_date: '',
+                    due_date: '',
+                    language: ''
+                }}
+                onSubmit={(values) => {
+                    setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2));
+                    }, 400);
+                }}
             >
-                <div className="modal-header">
-                    <h5
-                        className="modal-title mt-0"
-                        id="myLargeModalLabel"
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleSubmit,
+                }) => (
+                    <Modal
+                        className="modal-lg"
+                        scrollable={true}
+                        isOpen={modalVisibility}
+                        toggle={() => setModalVisibility(!modalVisibility)}
                     >
-                        Add new book
-                    </h5>
-                    <button
-                        onClick={() =>
-                            setModalVisibility(false)
-                        }
-                        type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                    >
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <AvForm onValidSubmit={handleValidSubmit}>
-                        <AvField
-                            name="isbn"
-                            label="ISBN"
-                            placeholder="Type ISBN"
-                            type="text"
-                            errorMessage="Enter ISBN"
-                            validate={{ required: { value: true } }}
-                        />
-                        <AvField
-                            name="title"
-                            label="Title"
-                            placeholder="Type title"
-                            type="text"
-                            errorMessage="Enter title"
-                            validate={{ required: { value: true } }}
-                        />
-                        <AvField type="select" name="author" label="Author" required>
-                            {
-                                authors.map((author, key) => <option key={key}>{author}</option>)
-                            }
-                        </AvField>
+                        <div className="modal-header">
+                            <h5
+                                className="modal-title mt-0"
+                                id="myLargeModalLabel"
+                            >
+                                Add new book
+                            </h5>
+                            <button
+                                onClick={() =>
+                                    setModalVisibility(false)
+                                }
+                                type="button"
+                                className="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                            >
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
 
-                        <Row className="form-group d-flex justify-content-between">
-                            <Col xs={12} md={6} lg={6}>
+                            <AvForm onValidSubmit={handleSubmit}>
                                 <AvField
-                                    name="publisher"
-                                    label="Publisher"
-                                    placeholder="Type publisher"
+                                    name="isbn"
+                                    label="ISBN"
+                                    placeholder="Type ISBN"
                                     type="text"
-                                    errorMessage="Enter publisher"
+                                    errorMessage="Enter ISBN"
                                     validate={{ required: { value: true } }}
+                                    onChange={handleChange}
                                 />
-                            </Col>
-                            <Col xs={12} md={3} lg={3}>
                                 <AvField
-                                    // defaultValue={dayjs(Date.now()).format('YYYY-MM-DD')}
-                                    name="publish_date"
-                                    label="Publish date"
-                                    placeholder="Type publish date"
-                                    type="date"
-                                    errorMessage="Enter publish date"
-                                    validate={{ required: { value: true }, }}
+                                    name="title"
+                                    label="Title"
+                                    placeholder="Type title"
+                                    type="text"
+                                    errorMessage="Enter title"
+                                    validate={{ required: { value: true } }}
+                                    onChange={handleChange}
                                 />
-                            </Col>
-                            <Col xs={12} md={3} lg={3}>
-                                <AvField
-                                    name="number_of_pages"
-                                    label="Number of pages"
-                                    placeholder="Type num of pages"
-                                    type="number"
-                                    errorMessage="Enter number of pages"
-                                    validate={{ required: { value: true }, pattern: {value: /^\d+$/} }}
-                                />
-                            </Col>
-                        </Row>
-
-                        <AvField
-                            style={{ maxHeight: '100px', height: '100px' }}
-                            name="description"
-                            label="Description"
-                            placeholder="Type description"
-                            type="textarea"
-                            errorMessage="Enter description"
-                            validate={{ required: { value: true } }}
-                        />
-                        <AvField type="select" name="location" label="Location" required>
-                            {
-                                locations.map((author) => <option key={author.id}>{author.label}</option>)
-                            }
-                        </AvField>
-
-                        <Row className="form-group d-flex justify-content-between">
-                            <Col xs={12} md={4} lg={4}>
-                                <AvField type="select" name="book_status" label="Status" placeholder="Status" required>
+                                <AvField type="select" name="author" label="Author" onChange={handleChange} required>
                                     {
-                                        bookStatus.map((status) => <option key={status.value}>{status.label}</option>)
+                                        authors.map((author, key) => <option key={key}>{author}</option>)
                                     }
                                 </AvField>
-                            </Col>
-                            <Col xs={12} md={4} lg={4}>
-                                <AvField
-                                    name="borrow_date"
-                                    label="Borrow date"
-                                    placeholder="Type borrow date"
-                                    type="date"
-                                    errorMessage="Enter borrow date"
-                                    validate={{}}
-                                />
-                            </Col>
-                            <Col xs={12} md={4} lg={4}>
-                                <AvField
-                                    name="due_date"
-                                    label="Due date"
-                                    placeholder="Type due date"
-                                    type="date"
-                                    errorMessage="Enter due date"
-                                    validate={{}}
-                                />
-                            </Col>
-                        </Row>
 
-                        <AvField
-                            name="language"
-                            label="Language"
-                            placeholder="Type language"
-                            type="text"
-                            errorMessage="Enter language"
-                            validate={{ required: { value: true } }}
-                        />
-                    </AvForm>
-                </div>
-                <div className="modal-footer">
-                    <button 
-                    type="submit" 
-                    className="btn btn-primary" 
-                    onClick={(event, values) =>{
-                        console.log(`event ${event} === value ${values}`);
-                    }
-                            
-                        }>
-                        Save changes
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() =>
-                            setModalVisibility(false)
-                        }
-                        data-dismiss="modal"
-                    >
-                        Close
-                    </button>
-                </div>
-            </Modal>
+                                <Row className="form-group d-flex justify-content-between">
+                                    <Col xs={12} md={6} lg={6}>
+                                        <AvField
+                                            name="publisher"
+                                            label="Publisher"
+                                            placeholder="Type publisher"
+                                            type="text"
+                                            errorMessage="Enter publisher"
+                                            validate={{ required: { value: true } }}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={3} lg={3}>
+                                        <AvField
+                                            // defaultValue={dayjs(Date.now()).format('YYYY-MM-DD')}
+                                            name="publish_date"
+                                            label="Publish date"
+                                            placeholder="Type publish date"
+                                            type="date"
+                                            errorMessage="Enter publish date"
+                                            validate={{ required: { value: true }, }}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={3} lg={3}>
+                                        <AvField
+                                            name="number_of_pages"
+                                            label="Number of pages"
+                                            placeholder="Type num of pages"
+                                            type="number"
+                                            errorMessage="Enter number of pages"
+                                            validate={{ required: { value: true }, pattern: { value: /^\d+$/ } }}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                </Row>
+
+                                <AvField
+                                    style={{ maxHeight: '100px', height: '100px' }}
+                                    name="description"
+                                    label="Description"
+                                    placeholder="Type description"
+                                    type="textarea"
+                                    errorMessage="Enter description"
+                                    validate={{ required: { value: true } }}
+                                    onChange={handleChange}
+                                />
+                                <AvField type="select" name="location" label="Location" onChange={handleChange} required>
+                                    {
+                                        locations.map((author) => <option key={author.id}>{author.label}</option>)
+                                    }
+                                </AvField>
+
+                                <Row className="form-group d-flex justify-content-between">
+                                    <Col xs={12} md={4} lg={4}>
+                                        <AvField type="select" name="book_status" label="Status" placeholder="Status" onChange={handleChange} required>
+                                            {
+                                                bookStatus.map((status) => <option key={status.value}>{status.label}</option>)
+                                            }
+                                        </AvField>
+                                    </Col>
+                                    <Col xs={12} md={4} lg={4}>
+                                        <AvField
+                                            name="borrow_date"
+                                            label="Borrow date"
+                                            placeholder="Type borrow date"
+                                            type="date"
+                                            errorMessage="Enter borrow date"
+                                            validate={{}}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={4} lg={4}>
+                                        <AvField
+                                            name="due_date"
+                                            label="Due date"
+                                            placeholder="Type due date"
+                                            type="date"
+                                            errorMessage="Enter due date"
+                                            validate={{}}
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                </Row>
+
+                                <AvField
+                                    name="language"
+                                    label="Language"
+                                    placeholder="Type language"
+                                    type="text"
+                                    errorMessage="Enter language"
+                                    validate={{ required: { value: true } }}
+                                    onChange={handleChange}
+                                />
+                            </AvForm>
+
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                onClick={handleSubmit}>
+                                Save changes
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={() =>
+                                    setModalVisibility(false)
+                                }
+                                data-dismiss="modal"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Modal>
+                )}
+            </Formik>
         </>
     );
 }
