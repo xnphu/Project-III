@@ -80,7 +80,7 @@ class Navbar extends Component {
                                     </li>
 
                                     {
-                                        this.props.role == 0 || this.props.role == 1 
+                                        this.props.role === 0 || this.props.role === 1 
                                             ? <li className="nav-item dropdown">
                                                 <Link className="nav-link" to="/admin">
                                                     <i className="bx bx-home-circle mr-2"></i>Management {this.props.menuOpen}
