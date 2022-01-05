@@ -1,6 +1,7 @@
 import mysql from 'mysql';
 import _ from 'lodash';
 import config from '../config';
+import { DATABASE_NAME } from '../constant';
 
 // const pool = mysql.createPool(config.databaseUrl);
 var pool  = mysql.createPool({
@@ -9,7 +10,7 @@ var pool  = mysql.createPool({
   port            : '3307',
   user            : 'admin',
   password        : '123456',
-  database        : 'library_management'
+  database        : `${DATABASE_NAME}`
 });
 
 /**

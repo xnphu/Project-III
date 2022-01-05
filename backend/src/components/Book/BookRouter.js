@@ -8,9 +8,9 @@ const router = Router();
 // route
 router.get('', throwAsNext(controller.getAllBook));
 router.get('/:id', throwAsNext(controller.getBookById));
-router.post('', throwAsNext(controller.createBook));
-router.put('/:id', throwAsNext(controller.updateBook));
-router.delete('/:id', throwAsNext(controller.deleteBook));
+router.post('', checkNotUserRole, throwAsNext(controller.createBook));
+router.put('/:id', checkNotUserRole, throwAsNext(controller.updateBook));
+router.delete('/:id', checkNotUserRole, throwAsNext(controller.deleteBook));
 router.post('/search',throwAsNext(controller.searchBook));
 
 // export

@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `author`;
 CREATE TABLE `author` (
   `id` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `description` varchar(45) DEFAULT NULL,
+  `description` varchar(2000) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -36,6 +36,7 @@ CREATE TABLE `author` (
 
 LOCK TABLES `author` WRITE;
 /*!40000 ALTER TABLE `author` DISABLE KEYS */;
+INSERT INTO `author` VALUES ('22010001','Melissa Merz',NULL),('22010002','Stephen E. Lucas','Stephen E. Lucas is Professor of Communication Arts and Evjue-Bascom Professor in the Humanities at the University of Wisconsin-Madison, where he has taught since 1972. He received his bachelor\'s degree from the University of California, Santa Barbara, and his master\'s and doctorate degrees from Penn State University.');
 /*!40000 ALTER TABLE `author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,6 +92,7 @@ CREATE TABLE `book_reservation` (
 
 LOCK TABLES `book_reservation` WRITE;
 /*!40000 ALTER TABLE `book_reservation` DISABLE KEYS */;
+INSERT INTO `book_reservation` VALUES ('22010001','22010001',0,'2022-01-01 00:00:00');
 /*!40000 ALTER TABLE `book_reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,15 +110,15 @@ CREATE TABLE `books` (
   `isbn` varchar(45) NOT NULL,
   `price` int NOT NULL,
   `title` varchar(45) NOT NULL,
+  `description` varchar(1000) DEFAULT NULL,
   `subject` varchar(45) NOT NULL,
   `publisher` varchar(45) NOT NULL,
   `publish_date` datetime NOT NULL,
   `date_purchase` datetime DEFAULT NULL,
   `language` varchar(45) NOT NULL,
   `number_of_pages` int NOT NULL,
+  `previewUrl` varchar(1000) DEFAULT NULL,
   `status` int NOT NULL,
-  `borrow_date` datetime DEFAULT NULL,
-  `due_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `author_id` (`author_id`),
@@ -132,6 +134,7 @@ CREATE TABLE `books` (
 
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
+INSERT INTO `books` VALUES ('22010001','22010001','22010001','9781138828414',100,'The Art and Practice of Costume Design','In The Art and Practice of Costume Design, a panel of seven designers offer a new multi-sided look at the current state and practice of theatrical costume design. Beginning with an exploration of the role of a Costume Designer, the subsequent chapters analyse and explore the psychology of dress, the principles and elements of design, how to create costume renderings, and collaboration within the production. The book also takes a look at the costume shop and the role of the designer within it, and costume design careers within theatrical and fashion industries.','Psychology','Routledge, Taylor & Francis Group','2017-01-01 00:00:00','2021-01-01 00:00:00','English',293,'https://cft.findbook.tw/image/book/9781138828414/large',0),('2210002','22010002','22010001','007313564X',200,'The Art of Public Speaking, Part 3','Whether a novice or an experienced speaker, every student will learn how to be a better public speaker through Lucas\' clear explanations and thorough coverage. By far the leading speech textbook of our time, The Art of Public Speaking has defined the art of being the best for more than six million students and instructors. The Lucas Learning Tools Suite offers even more tools and study options to fit the active lifestyles and diverse learning/teaching styles of today\'s students and instructors.','Public speaking','McGraw-Hill, 2007','2007-01-01 00:00:00','2021-02-01 00:00:00','English',506,'https://cft.findbook.tw/image/book/007313564X/large',0),('2210007','22010001','22010002','007313564X434',200,'The Art of Public Speaking, Part 3','Whether a novice or an experienced speaker, every student will learn how to be a better public speaker through Lucas\' clear explanations and thorough coverage. By far the leading speech textbook of our time, The Art of Public Speaking has defined the art of being the best for more than six million students and instructors. The Lucas Learning Tools Suite offers even more tools and study options to fit the active lifestyles and diverse learning/teaching styles of today\'s students and instructors.','Public speaking','McGraw-Hill, 2007','2007-01-01 00:00:00','2021-02-01 00:00:00','English',506,'https://cft.findbook.tw/image/book/007313564X434/large',0),('2210011','22010001','22010001','1231231',3123,'qweqw','sadadad','asdasd','qweqweqw','2022-01-05 00:00:00','2021-08-06 00:00:00','English',123,'https://cft.findbook.tw/image/book/1231231/large',0);
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -268,6 +271,7 @@ CREATE TABLE `rack` (
 
 LOCK TABLES `rack` WRITE;
 /*!40000 ALTER TABLE `rack` DISABLE KEYS */;
+INSERT INTO `rack` VALUES ('22010001',101),('22010002',102),('22010003',103);
 /*!40000 ALTER TABLE `rack` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +297,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',8),(2,2,'book',0);
+INSERT INTO `serial_number` VALUES (1,1,'member',8),(2,2,'book',11),(3,3,'author',1);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -306,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-29 17:09:51
+-- Dump completed on 2022-01-05 16:18:17
