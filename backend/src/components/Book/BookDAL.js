@@ -5,7 +5,7 @@ import { ERRORS, TYPE_ID, DATABASE_NAME } from '../../constant';
 export const getAllBook = async () => {
     const sql = `
         SELECT b.*, 
-        a.name, a.description as "author_description",
+        a.name as "author_name", a.description as "author_description",
         r.number as "location_number",
         br.status as "reservation_status", br.create_date as "reservation_date", 
         bl.due_date, bl.return_date, bl.fine_amount  
@@ -60,7 +60,7 @@ export const checkBookExist = async (id) => {
 export const getBookById = async (id) => {
     const sql = `
         SELECT b.*, 
-        a.name, a.description as "author_description",
+        a.name as "author_name", a.description as "author_description",
         r.number as "location_number",
         br.status as "reservation_status", br.create_date as "reservation_date", 
         bl.due_date, bl.return_date, bl.fine_amount  

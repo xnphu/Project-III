@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table, CardSubtitle, UncontrolledTooltip, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink, Dropdown, ButtonDropdown } from "reactstrap";
 import { Link } from "react-router-dom";
 
-import img3 from "../../assets/images/companies/img-3.png";
+import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
 
 import axios from 'axios';
 import { BASE_API_URL, BOOK_STATUS, BOOK_STATUS_LABEL } from '../../constant';
@@ -22,29 +22,9 @@ const ManageBook = (props) => {
         { value: BOOK_STATUS.LOANED, label: BOOK_STATUS_LABEL.LOANED },
         { value: BOOK_STATUS.LOST, label: BOOK_STATUS_LABEL.LOST },
     ]);
-    const [images, setImages] = useState([]);
+
     const [modalVisibility, setModalVisibility] = useState(false);
 
-    useEffect(() => {
-        fetchAllBooks();
-    }, []);
-
-    const fetchAllBooks = async () => {
-        try {
-            const response = await axios.get(`${BASE_API_URL}/books/`, { headers: { Authorization: `Bearer ${token}` } });
-            console.log('res ', response.data);
-            if (response.data) {
-                var imageUrlList = images;
-                response.data.forEach(element => {
-                    imageUrlList.push(element.previewUrl);
-                });
-                setImages(imageUrlList);
-                console.log('images ', images);
-            }
-        } catch (error) {
-            console.log('err ', error);
-        }
-    }
 
     const createNewBook = async (book) => {
         try {
@@ -89,7 +69,7 @@ const ManageBook = (props) => {
                             <CardTitle className="mt-4 float-sm-left">List of Books </CardTitle>
                             <Row className="float-sm-right">
 
-                            {/* {
+                                {/* {
                                 images.map((image, key) => <img key={key} src={image} alt="" className="avatar-sm" />)
                             } */}
                                 <div onClick={() => setModalVisibility(true)} className="btn btn-primary mt-3 mb-3 mr-4 d-lg-block float-sm-right">Add new book <i className="bx bx-plus"></i></div>
@@ -128,82 +108,63 @@ const ManageBook = (props) => {
                                 <Table className="table-centered table-nowrap table-hover">
                                     <thead className="thead-light">
                                         <tr>
-                                            <th scope="col" style={{ width: "70px" }}>Updated at</th>
+                                            <th scope="col" style={{ width: "70px" }}>ISBN</th>
                                             <th scope="col"></th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Author</th>
                                             <th scope="col">Description</th>
+                                            <th scope="col">Pages</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col"></th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            props.users.map((user, i) =>
-                                                <tr key={"_user_" + i} >
+                                            props.books.map((book, i) =>
+                                                <tr key={book.id} >
                                                     <td>
-                                                        <p className="text-muted mb-0">{user.projects}</p>
+                                                        <p className="text-muted mb-0">{book.isbn}</p>
 
                                                     </td>
                                                     <td>
                                                         {
-                                                            user.img === "Null"
+                                                            book.previewUrl === ""
                                                                 ? <div>
-                                                                    <img src={img3} alt="" className="avatar-sm" />
+                                                                    <img src={avatarDummy} alt="" className="avatar-sm" />
 
                                                                 </div>
                                                                 : <div>
-                                                                    <img src={img3} alt="" className="avatar-sm" />
+                                                                    <img src={book.previewUrl} alt="" className="avatar-sm" />
 
                                                                 </div>
                                                         }
 
                                                     </td>
                                                     <td>
-                                                        <h5 className="font-size-14 mb-1"><Link to="#" className="text-dark">{user.name}</Link></h5>
-                                                        <p className="text-muted mb-0">{user.designation}</p>
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            user.img === "Null"
-                                                                ? <div>
-                                                                    <img src={img3} alt="" className="avatar-sm" />
-
-                                                                </div>
-                                                                : <div>
-                                                                    <img src={img3} alt="" className="avatar-sm" />
-
-                                                                </div>
-                                                        }
-
-                                                    </td>
-                                                    <td>
-
-                                                        <div>
-                                                            {
-                                                                user.skills.map((skill, key) =>
-                                                                    <p key={key} className="mb-0" style={{ color: "#3E34FF" }}>#{skill.name}</p>
-                                                                )
-                                                            }
-
+                                                        <div style={{ maxWidth: "200px", maxHeight: "100px" }}>
+                                                            <h5 className="font-size-14 mb-1"><a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">{book.title}</a></h5>
+                                                            <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.publisher}</p>
+                                                            <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.subject}</p>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div>
-                                                            {
-                                                                user.skills.map((skill, key) =>
-                                                                    <Link to="#" className="badge badge-soft-primary font-size-11 m-1" key={"_skill_" + key}>{skill.name}</Link>
-                                                                )
-                                                            }
-
+                                                            <p className="text-muted mb-0">{book.author_name}</p>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div>
-                                                            <span className="bx bx-edit-alt"></span>
-                                                            <span className="bx bx-trash-alt"></span>
-
+                                                            <p className="text-muted mb-0">{book.language}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <p className="text-muted mb-0">{book.number_of_pages}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <p className="text-muted mb-0">{book.status}</p>
                                                         </div>
                                                     </td>
 

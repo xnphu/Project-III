@@ -17,72 +17,40 @@ import ManageBook from "./ManageBook";
 
 const Admin = () => {
     const dispatch = useDispatch();
+    const token = useSelector(state => state.token.token);
     const role = useSelector(state => state.token.role);
 
-    const [users, setUsers] = useState([
-        {
-            id: 1, img: "Null", name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "UI/UX Designer", email: "david@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Photoshop" },
-                { name: "illustrator" }
-            ]
-        },
-        {
-            id: 2, img: img4, name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Frontend Developer", email: "frank@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Html" },
-                { name: "Css" },
-                { name: "2 + more" },
-            ]
-        },
-        {
-            id: 3, img: img4, name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Backend Developer", email: "Rafael@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Php" },
-                { name: "Java" },
-                { name: "Python" },
-            ]
-        },
-        {
-            id: 4, img: "Null", name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Full Stack Developer", email: "mark@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Ruby" },
-                { name: "Php" },
-                { name: "2 + more" },
-            ]
-        },
-        {
-            id: 5, img: img4, name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Frontend Developer", email: "minnie@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Html" },
-                { name: "Css" },
-                { name: "2 + more" },
-            ]
-        },
-        {
-            id: 6, img: img4, name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "UI/UX Designer", email: "shirley@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Photoshop" },
-                { name: "UI/UX Designer" }
-            ]
-        },
-        {
-            id: 7, img: "Null", name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Full Stack Developer", email: "john@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Ruby" },
-                { name: "Php" },
-                { name: "2 + more" },
-            ]
-        },
-        {
-            id: 8, img: img4, name: "Hàng chục thủy thủy trên thuyền italy nhiễm Covid-19", designation: "Backend Developer", email: "colin@skote.com", projects: "1 giờ trước",
-            skills: [
-                { name: "Php" },
-                { name: "Java" },
-                { name: "Python" },
-            ]
-        },
+    const [books, setBooks] = useState([]);
+    const [bookStatus, setBookStatus] = useState([
+        { value: BOOK_STATUS.AVAILABLE, label: BOOK_STATUS_LABEL.AVAILABLE },
+        { value: BOOK_STATUS.RESERVED, label: BOOK_STATUS_LABEL.RESERVED },
+        { value: BOOK_STATUS.LOANED, label: BOOK_STATUS_LABEL.LOANED },
+        { value: BOOK_STATUS.LOST, label: BOOK_STATUS_LABEL.LOST },
     ]);
+    
+    useEffect(() => {
+        fetchAllBooks();
+    }, []);
+
+    const fetchAllBooks = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/books/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                var allBooks = response.data;
+                for (let i = 0; i < allBooks.length; i++) {
+                    for (let j = 0; j < bookStatus.length; j++) {
+                        if (allBooks[i].status === bookStatus[j].value) {
+                            allBooks[i].status = bookStatus[j].label;
+                        }
+                    }
+                }
+                setBooks(allBooks);
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     return (
         <div className="page-content">
@@ -90,7 +58,7 @@ const Admin = () => {
                 {
                     (role != 0 && role != 1)
                         ? <Pages401 />
-                        : <ManageBook users={users} />
+                        : <ManageBook books={books}/>
                 }
             </Container>
         </div>
