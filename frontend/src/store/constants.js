@@ -68,6 +68,9 @@ export const CHANGE_LAYOUT_WIDTH = "CHANGE_LAYOUT_WIDTH";
 export const CHANGE_SIDEBAR_THEME = "CHANGE_SIDEBAR_THEME";
 export const CHANGE_SIDEBAR_TYPE = "CHANGE_SIDEBAR_TYPE";
 
+// BOOK
+export const ACTION_SAVE_BOOK = 'book/save';
+
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";
 

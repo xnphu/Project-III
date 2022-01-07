@@ -14,6 +14,8 @@ import folder from './folder'
 import layout from './layout'
 import { tokenReducer as token } from '../../utils/RequestSagaUtils';
 import profile from './me';
+import book from './book';
+
 const config = {
   key: 'root',
   timeout: 30000,
@@ -39,15 +41,8 @@ const searchPersistConfig = {
 const reducers = combineReducers({
   token,
   profile,
-  // notification,
-  // article,
-  // reportReducer,
-  // mentionDetailsReducer,
-  // folder,
+  book,
   layout,
-  // form: persistReducer(formPersistConfig, form),
-  // searchReducer: persistReducer(searchPersistConfig, searchReducer),
-  // bookmarkReducer,
 });
 
 export default persistReducer(config, reducers);

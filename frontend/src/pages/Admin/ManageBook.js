@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table, CardSubtitle, UncontrolledTooltip, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink, Dropdown, ButtonDropdown } from "reactstrap";
-import { Link } from "react-router-dom";
 
 import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
 
@@ -10,11 +9,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
+import TablePagination from '../../components/CommonForBoth/TablePagination';
 
-const ManageBook = (props) => {
-    console.log('asdasd ', props);
+const ManageBook = () => {
     const token = useSelector(state => state.token.token);
-    const [authors, setAuthors] = useState([{ id: '22010001', label: 'Melissa Merz' }, { id: '22010002', label: 'Stephen E. Lucas' }]);
+    const books = useSelector(state => state.book.books);
+
+    const [authors, setAuthors] = useState([]);
     const [locations, setLocations] = useState([{ id: '22010001', label: '101' }, { id: '22010002', label: '102' }, { id: '22010003', label: '103' }]);
     const [bookStatus, setBookStatus] = useState([
         { value: BOOK_STATUS.AVAILABLE, label: BOOK_STATUS_LABEL.AVAILABLE },
@@ -23,14 +24,42 @@ const ManageBook = (props) => {
         { value: BOOK_STATUS.LOST, label: BOOK_STATUS_LABEL.LOST },
     ]);
 
+    const PAGE_SIZE = 10;
+    const [currentPage, setCurrentPage] = useState(0);
+    const handleClickPage = (event, index) => {
+        event.preventDefault();
+        setCurrentPage(index);
+    };
+
     const [modalVisibility, setModalVisibility] = useState(false);
 
+    useEffect(() => {
+        fetchAllAuthors();
+    }, []);
+
+    const fetchAllAuthors = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('authors ', response.data);
+            if (response.data) {
+                setAuthors(response.data);
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     const createNewBook = async (book) => {
         try {
             console.log('book ', book);
             var bookParam = book;
-            bookParam.status = book.book_status;
+            var authorFound = authors.find((e) => e.name === book.author);
+            var locationFound = locations.find((e) => e.label === book.location);
+            var statusFound = bookStatus.find((e) => e.label === book.book_status);
+
+            bookParam.author_id = authorFound.id;
+            bookParam.rack_id = locationFound.id;
+            bookParam.status = statusFound.value;
 
             const response = await axios.post(`${BASE_API_URL}/books/`, bookParam, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
@@ -84,7 +113,7 @@ const ManageBook = (props) => {
                                         <i className="mdi mdi-chevron-down"></i>
                                     </DropdownToggle>
                                     <DropdownMenu>
-                                        <DropdownItem>Tích cực</DropdownItem>
+                                        <DropdownItem active={true}>Tích cực</DropdownItem>
                                         <DropdownItem>Trung tính</DropdownItem>
                                         <DropdownItem>Tiêu cực</DropdownItem>
                                     </DropdownMenu>
@@ -96,7 +125,7 @@ const ManageBook = (props) => {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Tìm kiếm..."
+                                            placeholder="Search..."
                                         />
                                         <span className="bx bx-search-alt"></span>
                                     </div>
@@ -120,56 +149,61 @@ const ManageBook = (props) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            props.books.map((book, i) =>
-                                                <tr key={book.id} >
-                                                    <td>
-                                                        <p className="text-muted mb-0">{book.isbn}</p>
+                                            books
+                                                .slice(
+                                                    currentPage * PAGE_SIZE,
+                                                    (currentPage + 1) * PAGE_SIZE
+                                                )
+                                                .map((book, i) =>
+                                                    <tr key={book.id} >
+                                                        <td>
+                                                            <p className="text-muted mb-0">{book.isbn}</p>
 
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            book.previewUrl === ""
-                                                                ? <div>
-                                                                    <img src={avatarDummy} alt="" className="avatar-sm" />
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                book.previewUrl === ""
+                                                                    ? <div>
+                                                                        <img src={avatarDummy} alt="" className="avatar-sm" />
 
-                                                                </div>
-                                                                : <div>
-                                                                    <img src={book.previewUrl} alt="" className="avatar-sm" />
+                                                                    </div>
+                                                                    : <div>
+                                                                        <img src={book.previewUrl} alt="" className="avatar-sm" />
 
-                                                                </div>
-                                                        }
+                                                                    </div>
+                                                            }
 
-                                                    </td>
-                                                    <td>
-                                                        <div style={{ maxWidth: "200px", maxHeight: "100px" }}>
-                                                            <h5 className="font-size-14 mb-1"><a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">{book.title}</a></h5>
-                                                            <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.publisher}</p>
-                                                            <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.subject}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <p className="text-muted mb-0">{book.author_name}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <p className="text-muted mb-0">{book.language}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <p className="text-muted mb-0">{book.number_of_pages}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <p className="text-muted mb-0">{book.status}</p>
-                                                        </div>
-                                                    </td>
+                                                        </td>
+                                                        <td>
+                                                            <div style={{ maxWidth: "200px", maxHeight: "100px" }}>
+                                                                <h5 className="font-size-14 mb-1" style={{ whiteSpace: "pre-wrap" }}><a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">{book.title}</a></h5>
+                                                                <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.publisher}</p>
+                                                                <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.subject}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <p className="text-muted mb-0">{book.author_name}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <p className="text-muted mb-0">{book.language}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <p className="text-muted mb-0">{book.number_of_pages}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <p className="text-muted mb-0">{book.status}</p>
+                                                            </div>
+                                                        </td>
 
-                                                </tr>
-                                            )
+                                                    </tr>
+                                                )
                                         }
 
                                     </tbody>
@@ -177,39 +211,12 @@ const ManageBook = (props) => {
                             </div>
                             <Row>
                                 <Col lg="12">
-                                    <Pagination className="pagination pagination-rounded justify-content-center mt-4">
-                                        <PaginationItem disabled>
-                                            <PaginationLink previous href="#" />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                1
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem active>
-                                            <PaginationLink href="#">
-                                                2
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                3
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                4
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                5
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink next href="#" />
-                                        </PaginationItem>
-                                    </Pagination>
+                                    <TablePagination
+                                        pageSize={PAGE_SIZE}
+                                        length={books.length}
+                                        currentPage={currentPage}
+                                        handleClickPage={handleClickPage}
+                                    />
                                 </Col>
                             </Row>
 
@@ -220,7 +227,7 @@ const ManageBook = (props) => {
             </Row>
             <Formik
                 initialValues={{
-                    isbn: 0,
+                    isbn: '',
                     price: 0,
                     title: '',
                     author_id: '22010001',
@@ -280,8 +287,7 @@ const ManageBook = (props) => {
                                     name="isbn"
                                     label="ISBN"
                                     placeholder="Type ISBN"
-                                    type="number"
-                                    min={0}
+                                    type="text"
                                     errorMessage="Enter ISBN"
                                     validate={{ required: { value: true } }}
                                     onChange={handleChange}
@@ -306,7 +312,7 @@ const ManageBook = (props) => {
                                 />
                                 <AvField type="select" name="author" label="Author" onChange={handleChange} required>
                                     {
-                                        authors.map((author) => <option key={author.id}>{author.label}</option>)
+                                        authors.map((author) => <option key={author.id}>{author.name}</option>)
                                     }
                                 </AvField>
 

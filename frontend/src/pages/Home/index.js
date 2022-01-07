@@ -23,28 +23,64 @@ import product6 from "../../assets/images/product/img-6.png";
 import Breadcrumbs from '../../components/Common/Breadcrumb';
 
 import axios from 'axios';
-import { BASE_API_URL } from '../../constant';
+import { BASE_API_URL, BOOK_STATUS, BOOK_STATUS_LABEL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
+import { saveBook } from '../../store/actions/book';
+import TablePagination from '../../components/CommonForBoth/TablePagination';
 
 const Home = () => {
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.token.token);
+    const books = useSelector(state => state.book.books);
+    const onSaveBook = book => dispatch(saveBook(book));
+
+    const [bookStatus, setBookStatus] = useState([
+        { value: BOOK_STATUS.AVAILABLE, label: BOOK_STATUS_LABEL.AVAILABLE },
+        { value: BOOK_STATUS.RESERVED, label: BOOK_STATUS_LABEL.RESERVED },
+        { value: BOOK_STATUS.LOANED, label: BOOK_STATUS_LABEL.LOANED },
+        { value: BOOK_STATUS.LOST, label: BOOK_STATUS_LABEL.LOST },
+    ]);
+    const PAGE_SIZE = 9;
+    const [currentPage, setCurrentPage] = useState(0);
+    const handleClickPage = (event, index) => {
+        event.preventDefault();
+        setCurrentPage(index);
+    };
+
     const [filterFields, setFilterFields] = useState([
         { id: 1, name: "Titles", link: "#" },
         { id: 2, name: "Authors", link: "#" },
         { id: 3, name: "Subjects", link: "#" },
     ]);
-    const [products, setProducts] = useState([
-        { id: 1, image: product1, name: "Half sleeve T-shirt", link: "#", rating: 5, oldPrice: 500, newPrice: 450, isOffer: true, offer: -25 },
-        { id: 2, image: product2, name: "Light blue T-shirt", link: "#", rating: 4, oldPrice: 240, newPrice: 225, isOffer: false, offer: 0 },
-        { id: 3, image: product3, name: "Black Color T-shirt", link: "#", rating: 4, oldPrice: 175, newPrice: 152, isOffer: true, offer: -20 },
-        { id: 4, image: product4, name: "Hoodie (Blue)", link: "#", rating: 4, oldPrice: 150, newPrice: 145, isOffer: false, offer: 0 },
-        { id: 5, image: product5, name: "Half sleeve T-Shirt", link: "#", rating: 4, oldPrice: 145, newPrice: 138, isOffer: true, offer: -22 },
-        { id: 6, image: product6, name: "Green color T-shirt", link: "#", rating: 4, oldPrice: 138, newPrice: 135, isOffer: true, offer: -28 },
-        { id: 7, image: product6, name: "Green color T-shirt", link: "#", rating: 4, oldPrice: 138, newPrice: 135, isOffer: true, offer: -28 },
-        { id: 8, image: product6, name: "Green color T-shirt", link: "#", rating: 4, oldPrice: 138, newPrice: 135, isOffer: true, offer: -28 },
-        { id: 9, image: product6, name: "Green color T-shirt", link: "#", rating: 4, oldPrice: 138, newPrice: 135, isOffer: true, offer: -28 },
-    ]);
     const [activeTab, setActiveTab] = useState('1');
     const [isShowFilterDropdown, setIsShowFilterDropdown] = useState(false);
+
+    useEffect(() => {
+        fetchAllBooks();
+    }, []);
+
+    const fetchAllBooks = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/books/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                var allBooks = response.data;
+                for (let i = 0; i < allBooks.length; i++) {
+                    for (let j = 0; j < bookStatus.length; j++) {
+                        if (allBooks[i].status === bookStatus[j].value) {
+                            allBooks[i].status = bookStatus[j].label;
+                        }
+                    }
+                }
+                onSaveBook({
+                    books: allBooks,
+                    total: allBooks.length
+                });
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     const toggleTab = (tab) => {
         if (activeTab !== tab) {
@@ -130,36 +166,32 @@ const Home = () => {
                             </Row>
                             <Row>
                                 {
-                                    products.map((product, key) =>
-                                        <Col xl="4" sm="6" key={"_col_" + key}>
-                                            <Card>
+                                    books
+                                    .slice(
+                                        currentPage * PAGE_SIZE,
+                                        (currentPage + 1) * PAGE_SIZE
+                                    )
+                                    .map((book, key) =>
+                                        <Col xl="4" sm="6" key={book.id}>
+                                            <Card style={{ height: '300px' }}>
                                                 <CardBody>
                                                     <div className="product-img position-relative">
-                                                        {
-                                                            product.isOffer
-                                                                ? <div className="avatar-sm product-ribbon">
-                                                                    <span className="avatar-title rounded-circle  bg-primary">
-                                                                        {product.offer + "%"}
-                                                                    </span>
-                                                                </div>
-                                                                : null
-                                                        }
-                                                        <img src={product.image} alt="" className="img-fluid mx-auto d-block" />
+                                                        <img src={book.previewUrl} alt="" className="img-fluid mx-auto d-block" style={{ height: '100px' }} />
                                                     </div>
                                                     <div className="mt-4 text-center">
-                                                        <h5 className="mb-3 text-truncate"><Link to={"/ecommerce-product-detail/" + product.id} className="text-dark">{product.name} </Link></h5>
+                                                        <h5 className="mb-3 text-truncate">
+                                                            {/* <Link to={"/ecommerce-product-detail/" + product.id} className="text-dark"> */}
+                                                            {book.title}
+                                                            {/* </Link> */}
+                                                        </h5>
                                                         <div className="text-muted mb-3">
-                                                            <StarRatings
-                                                                rating={product.rating}
-                                                                starRatedColor="#F1B44C"
-                                                                starEmptyColor="#2D363F"
-                                                                numberOfStars={5}
-                                                                name='rating'
-                                                                starDimension="14px"
-                                                                starSpacing="3px"
-                                                            />
+                                                            {book.title}
                                                         </div>
-                                                        <h5 className="my-0"><span className="text-muted mr-2"><del>${product.oldPrice}</del></span> <b>${product.newPrice}</b></h5>
+                                                        <h5 className="my-0">
+                                                            <span className="text-muted mr-2">
+                                                                {book.status}
+                                                            </span>
+                                                        </h5>
                                                     </div>
                                                 </CardBody>
                                             </Card>
@@ -170,39 +202,12 @@ const Home = () => {
 
                             <Row>
                                 <Col lg="12">
-                                    <Pagination className="pagination pagination-rounded justify-content-center">
-                                        <PaginationItem disabled>
-                                            <PaginationLink previous href="#" />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                1
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem active>
-                                            <PaginationLink href="#">
-                                                2
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                3
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                4
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">
-                                                5
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink next href="#" />
-                                        </PaginationItem>
-                                    </Pagination>
+                                    <TablePagination
+                                        pageSize={PAGE_SIZE}
+                                        length={books.length}
+                                        currentPage={currentPage}
+                                        handleClickPage={handleClickPage}
+                                    />
                                 </Col>
                             </Row>
                         </Col>
