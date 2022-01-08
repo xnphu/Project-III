@@ -70,6 +70,7 @@ export const CHANGE_SIDEBAR_TYPE = "CHANGE_SIDEBAR_TYPE";
 
 // BOOK
 export const ACTION_SAVE_BOOK = 'book/save';
+export const ACTION_ADD_BOOK = 'book/add';
 
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";

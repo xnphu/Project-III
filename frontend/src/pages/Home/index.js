@@ -52,8 +52,10 @@ const Home = () => {
         { id: 2, name: "Authors", link: "#" },
         { id: 3, name: "Subjects", link: "#" },
     ]);
-    const [activeTab, setActiveTab] = useState('1');
+    const [selectFilterName, setSelectFilterName] = useState('');
     const [isShowFilterDropdown, setIsShowFilterDropdown] = useState(false);
+
+    const [searchKeyword, setSearchKeyword] = useState('');
 
     useEffect(() => {
         fetchAllBooks();
@@ -82,11 +84,29 @@ const Home = () => {
         }
     }
 
-    const toggleTab = (tab) => {
-        if (activeTab !== tab) {
-            setActiveTab(tab);
-        }
+    const searchKeywordLowerCase = searchKeyword.toLowerCase();
+    var booksFilter = books;
+
+    switch (selectFilterName) {
+        case filterFields[0].name:
+            booksFilter = books.filter(book => book.title.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case filterFields[1].name:
+            booksFilter = books.filter(book => book.author_name.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case filterFields[2].name:
+            booksFilter = books.filter(book => book.subject.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case '':
+            booksFilter = books.filter(book =>
+                book.title.toLowerCase().includes(searchKeywordLowerCase) ||
+                book.author_name.toLowerCase().includes(searchKeywordLowerCase) ||
+                book.subject.toLowerCase().includes(searchKeywordLowerCase)
+            );
+        default:
+            break;
     }
+
 
     return (
         <React.Fragment>
@@ -128,75 +148,65 @@ const Home = () => {
                                             }
                                             className="mr-4 float-sm-left">
                                             <DropdownToggle className="btn btn-primary" caret>
-                                                Keyword{" "}
+                                                {selectFilterName == '' ? 'Keyword' : selectFilterName}{" "}
                                                 <i className="mdi mdi-chevron-down"></i>
                                             </DropdownToggle>
                                             <DropdownMenu>
-                                                <DropdownItem>Title</DropdownItem>
-                                                <DropdownItem>Author</DropdownItem>
-                                                <DropdownItem>Subject</DropdownItem>
+                                                {
+                                                    filterFields.map((field) => <DropdownItem key={field.id} onClick={() => setSelectFilterName(field.name)}>{field.name}</DropdownItem>)
+                                                }
                                             </DropdownMenu>
                                         </Dropdown>
                                         <div className="search-box mr-2">
                                             <div className="position-relative">
-                                                <Input type="text" className="form-control border-0" placeholder="Search..." />
+                                                <Input
+                                                    type="text"
+                                                    className="form-control border-0"
+                                                    placeholder="Search..."
+                                                    onChange={(e) => setSearchKeyword(e.target.value)}
+                                                />
                                                 <i className="bx bx-search-alt search-icon"></i>
                                             </div>
                                         </div>
-                                        {/* <Nav className="product-view-nav" pills>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={classnames({ active: activeTab === '1' })}
-                                                    onClick={() => { toggleTab('1'); }}
-                                                >
-                                                    <i className="bx bx-grid-alt"></i>
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={classnames({ active: activeTab === '2' })}
-                                                    onClick={() => { toggleTab('2'); }}
-                                                >
-                                                    <i className="bx bx-list-ul"></i>
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav> */}
                                     </Form>
                                 </Col>
                             </Row>
                             <Row>
                                 {
-                                    books
-                                    .slice(
-                                        currentPage * PAGE_SIZE,
-                                        (currentPage + 1) * PAGE_SIZE
-                                    )
-                                    .map((book, key) =>
-                                        <Col xl="4" sm="6" key={book.id}>
-                                            <Card style={{ height: '300px' }}>
-                                                <CardBody>
-                                                    <div className="product-img position-relative">
-                                                        <img src={book.previewUrl} alt="" className="img-fluid mx-auto d-block" style={{ height: '100px' }} />
-                                                    </div>
-                                                    <div className="mt-4 text-center">
-                                                        <h5 className="mb-3 text-truncate">
-                                                            {/* <Link to={"/ecommerce-product-detail/" + product.id} className="text-dark"> */}
-                                                            {book.title}
-                                                            {/* </Link> */}
-                                                        </h5>
-                                                        <div className="text-muted mb-3">
-                                                            {book.title}
+                                    booksFilter
+                                        .slice(
+                                            currentPage * PAGE_SIZE,
+                                            (currentPage + 1) * PAGE_SIZE
+                                        )
+                                        .map((book, key) =>
+                                            <Col xl="4" sm="6" key={book.id}>
+                                                <Card style={{ height: '350px' }}>
+                                                    <CardBody>
+                                                        <div className="product-img position-relative">
+                                                            <img src={book.previewUrl} alt="" className="img-fluid mx-auto d-block" style={{ height: '100px' }} />
                                                         </div>
-                                                        <h5 className="my-0">
-                                                            <span className="text-muted mr-2">
-                                                                {book.status}
-                                                            </span>
-                                                        </h5>
-                                                    </div>
-                                                </CardBody>
-                                            </Card>
-                                        </Col>
-                                    )
+                                                        <div className="mt-4 text-center">
+                                                            <h5 className="mb-3">
+                                                                <Link to={"/books/" + book.id}>
+                                                                    {book.title}
+                                                                </Link>
+                                                            </h5>
+                                                            <div className="text-muted mb-3">
+                                                                {book.author_name}
+                                                            </div>
+                                                            <div className="text-muted mb-3">
+                                                                {book.subject}
+                                                            </div>
+                                                            <h5 className="my-0">
+                                                                <span className="text-muted mr-2">
+                                                                    {book.status}
+                                                                </span>
+                                                            </h5>
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>
+                                        )
                                 }
                             </Row>
 
@@ -204,7 +214,7 @@ const Home = () => {
                                 <Col lg="12">
                                     <TablePagination
                                         pageSize={PAGE_SIZE}
-                                        length={books.length}
+                                        length={booksFilter.length}
                                         currentPage={currentPage}
                                         handleClickPage={handleClickPage}
                                     />

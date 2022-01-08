@@ -7,7 +7,7 @@ export const ERRORS = {
   INVALID_PASSWORD_ERROR: createError.BadRequest('Mật khẩu sai!'),
   NOTHING_CHANGED: createError.BadGateway('Không có gì thay đổi'),
   USER_EXIST: createError.BadRequest('Tài khoản đã tồn tại'),
-  CUSTOMER_NOT_EXIST: createError.BadRequest('Khách hàng không tồn tại'),
+  USER_NOT_EXIST: createError.BadRequest('Tài khoản không tồn tại'),
   BOOK_EXIST: createError.BadRequest('Sách đã tồn tại'),
   BOOK_NOT_EXIST: createError.BadRequest('Sách không tồn tại'),
   SERVICE_EXIST: createError.BadRequest('Dịch vụ đã tồn tại'),

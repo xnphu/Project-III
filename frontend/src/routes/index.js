@@ -127,6 +127,8 @@ import Home from "../pages/Home/index";
 import MemberProfile from "../pages/Member/MemberProfile";
 //Admin
 import Admin from "../pages/Admin/index";
+//Members
+import BookDetail from "../pages/BookDetail/index";
 
 const authProtectedRoutes = [
 
@@ -134,6 +136,9 @@ const authProtectedRoutes = [
 
 	//Member
 	{ path: "/profile/:id", component: MemberProfile },
+
+	//Member
+	{ path: "/books/:id", component: BookDetail },
 
 	//Admin
 	{ path: "/admin", component: Admin },

@@ -5,7 +5,8 @@ export const generate = async (type) => {
     const sqlResult = await dbUtil.queryOne(sql, [type]);
     var date = new Date();
     const currentYear = date.getFullYear().toString().substring(2, 4);
-    const currentMonth = date.getMonth() + 1;
+    var currentMonth = date.getMonth() + 1;
+    if (currentMonth < 10) currentMonth = `0${currentMonth}`
     const prefixResultVal = parseInt(`${currentYear}${currentMonth}0000`);
     const newValue = sqlResult.current_value + 1;
 

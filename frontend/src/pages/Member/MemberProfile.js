@@ -17,6 +17,7 @@ import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProfile } from '../../store/actions/user';
+import { Formik } from 'formik';
 
 const MemberProfile = () => {
     const dispatch = useDispatch();
@@ -25,15 +26,11 @@ const MemberProfile = () => {
     const profile = useSelector(state => state.profile);
     const onUpdateProfile = profile => dispatch(updateProfile(profile));
 
-    const [experiences, setExperiences] = useState([
-        { id: 1, iconClass: "bx-server", link: "#", designation: "Back end Developer", timeDuration: "2016 - 19" },
-        { id: 2, iconClass: "bx-code", link: "#", designation: "Front end Developer", timeDuration: "2013 - 16" },
-        { id: 3, iconClass: "bx-edit", link: "#", designation: "UI /UX Designer", timeDuration: "2011 - 13" },
-    ]);
+    const [genders, setGenders] = useState([{ id: 0, label: 'Female' }, { id: 1, label: 'Male' }]);
     const [miniCards, setMiniCards] = useState([
-        { title: "Total book lend", iconClass: "bx-check-circle", text: "125" },
-        { title: "Total book reserve", iconClass: "bx-hourglass", text: "12" },
-        { title: "Total fine", iconClass: "bx-package", text: "$36,524" }
+        { title: "Total book lend", iconClass: "bx-check-circle", text: "0" },
+        { title: "Total book reserve", iconClass: "bx-hourglass", text: "0" },
+        { title: "Total fine", iconClass: "bx-package", text: "$0" }
     ]);
     const [modalVisibility, setModalVisibility] = useState(false);
 
@@ -46,6 +43,29 @@ const MemberProfile = () => {
             const response = await axios.get(`${BASE_API_URL}/members/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
+                onUpdateProfile(response.data);
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
+
+    const editProfile = async (value) => {
+        try {
+            console.log('profile ', value);
+            var profileParam = value;
+            var genderFound = genders.find((e) => e.label === value.gender);
+            
+            profileParam.gender = genderFound.id;
+
+            var response;
+
+            if (profile.name == undefined) {
+                response = await axios.post(`${BASE_API_URL}/members/`, profileParam, { headers: { Authorization: `Bearer ${token}` } });
+            } else response = await axios.put(`${BASE_API_URL}/members/${userId}`, profileParam, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                setModalVisibility(false);
                 onUpdateProfile(response.data);
             }
         } catch (error) {
@@ -68,7 +88,7 @@ const MemberProfile = () => {
                                     <Col xs="7">
                                         <div className="text-primary p-3">
                                             <h5 className="text-primary">Welcome Back !</h5>
-                                            <p>It will seem like simplified</p>
+                                            {/* <p>It will seem like simplified</p> */}
                                         </div>
                                     </Col>
                                     <Col xs="5" className="align-self-end">
@@ -88,7 +108,7 @@ const MemberProfile = () => {
 
                                     <Col sm={8}>
                                         <div className="pt-4">
-                                            <Row>
+                                            {/* <Row>
                                                 <Col xs="6">
                                                     <h5 className="font-size-15">125</h5>
                                                     <p className="text-muted mb-0">Projects</p>
@@ -97,7 +117,7 @@ const MemberProfile = () => {
                                                     <h5 className="font-size-15">$1245</h5>
                                                     <p className="text-muted mb-0">Revenue</p>
                                                 </Col>
-                                            </Row>
+                                            </Row> */}
                                             <div className="mt-4">
                                                 <div onClick={() => setModalVisibility(true)} className="btn btn-primary waves-effect waves-light btn-sm">Edit Profile <i className="mdi mdi-arrow-right ml-1"></i></div>
                                             </div>
@@ -124,7 +144,15 @@ const MemberProfile = () => {
                                             </tr>
                                             <tr>
                                                 <th scope="row">Gender :</th>
-                                                <td>{profile.sex == 1 ? 'Male' : 'Female'}</td>
+                                                <td>
+                                                    {
+                                                        profile.gender != undefined
+                                                            ? profile.gender == 1
+                                                                ? 'Male'
+                                                                : 'Female'
+                                                            : ''
+                                                    }
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Mobile :</th>
@@ -136,7 +164,12 @@ const MemberProfile = () => {
                                             </tr>
                                             <tr>
                                                 <th scope="row">Location :</th>
-                                                <td>{profile.street}, {profile.city}, {profile.country}</td>
+                                                <td>
+                                                    {profile.street != undefined && profile.city != undefined && profile.country != undefined
+                                                        ? `${profile.street}, ${profile.city}, ${profile.country}`
+                                                        : ''
+                                                    }
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </Table>
@@ -189,7 +222,7 @@ const MemberProfile = () => {
                         </Row>
                         <Card>
                             <CardBody>
-                                <CardTitle className="mb-4">Revenue</CardTitle>
+                                <CardTitle className="mb-4">Library card</CardTitle>
                                 <div id="revenue-chart" className="apex-charts">
                                     {/* <ApexRevenue /> */}
                                 </div>
@@ -200,7 +233,7 @@ const MemberProfile = () => {
                             <CardBody>
                                 <CardTitle className="mb-4">Book lend history</CardTitle>
                                 <div className="table-responsive">
-                                    <Table className="table table-nowrap table-hover mb-0">
+                                    {/* <Table className="table table-nowrap table-hover mb-0">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -262,105 +295,154 @@ const MemberProfile = () => {
                                                 <td>$94</td>
                                             </tr>
                                         </tbody>
-                                    </Table>
+                                    </Table> */}
                                 </div>
                             </CardBody>
                         </Card>
                     </Col>
                 </Row>
-                <Modal
-                    className="modal-lg"
-                    isOpen={modalVisibility}
-                    toggle={() => setModalVisibility(!modalVisibility)}
+                <Formik
+                    initialValues={{
+                        student_id: '',
+                        name: '',
+                        email: '',
+                        phone: '',
+                        gender: 'Male',
+                        date_of_birth: '',
+                        street: '',
+                        city: '',
+                        country: '',
+                        status: 1
+                    }}
+                    onSubmit={(values) => {
+                        editProfile(values);
+                    }}
                 >
-                    <div className="modal-header">
-                        <h5
-                            className="modal-title mt-0"
-                            id="myLargeModalLabel"
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleSubmit,
+                    }) => (
+                        <Modal
+                            className="modal-lg"
+                            scrollable={true}
+                            isOpen={modalVisibility}
+                            toggle={() => setModalVisibility(!modalVisibility)}
                         >
-                            Edit Profile
-                        </h5>
-                        <button
-                            onClick={() =>
-                                setModalVisibility(false)
-                            }
-                            type="button"
-                            className="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div className="modal-body">
-                        <AvForm>
-                            <AvField
-                                name="username"
-                                label="Fullname"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                            <AvField
-                                name="dob"
-                                label="DOB"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                            <AvField
-                                name="gender"
-                                label="Gender"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                            <AvField
-                                name="phone"
-                                label="Phone"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                            <AvField
-                                name="email"
-                                label="Email"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                            <AvField
-                                name="location"
-                                label="Location"
-                                placeholder="Type fullname"
-                                type="text"
-                                errorMessage="Enter fullname"
-                                validate={{ required: { value: true } }}
-                            />
-                        </AvForm>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-primary">
-                            Save changes
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={() =>
-                                setModalVisibility(false)
-                            }
-                            data-dismiss="modal"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </Modal>
-
+                            <div className="modal-header">
+                                <h5
+                                    className="modal-title mt-0"
+                                    id="myLargeModalLabel"
+                                >
+                                    Edit Profile
+                                </h5>
+                                <button
+                                    onClick={() =>
+                                        setModalVisibility(false)
+                                    }
+                                    type="button"
+                                    className="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                >
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <AvForm onValidSubmit={handleSubmit}>
+                                    <AvField
+                                        name="name"
+                                        label="Fullname"
+                                        placeholder="Type fullname"
+                                        type="text"
+                                        errorMessage="Enter fullname"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField
+                                        name="email"
+                                        label="Email"
+                                        placeholder="Type email"
+                                        type="text"
+                                        errorMessage="Enter email"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField
+                                        name="phone"
+                                        label="Phone"
+                                        placeholder="Type phone"
+                                        type="text"
+                                        errorMessage="Enter phone"
+                                        validate={{ required: { value: true }, maxLength: { value: 15 } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField
+                                        name="date_of_birth"
+                                        label="Date of birth"
+                                        placeholder="Type date of birth"
+                                        type="date"
+                                        errorMessage="Enter date of birth"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField type="select" name="gender" label="Gender" onChange={handleChange} required>
+                                        {
+                                            genders.map((e) => <option key={e.id}>{e.label}</option>)
+                                        }
+                                    </AvField>
+                                    <AvField
+                                        name="street"
+                                        label="Street"
+                                        placeholder="Type street"
+                                        type="text"
+                                        errorMessage="Enter street"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField
+                                        name="city"
+                                        label="City"
+                                        placeholder="Type city"
+                                        type="text"
+                                        errorMessage="Enter city"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                    <AvField
+                                        name="country"
+                                        label="Country"
+                                        placeholder="Type country"
+                                        type="text"
+                                        errorMessage="Enter country"
+                                        validate={{ required: { value: true } }}
+                                        onChange={handleChange}
+                                    />
+                                </AvForm>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={handleSubmit}>
+                                    Save changes
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() =>
+                                        setModalVisibility(false)
+                                    }
+                                    data-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </Modal>
+                    )}
+                </Formik>
             </Container>
         </div>
     );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table, CardSubtitle, UncontrolledTooltip, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink, Dropdown, ButtonDropdown } from "reactstrap";
 
 import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
@@ -10,10 +11,13 @@ import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
+import { saveBook } from '../../store/actions/book';
 
 const ManageBook = () => {
+    const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
     const books = useSelector(state => state.book.books);
+    const onSaveBook = book => dispatch(saveBook(book));
 
     const [authors, setAuthors] = useState([]);
     const [locations, setLocations] = useState([{ id: '22010001', label: '101' }, { id: '22010002', label: '102' }, { id: '22010003', label: '103' }]);
@@ -30,6 +34,17 @@ const ManageBook = () => {
         event.preventDefault();
         setCurrentPage(index);
     };
+
+    const [filterFields, setFilterFields] = useState([
+        { id: 1, name: "Titles", link: "#" },
+        { id: 2, name: "Authors", link: "#" },
+        { id: 3, name: "Subjects", link: "#" },
+    ]);
+    const [selectFilterName, setSelectFilterName] = useState('');
+    const [isShowFilterDropdown, setIsShowFilterDropdown] = useState(false);
+
+    const [searchKeyword, setSearchKeyword] = useState('');
+
 
     const [modalVisibility, setModalVisibility] = useState(false);
 
@@ -64,11 +79,43 @@ const ManageBook = () => {
             const response = await axios.post(`${BASE_API_URL}/books/`, bookParam, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
+                var book = response.data;
+                var statusDataFound = bookStatus.find((e) => e.value === book.status);
+                book.status = statusDataFound.label;
+                var list = books;
+                list.push(book);
+                onSaveBook({
+                    books: list,
+                    total: list.length
+                });
                 setModalVisibility(false);
             }
         } catch (error) {
             console.log('err ', error);
         }
+    }
+
+    const searchKeywordLowerCase = searchKeyword.toLowerCase();
+    var booksFilter = books;
+
+    switch (selectFilterName) {
+        case filterFields[0].name:
+            booksFilter = books.filter(book => book.title.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case filterFields[1].name:
+            booksFilter = books.filter(book => book.author_name.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case filterFields[2].name:
+            booksFilter = books.filter(book => book.subject.toLowerCase().includes(searchKeywordLowerCase));
+            break;
+        case '':
+            booksFilter = books.filter(book =>
+                book.title.toLowerCase().includes(searchKeywordLowerCase) ||
+                book.author_name.toLowerCase().includes(searchKeywordLowerCase) ||
+                book.subject.toLowerCase().includes(searchKeywordLowerCase)
+            );
+        default:
+            break;
     }
 
     return (
@@ -97,25 +144,21 @@ const ManageBook = () => {
                         <CardBody>
                             <CardTitle className="mt-4 float-sm-left">List of Books </CardTitle>
                             <Row className="float-sm-right">
-
-                                {/* {
-                                images.map((image, key) => <img key={key} src={image} alt="" className="avatar-sm" />)
-                            } */}
                                 <div onClick={() => setModalVisibility(true)} className="btn btn-primary mt-3 mb-3 mr-4 d-lg-block float-sm-right">Add new book <i className="bx bx-plus"></i></div>
                                 <Dropdown
-                                    isOpen={false}
-                                    toggle={() => { }
-                                        // this.setState({ singlebtn: !this.state.singlebtn })
+                                    isOpen={isShowFilterDropdown}
+                                    toggle={() =>
+                                        setIsShowFilterDropdown(!isShowFilterDropdown)
                                     }
                                     className="mt-3 mr-4 float-sm-left">
                                     <DropdownToggle className="btn btn-primary" caret>
-                                        Lọc theo sắc thái{" "}
+                                        {selectFilterName == '' ? 'Keyword' : selectFilterName}{" "}
                                         <i className="mdi mdi-chevron-down"></i>
                                     </DropdownToggle>
                                     <DropdownMenu>
-                                        <DropdownItem active={true}>Tích cực</DropdownItem>
-                                        <DropdownItem>Trung tính</DropdownItem>
-                                        <DropdownItem>Tiêu cực</DropdownItem>
+                                        {
+                                            filterFields.map((field) => <DropdownItem key={field.id} onClick={() => setSelectFilterName(field.name)}>{field.name}</DropdownItem>)
+                                        }
                                     </DropdownMenu>
                                 </Dropdown>
 
@@ -126,6 +169,7 @@ const ManageBook = () => {
                                             type="text"
                                             className="form-control"
                                             placeholder="Search..."
+                                            onChange={(e) => setSearchKeyword(e.target.value)}
                                         />
                                         <span className="bx bx-search-alt"></span>
                                     </div>
@@ -141,7 +185,7 @@ const ManageBook = () => {
                                             <th scope="col"></th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Author</th>
-                                            <th scope="col">Description</th>
+                                            <th scope="col">Language</th>
                                             <th scope="col">Pages</th>
                                             <th scope="col">Status</th>
 
@@ -149,7 +193,7 @@ const ManageBook = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            books
+                                            booksFilter
                                                 .slice(
                                                     currentPage * PAGE_SIZE,
                                                     (currentPage + 1) * PAGE_SIZE
@@ -161,22 +205,25 @@ const ManageBook = () => {
 
                                                         </td>
                                                         <td>
-                                                            {
-                                                                book.previewUrl === ""
-                                                                    ? <div>
-                                                                        <img src={avatarDummy} alt="" className="avatar-sm" />
+                                                            <a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">
+                                                                {
+                                                                    book.previewUrl === ""
+                                                                        ? <div>
+                                                                            <img src={avatarDummy} alt="" className="avatar-sm" />
 
-                                                                    </div>
-                                                                    : <div>
-                                                                        <img src={book.previewUrl} alt="" className="avatar-sm" />
+                                                                        </div>
+                                                                        : <div>
+                                                                            <img src={book.previewUrl} alt="" className="avatar-sm" />
 
-                                                                    </div>
-                                                            }
-
+                                                                        </div>
+                                                                }
+                                                            </a>
                                                         </td>
                                                         <td>
                                                             <div style={{ maxWidth: "200px", maxHeight: "100px" }}>
-                                                                <h5 className="font-size-14 mb-1" style={{ whiteSpace: "pre-wrap" }}><a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">{book.title}</a></h5>
+                                                                <h5 className="font-size-14 mb-1" style={{ whiteSpace: "pre-wrap" }}>
+                                                                    <Link to={"/books/" + book.id}>{book.title}</Link>
+                                                                </h5>
                                                                 <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.publisher}</p>
                                                                 <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{book.subject}</p>
                                                             </div>
@@ -213,7 +260,7 @@ const ManageBook = () => {
                                 <Col lg="12">
                                     <TablePagination
                                         pageSize={PAGE_SIZE}
-                                        length={books.length}
+                                        length={booksFilter.length}
                                         currentPage={currentPage}
                                         handleClickPage={handleClickPage}
                                     />
@@ -243,9 +290,6 @@ const ManageBook = () => {
                 }}
                 onSubmit={(values) => {
                     createNewBook(values);
-                    // setTimeout(() => {
-                    //     alert(JSON.stringify(values, null, 2));
-                    // }, 400);
                 }}
             >
                 {({

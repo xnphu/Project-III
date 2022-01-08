@@ -22,15 +22,15 @@ export const createMember = async (req, res) => {
     if (!id) {
         return Promise.reject(ERRORS.UNAUTHORIZED_ERROR);
     }
-    const { student_id, name, email, phone, sex, date_of_birth, street, city, country, status } = req.body;
-    const member = await dbAccess.createMember({ id, student_id, name, email, phone, sex, date_of_birth, street, city, country, status });
+    const { student_id, name, email, phone, gender, date_of_birth, street, city, country, status } = req.body;
+    const member = await dbAccess.createMember({ id, student_id, name, email, phone, gender, date_of_birth, street, city, country, status });
     res.status(201).json(member);
 };
 
 export const updateMember = async (req, res) => {
     const { id } = req.params;
-    const { password, name, email, phone, sex, date_of_birth, street, city, zip_code, country, status } = req.body;
-    const member = await dbAccess.updateMember({ id, password, name, email, phone, sex, date_of_birth, street, city, zip_code, country, status });
+    const { password, name, email, phone, gender, date_of_birth, street, city, zip_code, country, status } = req.body;
+    const member = await dbAccess.updateMember({ id, password, name, email, phone, gender, date_of_birth, street, city, zip_code, country, status });
     res.status(200).json(member);
 };
 
