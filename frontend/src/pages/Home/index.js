@@ -10,15 +10,6 @@ import StarRatings from 'react-star-ratings';
 import Nouislider from "nouislider-react";
 import "nouislider/distribute/nouislider.css";
 
-
-//Import Product Images
-import product1 from "../../assets/images/product/img-1.png";
-import product2 from "../../assets/images/product/img-2.png";
-import product3 from "../../assets/images/product/img-3.png";
-import product4 from "../../assets/images/product/img-4.png";
-import product5 from "../../assets/images/product/img-5.png";
-import product6 from "../../assets/images/product/img-6.png";
-
 //Import Breadcrumb
 import Breadcrumbs from '../../components/Common/Breadcrumb';
 

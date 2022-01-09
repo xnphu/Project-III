@@ -129,6 +129,8 @@ import MemberProfile from "../pages/Member/MemberProfile";
 import Admin from "../pages/Admin/index";
 //Members
 import BookDetail from "../pages/BookDetail/index";
+//Library Card
+import LibraryCardRequest from "../pages/LibraryCardRequest/index";
 
 const authProtectedRoutes = [
 
@@ -137,8 +139,11 @@ const authProtectedRoutes = [
 	//Member
 	{ path: "/profile/:id", component: MemberProfile },
 
-	//Member
+	//Book
 	{ path: "/books/:id", component: BookDetail },
+
+	//Library Card
+	{ path: "/library-card-request", component: LibraryCardRequest },
 
 	//Admin
 	{ path: "/admin", component: Admin },
