@@ -17,8 +17,6 @@ import {
   updateRefreshToken,
   setAnonymousToken
 } from '../../utils/RequestSagaUtils/token/actions';
-import { getFolder } from '../actions/folder';
-import { getNotification } from '../actions/notification';
 import { savePW } from '../actions/user';
 const requestLoginAnonymously = createRequestSaga({
   request: AuthAPIs.loginAnonymously,
@@ -29,7 +27,7 @@ const requestLoginAnonymously = createRequestSaga({
 const requestLogin = createRequestSaga({
   request: AuthAPIs.login,
   key: ACTION_LOGIN,
-  onSuccessActionCreators: [updateAccessToken, updateRefreshToken, me, getFolder, getNotification]
+  onSuccessActionCreators: [updateAccessToken, updateRefreshToken, me]
 });
 
 
@@ -48,7 +46,7 @@ const requestRegister = createRequestSaga(
   {
     request: AuthAPIs.register,
     key: ACTION_REGISTER,
-    onSuccessActionCreators: [updateAccessToken, updateRefreshToken, getFolder, getNotification]
+    onSuccessActionCreators: [updateAccessToken, updateRefreshToken]
   });
 
 const requestForgotPassword = createRequestSaga({

@@ -7,7 +7,7 @@ import { DATABASE_NAME } from '../constant';
 var pool  = mysql.createPool({
   connectionLimit : 10,
   host            : 'localhost',
-  port            : '3307',
+  port            : '3306',
   user            : 'admin',
   password        : '123456',
   database        : `${DATABASE_NAME}`

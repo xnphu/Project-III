@@ -4,17 +4,11 @@ import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import searchReducer from './search';
-import notification from './notification';
-import article from './article';
-import reportReducer from './alert';
-import bookmarkReducer from './bookmark'
-import mentionDetailsReducer from './mention';
-import folder from './folder'
 import layout from './layout'
 import { tokenReducer as token } from '../../utils/RequestSagaUtils';
 import profile from './me';
 import book from './book';
+import libraryCard from './library-card';
 
 const config = {
   key: 'root',
@@ -42,6 +36,7 @@ const reducers = combineReducers({
   token,
   profile,
   book,
+  libraryCard,
   layout,
 });
 

@@ -3,12 +3,18 @@ export const TYPE_ID = {
     BOOK: 2,
     AUTHOR: 3,
     RACK: 4,
+    LIBRARY_CARD: 5,
 };
 
 export const ROLE = {
     ADMIN: 0,
     LIBRARIAN: 1,
     MEMBER: 2,
+};
+
+export const LIBRARY_CARD = {
+    INACTIVE: 0,
+    ACTIVE: 1,
 };
 
 export const FORMAT = {
