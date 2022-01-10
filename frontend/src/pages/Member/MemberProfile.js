@@ -17,15 +17,21 @@ import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProfile } from '../../store/actions/user';
+import { saveLibraryCard } from '../../store/actions/library-card';
 import { Formik } from 'formik';
 import SweetAlert from "react-bootstrap-sweetalert";
+import LibraryCardContent from '../LibraryCardRequest/LibraryCardContent';
 
 const MemberProfile = () => {
     const dispatch = useDispatch();
+    const onUpdateProfile = profile => dispatch(updateProfile(profile));
+    const onUpdateLibraryCard = libraryCard => dispatch(saveLibraryCard(libraryCard));
+
+
     const token = useSelector(state => state.token.token);
     const userId = useSelector(state => state.profile.id);
     const profile = useSelector(state => state.profile);
-    const onUpdateProfile = profile => dispatch(updateProfile(profile));
+    const libraryCard = useSelector(state => state.libraryCard);
 
     const [genders, setGenders] = useState([{ id: 0, label: 'Female' }, { id: 1, label: 'Male' }]);
     const [miniCards, setMiniCards] = useState([
@@ -38,6 +44,7 @@ const MemberProfile = () => {
 
     useEffect(() => {
         fetchMemberProfile();
+        getLibraryCard();
     }, []);
 
     const fetchMemberProfile = async () => {
@@ -52,6 +59,18 @@ const MemberProfile = () => {
         }
     }
 
+    const getLibraryCard = async (value) => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/library-card/${userId}/member/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res getLibraryCard', response.data);
+            if (response.data) {
+                onUpdateLibraryCard(response.data);
+            }
+        } catch (error) {
+            console.log('err getLibraryCard', error.response.data);
+        }
+    }
+
     const editProfile = async (value) => {
         try {
             console.log('profile ', value);
@@ -63,7 +82,7 @@ const MemberProfile = () => {
 
             if (profile.name == undefined) {
                 response = await axios.post(`${BASE_API_URL}/members/`, profileParam, { headers: { Authorization: `Bearer ${token}` } });
-            } else response = await axios.put(`${BASE_API_URL}/memberss/${userId}`, profileParam, { headers: { Authorization: `Bearer ${token}` } });
+            } else response = await axios.put(`${BASE_API_URL}/members/${userId}`, profileParam, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
                 setAlert(
@@ -247,9 +266,7 @@ const MemberProfile = () => {
                         <Card>
                             <CardBody>
                                 <CardTitle className="mb-4">Library card</CardTitle>
-                                <div id="revenue-chart" className="apex-charts">
-                                    {/* <ApexRevenue /> */}
-                                </div>
+                                <LibraryCardContent libraryCard={libraryCard} />
                             </CardBody>
                         </Card>
 

@@ -1,19 +1,20 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Container, Row, Col, Card, CardBody, CardTitle, Media, Table, Modal } from "reactstrap";
-import { AvForm, AvField } from "availity-reactstrap-validation";
 
 import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { saveLibraryCard } from '../../store/actions/library-card';
-import { Formik } from 'formik';
 import dayjs from 'dayjs';
 import SweetAlert from "react-bootstrap-sweetalert";
+import LibraryCardContent from './LibraryCardContent';
 
 
 const LibraryCardRequest = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const token = useSelector(state => state.token.token);
     const userId = useSelector(state => state.profile.id);
     const libraryCard = useSelector(state => state.libraryCard);
@@ -26,7 +27,7 @@ const LibraryCardRequest = () => {
             const response = await axios.get(`${BASE_API_URL}/library-card/${userId}/member/`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res getLibraryCard', response.data);
             if (response.data) {
-
+                onUpdateLibraryCard(response.data);
             }
         } catch (error) {
             console.log('err getLibraryCard', error.response.data);
@@ -35,7 +36,7 @@ const LibraryCardRequest = () => {
 
     const requestLibraryCard = async (value) => {
         try {
-            const response = await axios.post(`${BASE_API_URL}/library-card`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.post(`${BASE_API_URL}/library-card`, {}, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res requestLibraryCard', response.data);
             if (response.data) {
                 onUpdateLibraryCard(response.data);
@@ -46,8 +47,9 @@ const LibraryCardRequest = () => {
                 <SweetAlert
                     danger
                     title="Request library card fail!"
-                    onConfirm={() => setAlert(<></>)}
+                    onConfirm={() => history.push(`profile/${userId}`)}
                     onCancel={() => setAlert(<></>)}
+                    confirmBtnText={'To profile page'}
                 >
                     You need to add your profile information
                 </SweetAlert>
@@ -70,7 +72,8 @@ const LibraryCardRequest = () => {
                             libraryCard.id == undefined
                                 ? <div className="mb-4 text-center">You don't have a library card, <Link to={'#'} onClick={() => requestLibraryCard()}>Click here</Link> to request to Admin/Librarian.</div>
                                 : <>
-                                    <div className="mb-4 text-center">{libraryCard.id}</div>
+                                    <h4 className="text-center">Your library card</h4>
+                                    <LibraryCardContent libraryCard={libraryCard} />
                                 </>
                         }
                     </CardBody>
