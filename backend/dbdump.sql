@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.27, for macos11 (x86_64)
 --
 -- Host: localhost    Database: library_management
 -- ------------------------------------------------------
--- Server version	8.0.20
+-- Server version	8.0.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -177,6 +177,7 @@ CREATE TABLE `library_card` (
   `member_id` varchar(45) NOT NULL,
   `issue_date` varchar(45) NOT NULL,
   `active_flg` int NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `member_id` (`member_id`),
   CONSTRAINT `library_card_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member_info` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -188,6 +189,7 @@ CREATE TABLE `library_card` (
 
 LOCK TABLES `library_card` WRITE;
 /*!40000 ALTER TABLE `library_card` DISABLE KEYS */;
+INSERT INTO `library_card` VALUES ('22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-01-10',0),('22010002','21120005','2022-01-10',0);
 /*!40000 ALTER TABLE `library_card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,7 +299,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',11),(2,2,'book',26),(3,3,'author',10);
+INSERT INTO `serial_number` VALUES (1,1,'member',11),(2,2,'book',26),(3,3,'author',10),(4,4,'book_location',0),(5,5,'library_card',4);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -310,4 +312,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-08 12:44:07
+-- Dump completed on 2022-01-10 17:46:54
