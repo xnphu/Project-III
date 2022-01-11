@@ -1,6 +1,6 @@
 import * as dbUtil from '../../util/databaseUtil';
 import * as generateIdUtil from '../../util/generateIdUtil';
-import { ERRORS, TYPE_ID, DATABASE_NAME } from '../../constant';
+import { ERRORS, TYPE_ID, DATABASE_NAME, BOOK_STATUS } from '../../constant';
 
 export const getAllBook = async () => {
     const sql = `
@@ -116,4 +116,13 @@ export const searchBook = async (author_id,title,subject) => {
     }
     const books = await dbUtil.queryOne(sql, [fieldName,fieldValue]);
     return books;
+};
+
+export const checkBookAvailable = async (id) => {
+    const sql = 'SELECT * FROM books WHERE id = ?';
+    const result = await dbUtil.queryOne(sql, [id]);
+    if (result.status == BOOK_STATUS.AVAILABLE) {
+        return true;
+    }
+    return false;
 };

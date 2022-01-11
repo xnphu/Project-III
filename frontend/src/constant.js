@@ -1,10 +1,10 @@
 export const BASE_API_URL = 'http://localhost:8080';
 
 export const BOOK_STATUS = {
-    AVAILABLE: 0,
-    RESERVED: 1,
-    LOANED: 2,
-    LOST: 3,
+    AVAILABLE: 1,
+    RESERVED: 2,
+    LOANED: 3,
+    LOST: 4,
 }
 
 export const BOOK_STATUS_LABEL = {
@@ -13,3 +13,20 @@ export const BOOK_STATUS_LABEL = {
     LOANED: 'Loaned',
     LOST: 'Lost',
 }
+
+export const FORMAT = {
+    DATE: 'YYYY-MM-DD',
+    DATETIME: 'YYYY-MM-DD HH:mm'
+};
+
+export const RESERVATION_STATUS = {
+    WAITING: 1,
+    PENDING: 2,
+    COMPLETED: 3,
+    CANCELED: 4,
+};
+
+export const LIMIT = {
+    RESERVATION: 5,
+    LENDING: 5,
+};

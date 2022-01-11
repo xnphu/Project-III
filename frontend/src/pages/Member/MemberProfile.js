@@ -272,6 +272,77 @@ const MemberProfile = () => {
 
                         <Card>
                             <CardBody>
+                                <CardTitle className="mb-4">Book reserve history</CardTitle>
+                                <div className="table-responsive">
+                                    {/* <Table className="table table-nowrap table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Projects</th>
+                                                <th scope="col">Start Date</th>
+                                                <th scope="col">Deadline</th>
+                                                <th scope="col">Budget</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>Skote admin UI</td>
+                                                <td>2 Sep, 2019</td>
+                                                <td>20 Oct, 2019</td>
+                                                <td>$506</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th scope="row">2</th>
+                                                <td>Skote admin Logo</td>
+                                                <td>1 Sep, 2019</td>
+                                                <td>2 Sep, 2019</td>
+                                                <td>$94</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">3</th>
+                                                <td>Redesign - Landing page</td>
+                                                <td>21 Sep, 2019</td>
+                                                <td>29 Sep, 2019</td>
+                                                <td>$156</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">4</th>
+                                                <td>App Landing UI</td>
+                                                <td>29 Sep, 2019</td>
+                                                <td>04 Oct, 2019</td>
+                                                <td>$122</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">5</th>
+                                                <td>Blog Template</td>
+                                                <td>05 Oct, 2019</td>
+                                                <td>16 Oct, 2019</td>
+                                                <td>$164</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">6</th>
+                                                <td>Redesign - Multipurpose Landing</td>
+                                                <td>17 Oct, 2019</td>
+                                                <td>05 Nov, 2019</td>
+                                                <td>$192</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">7</th>
+                                                <td>Logo Branding</td>
+                                                <td>04 Nov, 2019</td>
+                                                <td>05 Nov, 2019</td>
+                                                <td>$94</td>
+                                            </tr>
+                                        </tbody>
+                                    </Table> */}
+                                </div>
+                            </CardBody>
+                        </Card>
+
+                        <Card>
+                            <CardBody>
                                 <CardTitle className="mb-4">Book lend history</CardTitle>
                                 <div className="table-responsive">
                                     {/* <Table className="table table-nowrap table-hover mb-0">
@@ -345,18 +416,18 @@ const MemberProfile = () => {
                 <Formik
                     initialValues={{
                         student_id: '',
-                        name: profile.name != undefined ? profile.name : '',
-                        email: profile.email != undefined ? profile.email : '',
-                        phone: profile.phone != undefined ? profile.phone : '',
-                        gender: profile.gender != undefined
-                            ? profile.gender == 1
+                        name: profile.name !== undefined ? profile.name : '',
+                        email: profile.email !== undefined ? profile.email : '',
+                        phone: profile.phone !== undefined ? profile.phone : '',
+                        gender: profile.gender !== undefined
+                            ? profile.gender === 1
                                 ? 'Male'
                                 : 'Female'
                             : '',
-                        date_of_birth: profile.date_of_birth != undefined ? profile.date_of_birth : '',
-                        street: profile.street != undefined ? profile.street : '',
-                        city: profile.city != undefined ? profile.city : '',
-                        country: profile.country != undefined ? profile.country : '',
+                        date_of_birth: profile.date_of_birth !== undefined ? profile.date_of_birth : '',
+                        street: profile.street !== undefined ? profile.street : '',
+                        city: profile.city !== undefined ? profile.city : '',
+                        country: profile.country !== undefined ? profile.country : '',
                         status: 1
                     }}
                     onSubmit={(values) => {
@@ -398,7 +469,7 @@ const MemberProfile = () => {
                             <div className="modal-body">
                                 <AvForm onValidSubmit={handleSubmit}>
                                     <AvField
-                                        value={profile.name != undefined ? profile.name : ''}
+                                        value={profile.name !== undefined ? profile.name : ''}
                                         name="name"
                                         label="Fullname"
                                         placeholder="Type fullname"
@@ -408,7 +479,7 @@ const MemberProfile = () => {
                                         onChange={handleChange}
                                     />
                                     <AvField
-                                        value={profile.email != undefined ? profile.email : ''}
+                                        value={profile.email !== undefined ? profile.email : ''}
                                         name="email"
                                         label="Email"
                                         placeholder="Type email"
@@ -418,7 +489,7 @@ const MemberProfile = () => {
                                         onChange={handleChange}
                                     />
                                     <AvField
-                                        value={profile.phone != undefined ? profile.phone : ''}
+                                        value={profile.phone !== undefined ? profile.phone : ''}
                                         name="phone"
                                         label="Phone"
                                         placeholder="Type phone"
@@ -440,7 +511,7 @@ const MemberProfile = () => {
                                     <AvField
                                         value={
                                             profile.gender != undefined
-                                                ? profile.gender == 1
+                                                ? profile.gender === 1
                                                     ? 'Male'
                                                     : 'Female'
                                                 : ''
@@ -454,7 +525,7 @@ const MemberProfile = () => {
                                         }
                                     </AvField>
                                     <AvField
-                                        value={profile.street != undefined ? profile.street : ''}
+                                        value={profile.street !== undefined ? profile.street : ''}
                                         name="street"
                                         label="Street"
                                         placeholder="Type street"
@@ -464,7 +535,7 @@ const MemberProfile = () => {
                                         onChange={handleChange}
                                     />
                                     <AvField
-                                        value={profile.city != undefined ? profile.city : ''}
+                                        value={profile.city !== undefined ? profile.city : ''}
                                         name="city"
                                         label="City"
                                         placeholder="Type city"
@@ -474,7 +545,7 @@ const MemberProfile = () => {
                                         onChange={handleChange}
                                     />
                                     <AvField
-                                        value={profile.country != undefined ? profile.country : ''}
+                                        value={profile.country !== undefined ? profile.country : ''}
                                         name="country"
                                         label="Country"
                                         placeholder="Type country"

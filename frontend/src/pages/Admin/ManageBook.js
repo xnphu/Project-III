@@ -91,7 +91,7 @@ const ManageBook = () => {
                 setModalVisibility(false);
             }
         } catch (error) {
-            console.log('err ', error);
+            console.log('err ', error.response.data);
         }
     }
 

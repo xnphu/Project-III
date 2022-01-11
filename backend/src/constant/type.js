@@ -4,6 +4,8 @@ export const TYPE_ID = {
     AUTHOR: 3,
     RACK: 4,
     LIBRARY_CARD: 5,
+    BOOK_RESERVE: 6,
+    BOOK_LEND: 7,
 };
 
 export const ROLE = {
@@ -19,4 +21,24 @@ export const LIBRARY_CARD = {
 
 export const FORMAT = {
     DATE: 'YYYY-MM-DD',
+    DATETIME: 'YYYY-MM-DD HH:mm'
+};
+
+export const BOOK_STATUS = {
+    AVAILABLE: 1,
+    RESERVED: 2,
+    LOANED: 3,
+    LOST: 4,
+};
+
+export const RESERVATION_STATUS = {
+    WAITING: 1,
+    PENDING: 2,
+    COMPLETED: 3,
+    CANCELED: 4,
+};
+
+export const LIMIT = {
+    RESERVATION: 5,
+    LENDING: 5,
 };

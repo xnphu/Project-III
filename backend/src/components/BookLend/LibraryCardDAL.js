@@ -88,12 +88,3 @@ export const checkMemberInfoExist = async (id) => {
     }
     return false;
 };
-
-export const checkLibraryCardExistAndActive = async (id) => {
-    const sql = `SELECT * FROM library_card WHERE member_id = ? AND active_flg = ${LIBRARY_CARD.ACTIVE} LIMIT 1`;
-    const result = await dbUtil.query(sql, [id]);
-    if (result.length > 0) {
-        return true;
-    }
-    return false;
-};
