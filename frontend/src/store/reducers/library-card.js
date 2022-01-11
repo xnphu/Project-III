@@ -1,9 +1,10 @@
 import {
-    ACTION_SAVE_LIBRARY_CARD
+    ACTION_SAVE_LIBRARY_CARD,
+    ACTION_LOGOUT
 } from '../constants';
 
 const defaultState = {
-    
+
 }
 
 export default (state = defaultState, action) => {
@@ -13,6 +14,10 @@ export default (state = defaultState, action) => {
         return {
             ...payload
         };
+    }
+
+    if (type === ACTION_LOGOUT) {
+        return defaultState;
     }
 
     return state;

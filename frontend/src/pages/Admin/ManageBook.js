@@ -91,7 +91,7 @@ const ManageBook = () => {
                 setModalVisibility(false);
             }
         } catch (error) {
-            console.log('err ', error.response.data);
+            console.log('err ', error);
         }
     }
 
@@ -278,14 +278,14 @@ const ManageBook = () => {
                     price: 0,
                     title: '',
                     author_id: '22010001',
-                    rack_id: '22010001',
+                    location: '101',
                     subject: '',
                     publisher: '',
                     publish_date: `${dayjs(Date.now()).format('YYYY-MM-DD')}`,
                     date_purchase: `${dayjs(Date.now()).format('YYYY-MM-DD')}`,
                     number_of_pages: 0,
                     description: '',
-                    book_status: BOOK_STATUS.AVAILABLE,
+                    book_status: BOOK_STATUS_LABEL.AVAILABLE,
                     language: 'English'
                 }}
                 onSubmit={(values) => {

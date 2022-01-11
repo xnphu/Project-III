@@ -1,5 +1,6 @@
 import {
-    ACTION_SAVE_BOOK
+    ACTION_SAVE_BOOK,
+    ACTION_LOGOUT
 } from '../constants';
 
 const defaultState = {
@@ -14,6 +15,10 @@ export default (state = defaultState, action) => {
         return {
             ...payload
         };
+    }
+
+    if (type === ACTION_LOGOUT) {
+        return defaultState;
     }
 
     return state;
