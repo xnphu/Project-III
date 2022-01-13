@@ -8,28 +8,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { saveAuthor } from '../../store/actions/author';
 import ManageBook from "./ManageBook";
 import ManageAuthor from "./ManageAuthor";
+import ManageBookReservation from "./ManageBookReservation";
 
 const Admin = () => {
     const role = useSelector(state => state.token.role);
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
     const saveAuthor = author => dispatch(saveAuthor(author));
-
-    // useEffect(() => {
-    //     fetchAllAuthors();
-    // }, []);
-
-    // const fetchAllAuthors = async () => {
-    //     try {
-    //         const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
-    //         console.log('authors ', response.data);
-    //         if (response.data) {
-    //             saveAuthor({ authors: response.data, total: response.data.length });
-    //         }
-    //     } catch (error) {
-    //         console.log('err ', error);
-    //     }
-    // }
 
     return (
         <div className="page-content">
@@ -38,8 +23,16 @@ const Admin = () => {
                     (role != 0 && role != 1)
                         ? <Pages401 />
                         : <>
-                            {/* <ManageAuthor /> */}
+                            <Row>
+                                <Col xs="12">
+                                    <div className="page-title-box d-flex align-items-center justify-content-between">
+                                        <h4 className="mb-0 font-size-18">Management</h4>
+                                    </div>
+                                </Col>
+                            </Row>
+                            <ManageAuthor />
                             <ManageBook />
+                            <ManageBookReservation />
                         </>
                 }
             </Container>

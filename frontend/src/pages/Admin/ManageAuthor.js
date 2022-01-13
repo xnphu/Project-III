@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table, CardSubtitle, UncontrolledTooltip, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Pagination, PaginationItem, PaginationLink, Dropdown, ButtonDropdown } from "reactstrap";
-
-import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
+import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
 
 import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
@@ -18,7 +16,7 @@ const ManageAuthor = () => {
     const token = useSelector(state => state.token.token);
     const authors = useSelector(state => state.author.authors);
 
-    const saveAuthor = author => dispatch(saveAuthor(author));
+    const onSaveAuthor = author => dispatch(saveAuthor(author));
 
     const [selectedAuthor, setSelectedAuthor] = useState({});
 
@@ -34,21 +32,21 @@ const ManageAuthor = () => {
     const [modalVisibility, setModalVisibility] = useState(false);
     const [modalCreateVisibility, setModalCreateVisibility] = useState(false);
 
-    // useEffect(() => {
-    //     fetchAllAuthors();
-    // }, []);
+    useEffect(() => {
+        fetchAllAuthors();
+    }, []);
 
-    // const fetchAllAuthors = async () => {
-    //     try {
-    //         const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
-    //         console.log('authors ', response.data);
-    //         if (response.data) {
-    //             saveAuthor({ authors: response.data, total: response.data.length });
-    //         }
-    //     } catch (error) {
-    //         console.log('err ', error);
-    //     }
-    // }
+    const fetchAllAuthors = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('authors ', response.data);
+            if (response.data) {
+                onSaveAuthor({ authors: response.data, total: response.data.length });
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     const searchKeywordLowerCase = searchKeyword.toLowerCase();
     const authorsFilter = authors.filter(author => author.name.toLowerCase().includes(searchKeywordLowerCase));
@@ -63,7 +61,7 @@ const ManageAuthor = () => {
                 var newAuthor = response.data;
                 var list = authors;
                 list.push(newAuthor);
-                saveAuthor({ authors: list, total: list.length });
+                onSaveAuthor({ authors: list, total: list.length });
                 setModalCreateVisibility(false);
             }
         } catch (error) {

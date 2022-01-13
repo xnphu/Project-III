@@ -11,6 +11,7 @@ const BookDetail = (props) => {
     const bookId = props.match.params.id;
 
     const token = useSelector(state => state.token.token);
+
     const [book, setBook] = useState({});
 
     useEffect(() => {
@@ -29,14 +30,29 @@ const BookDetail = (props) => {
         }
     }
 
+    const createBookReservation = async () => {
+        try {
+            const response = await axios.post(`${BASE_API_URL}/book-reserve/`, { book_id: bookId }, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('createBookReservation ', response.data);
+            if (response.data) {
+                // onSaveAuthor({ authors: response.data, total: response.data.length });
+                fetchBookById();
+            }
+        } catch (error) {
+            console.log('err ', error?.response?.data);
+        }
+    }
+
     const renderWithBookStatus = () => {
         switch (book.status) {
             case BOOK_STATUS.AVAILABLE:
                 return (<>
-                    <div className="mt-3 text-center">
-                        <Link to={''}>
-                            Reserve this book
-                        </Link>
+                    <div
+                        className="mt-3 text-center"
+                        style={{ color: '#556ee6' }}
+                        onClick={() => createBookReservation()}
+                    >
+                        Reserve this book
                     </div>
                 </>
                 );

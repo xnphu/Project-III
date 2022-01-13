@@ -17,9 +17,9 @@ const ManageBook = () => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
     const books = useSelector(state => state.book.books);
+    const authors = useSelector(state => state.author.authors);
     const onSaveBook = book => dispatch(saveBook(book));
 
-    const [authors, setAuthors] = useState([]);
     const [locations, setLocations] = useState([{ id: '22010001', label: '101' }, { id: '22010002', label: '102' }, { id: '22010003', label: '103' }]);
     const [bookStatus, setBookStatus] = useState([
         { value: BOOK_STATUS.AVAILABLE, label: BOOK_STATUS_LABEL.AVAILABLE },
@@ -47,22 +47,6 @@ const ManageBook = () => {
 
 
     const [modalVisibility, setModalVisibility] = useState(false);
-
-    useEffect(() => {
-        fetchAllAuthors();
-    }, []);
-
-    const fetchAllAuthors = async () => {
-        try {
-            const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
-            console.log('authors ', response.data);
-            if (response.data) {
-                setAuthors(response.data);
-            }
-        } catch (error) {
-            console.log('err ', error);
-        }
-    }
 
     const createNewBook = async (book) => {
         try {
@@ -121,22 +105,6 @@ const ManageBook = () => {
     return (
         <>
             {/* Render Breadcrumb */}
-            <Row>
-                <Col xs="12">
-                    <div className="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 className="mb-0 font-size-18">Management</h4>
-                    </div>
-                </Col>
-            </Row>
-
-            {/* <Row>
-                <Col xs="12">
-                    <div className="page-title-box d-flex align-items-center justify-content-between">
-                        <label className="mb-0 font-size-14">Book</label>
-                    </div>
-                </Col>
-            </Row> */}
-
 
             <Row>
                 <Col lg="12">
