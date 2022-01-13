@@ -423,7 +423,7 @@ const MemberProfile = () => {
                             ? profile.gender === 1
                                 ? 'Male'
                                 : 'Female'
-                            : '',
+                            : 'Female',
                         date_of_birth: profile.date_of_birth !== undefined ? profile.date_of_birth : '',
                         street: profile.street !== undefined ? profile.street : '',
                         city: profile.city !== undefined ? profile.city : '',
@@ -514,7 +514,7 @@ const MemberProfile = () => {
                                                 ? profile.gender === 1
                                                     ? 'Male'
                                                     : 'Female'
-                                                : ''
+                                                : 'Female'
                                         }
                                         type="select"
                                         name="gender"

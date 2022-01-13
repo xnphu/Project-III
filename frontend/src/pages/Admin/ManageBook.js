@@ -28,7 +28,7 @@ const ManageBook = () => {
         { value: BOOK_STATUS.LOST, label: BOOK_STATUS_LABEL.LOST },
     ]);
 
-    const PAGE_SIZE = 10;
+    const BOOK_PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState(0);
     const handleClickPage = (event, index) => {
         event.preventDefault();
@@ -195,8 +195,8 @@ const ManageBook = () => {
                                         {
                                             booksFilter
                                                 .slice(
-                                                    currentPage * PAGE_SIZE,
-                                                    (currentPage + 1) * PAGE_SIZE
+                                                    currentPage * BOOK_PAGE_SIZE,
+                                                    (currentPage + 1) * BOOK_PAGE_SIZE
                                                 )
                                                 .map((book, i) =>
                                                     <tr key={book.id} >
@@ -259,7 +259,7 @@ const ManageBook = () => {
                             <Row>
                                 <Col lg="12">
                                     <TablePagination
-                                        pageSize={PAGE_SIZE}
+                                        pageSize={BOOK_PAGE_SIZE}
                                         length={booksFilter.length}
                                         currentPage={currentPage}
                                         handleClickPage={handleClickPage}

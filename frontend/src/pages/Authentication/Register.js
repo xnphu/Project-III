@@ -16,7 +16,7 @@ import profileImg from "../../assets/images/profile-img.png";
 import logoImg from "../../assets/images/logo.svg";
 
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 class Register extends Component {
   constructor(props) {
@@ -27,10 +27,20 @@ class Register extends Component {
       success: false,
       errorMsg: '',
       visible: false,
+      modalVisibility: false,
+      alert: <></>,
     };
 
     // handleValidSubmit
     this.handleValidSubmit = this.handleValidSubmit.bind(this);
+  }
+
+  setModalVisibility(value) {
+    this.setState({ modalVisibility: value });
+  }
+
+  setAlert(value) {
+    this.setState({ alert: value });
   }
 
   // handleValidSubmit
@@ -41,7 +51,24 @@ class Register extends Component {
       })
         .then((response) => {
           if (response.status == 200) {
-            this.setState({ redirect: true, success: true })
+            this.setAlert(
+              <SweetAlert
+                  success
+                  title="Register account success!"
+                  confirmBtnText="To Login page"
+                  onConfirm={() => {
+                      this.setModalVisibility(false);
+                      this.setAlert(<></>);
+                      this.setState({ redirect: true, success: true })
+                  }}
+                  onCancel={() => {
+                      this.setModalVisibility(false);
+                      this.setAlert(<></>);
+                      this.setState({ redirect: true, success: true })
+                  }}
+              >
+              </SweetAlert>
+          );
           }
         })
         .catch(err => {
@@ -81,6 +108,7 @@ class Register extends Component {
     }
     return (
       <React.Fragment>
+        {this.state.alert}
         <div className="home-btn d-none d-sm-block">
           <Link to="/" className="text-dark">
             <i className="fas fa-home h2"></i>

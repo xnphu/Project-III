@@ -8,13 +8,14 @@ import layout from './layout'
 import { tokenReducer as token } from '../../utils/RequestSagaUtils';
 import profile from './me';
 import book from './book';
+import author from './author';
 import libraryCard from './library-card';
 
 const config = {
   key: 'root',
   timeout: 30000,
   storage: storage,
-  whitelist: ['token', 'profile'],
+  whitelist: ['token', 'profile', 'author', 'book', 'libraryCard'],
   blacklist: ['form']
 };
 
@@ -35,6 +36,7 @@ const searchPersistConfig = {
 const reducers = combineReducers({
   token,
   profile,
+  author,
   book,
   libraryCard,
   layout,

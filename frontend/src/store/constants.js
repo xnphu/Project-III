@@ -29,6 +29,9 @@ export const CHANGE_LAYOUT_WIDTH = "CHANGE_LAYOUT_WIDTH";
 export const CHANGE_SIDEBAR_THEME = "CHANGE_SIDEBAR_THEME";
 export const CHANGE_SIDEBAR_TYPE = "CHANGE_SIDEBAR_TYPE";
 
+// AUTHOR
+export const ACTION_SAVE_AUTHOR = 'author/save';
+
 // BOOK
 export const ACTION_SAVE_BOOK = 'book/save';
 export const ACTION_ADD_BOOK = 'book/add';

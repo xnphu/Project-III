@@ -132,18 +132,18 @@ class Login extends Component {
                                                     <AvField name="password" label="Password" type="password" required placeholder="Enter Password" onChange={this.handleInputChange} />
                                                 </div>
 
-                                                <div className="custom-control custom-checkbox">
+                                                {/* <div className="custom-control custom-checkbox">
                                                     <input type="checkbox" className="custom-control-input" id="customControlInline" />
                                                     <label className="custom-control-label" htmlFor="customControlInline">Remember me</label>
-                                                </div>
+                                                </div> */}
 
                                                 <div className="mt-3">
                                                     <button className="btn btn-primary btn-block waves-effect waves-light" type="submit">Log In</button>
                                                 </div>
 
-                                                <div className="mt-4 text-center">
+                                                {/* <div className="mt-4 text-center">
                                                     <Link to="/forget-password" className="text-muted"><i className="mdi mdi-lock mr-1"></i> Forgot your password?</Link>
-                                                </div>
+                                                </div> */}
                                             </AvForm>
                                         </div>
                                     </CardBody>
