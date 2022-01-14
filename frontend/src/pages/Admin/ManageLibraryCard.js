@@ -9,7 +9,6 @@ import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
-import { saveAuthor } from '../../store/actions/author';
 import SweetAlert from "react-bootstrap-sweetalert";
 
 const ManageLibraryCard = () => {
@@ -219,9 +218,7 @@ const ManageLibraryCard = () => {
                                 className="modal-title mt-0"
                                 id="myLargeModalLabel"
                             >
-                                Edit Library Card {selectedLibraryCard.active_flg != undefined
-                                    ? `${selectedLibraryCard.active_flg}`
-                                    : libraryCardStatus[1].value}
+                                Edit Library Card
                             </h5>
                             <button
                                 onClick={() =>

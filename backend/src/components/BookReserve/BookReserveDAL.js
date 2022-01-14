@@ -1,13 +1,18 @@
 import * as dbUtil from '../../util/databaseUtil';
 import * as generateIdUtil from '../../util/generateIdUtil';
-import { ERRORS, TYPE_ID, FORMAT, BOOK_STATUS, RESERVATION_STATUS, LIMIT } from '../../constant';
+import { ERRORS, TYPE_ID, FORMAT, BOOK_STATUS, RESERVATION_STATUS, LIMIT, DATABASE_NAME } from '../../constant';
 import moment from 'moment';
 import { checkMemberInfoExist } from '../Member/MemberDAL';
 import { checkLibraryCardExistAndActive } from '../LibraryCard/LibraryCardDAL';
 import { checkBookAvailable } from '../Book/BookDAL';
 
 export const getAllBookReserve = async () => {
-    const sql = 'SELECT * FROM book_reservation';
+    const sql = `
+        SELECT br.*, 
+        mi.name, mi.email, mi.phone 
+        FROM ${DATABASE_NAME}.book_reservation br
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = br.member_id
+    `;
     return dbUtil.query(sql, []);
 };
 

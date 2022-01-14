@@ -13,7 +13,7 @@ import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
 import { saveBook } from '../../store/actions/book';
 
-const ManageBook = () => {
+const ManageBook = (props) => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
     const books = useSelector(state => state.book.books);
@@ -47,6 +47,33 @@ const ManageBook = () => {
 
 
     const [modalVisibility, setModalVisibility] = useState(false);
+
+    useEffect(() => {
+        fetchAllBooks();
+    }, [props.isReloadBookData]);
+
+    const fetchAllBooks = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/books/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                var allBooks = response.data;
+                for (let i = 0; i < allBooks.length; i++) {
+                    for (let j = 0; j < bookStatus.length; j++) {
+                        if (allBooks[i].status === bookStatus[j].value) {
+                            allBooks[i].status = bookStatus[j].label;
+                        }
+                    }
+                }
+                onSaveBook({
+                    books: allBooks,
+                    total: allBooks.length
+                });
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     const createNewBook = async (book) => {
         try {
@@ -94,6 +121,7 @@ const ManageBook = () => {
             break;
         case '':
             booksFilter = books.filter(book =>
+                book.id.toLowerCase().includes(searchKeywordLowerCase) ||
                 book.title.toLowerCase().includes(searchKeywordLowerCase) ||
                 book.author_name.toLowerCase().includes(searchKeywordLowerCase) ||
                 book.subject.toLowerCase().includes(searchKeywordLowerCase)
@@ -149,6 +177,7 @@ const ManageBook = () => {
                                 <Table className="table-centered table-nowrap table-hover">
                                     <thead className="thead-light">
                                         <tr>
+                                            <th scope="col">#</th>
                                             <th scope="col" style={{ width: "70px" }}>ISBN</th>
                                             <th scope="col"></th>
                                             <th scope="col">Title</th>
@@ -169,8 +198,10 @@ const ManageBook = () => {
                                                 .map((book, i) =>
                                                     <tr key={book.id} >
                                                         <td>
+                                                            <p className="text-muted mb-0">{book.id}</p>
+                                                        </td>
+                                                        <td>
                                                             <p className="text-muted mb-0">{book.isbn}</p>
-
                                                         </td>
                                                         <td>
                                                             <a href={`https://books.google.com/books?isbn=${book.isbn}`} target="_blank" className="text-dark">

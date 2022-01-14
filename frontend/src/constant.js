@@ -26,6 +26,13 @@ export const RESERVATION_STATUS = {
     CANCELED: 4,
 };
 
+export const RESERVATION_STATUS_LABEL = {
+    WAITING: 'Waiting',
+    PENDING: 'Pending',
+    COMPLETED: 'Completed',
+    CANCELED: 'Canceled',
+};
+
 export const LIMIT = {
     RESERVATION: 5,
     LENDING: 5,

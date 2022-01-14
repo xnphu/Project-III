@@ -3,18 +3,26 @@ import { Link } from "react-router-dom";
 import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
 
 import axios from 'axios';
-import { BASE_API_URL, RESERVATION_STATUS, FORMAT } from '../../constant';
+import { BASE_API_URL, RESERVATION_STATUS, RESERVATION_STATUS_LABEL, FORMAT } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
-import { saveAuthor } from '../../store/actions/author';
+import SweetAlert from "react-bootstrap-sweetalert";
 
-const ManageBookReservation = () => {
+const ManageBookReservation = (props) => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
     const [listBookReservation, setListBookReservation] = useState([]);
+    const [isReloadData, setIsReloadData] = useState(false);
+
+    const [reservationStatus, setReservationStatus] = useState([
+        { value: RESERVATION_STATUS.WAITING, label: RESERVATION_STATUS_LABEL.WAITING },
+        { value: RESERVATION_STATUS.PENDING, label: RESERVATION_STATUS_LABEL.PENDING },
+        { value: RESERVATION_STATUS.COMPLETED, label: RESERVATION_STATUS_LABEL.COMPLETED },
+        { value: RESERVATION_STATUS.CANCELED, label: RESERVATION_STATUS_LABEL.CANCELED },
+    ]);
 
     const BOOK_RESERVATION_PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState(0);
@@ -24,23 +32,79 @@ const ManageBookReservation = () => {
     };
 
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [selectedReservationBook, setSelectedReservationBook] = useState({});
 
     const [modalVisibility, setModalVisibility] = useState(false);
+    const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
         fetchListBookReservation();
-    }, []);
+    }, [isReloadData]);
 
     const fetchListBookReservation = async () => {
         try {
             const response = await axios.get(`${BASE_API_URL}/book-reserve/`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('book-reserve ', response.data);
             if (response.data) {
-                // onSaveAuthor({ authors: response.data, total: response.data.length });
-                setListBookReservation(response.data);
+                var list = response.data;
+                for (let i = 0; i < list.length; i++) {
+                    for (let j = 0; j < reservationStatus.length; j++) {
+                        if (list[i].status === reservationStatus[j].value) {
+                            list[i].status = reservationStatus[j].label;
+                        }
+                    }
+                }
+                setListBookReservation(list);
             }
         } catch (error) {
             console.log('err ', error);
+        }
+    }
+
+    const editBookReservation = async (value) => {
+        try {
+            var statusFound = reservationStatus.find((e) => e.label === value.reserve_status || e.value === value.reserve_status);
+            if (statusFound != undefined) {
+                value.reserve_status = statusFound.value;
+            }
+            value.status = value.reserve_status;
+            value.book_id = selectedReservationBook.book_id;
+            value.member_id = selectedReservationBook.member_id;
+            value.create_date = dayjs(selectedReservationBook.create_date).format(FORMAT.DATETIME);
+            console.log('editBookReservation  ', value);
+
+            const response = await axios.put(`${BASE_API_URL}/book-reserve/${selectedReservationBook.id}`, value, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Edit book reservation success!"
+                        onConfirm={() => {
+                            setModalVisibility(false);
+                            setAlert(<></>);
+                        }}
+                        onCancel={() => {
+                            setModalVisibility(false);
+                            setAlert(<></>);
+                        }}
+                    >
+                    </SweetAlert>
+                );
+                setIsReloadData(true);
+                props.setIsReloadBookData(!props.isReloadBookData); 
+            }
+        } catch (error) {
+            console.log('err ', error);
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Edit book reservation fail!"
+                    onConfirm={() => setAlert(<></>)}
+                    onCancel={() => setAlert(<></>)}
+                >
+                </SweetAlert>
+            );
         }
     }
 
@@ -49,6 +113,7 @@ const ManageBookReservation = () => {
 
     return (
         <>
+            {alert}
             <Row>
                 <Col lg="12">
                     <Card>
@@ -75,7 +140,7 @@ const ManageBookReservation = () => {
                                         <tr>
                                             <th scope="col" style={{ width: "70px" }}>#</th>
                                             <th scope="col">Book ID</th>
-                                            <th scope="col">Member ID</th> 
+                                            <th scope="col">Member Information</th>
                                             <th scope="col">Create date</th>
                                             <th scope="col">Status</th>
 
@@ -92,8 +157,8 @@ const ManageBookReservation = () => {
                                                     <tr
                                                         key={e.id}
                                                         onClick={() => {
-                                                            // setSelectedAuthor(author);
-                                                            // setModalVisibility(true);
+                                                            setSelectedReservationBook(e);
+                                                            setModalVisibility(true);
                                                         }}>
                                                         <td>
                                                             <p className="text-muted mb-0">{e.id}</p>
@@ -106,7 +171,9 @@ const ManageBookReservation = () => {
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{e.member_id}</p>
+                                                                <div className="text-muted mb-0">{e.name}</div>
+                                                                <div className="text-muted mb-0">{e.email}</div>
+                                                                <div className="text-muted mb-0">{e.phone}</div>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -140,6 +207,84 @@ const ManageBookReservation = () => {
                     </Card>
                 </Col>
             </Row>
+            <Formik
+                initialValues={{
+                    reserve_status: setSelectedReservationBook.status !== undefined
+                        ? setSelectedReservationBook.status
+                        : reservationStatus[0].label,
+                }}
+                onSubmit={(values) => {
+                    editBookReservation(values);
+                }}
+            >
+                {({
+                    handleChange,
+                    handleSubmit,
+                }) => (
+                    <Modal
+                        className="modal-md"
+                        scrollable={true}
+                        isOpen={modalVisibility}
+                        toggle={() => setModalVisibility(!modalVisibility)}
+                    >
+                        <div className="modal-header">
+                            <h5
+                                className="modal-title mt-0"
+                                id="myLargeModalLabel"
+                            >
+                                Edit Book Reservation status
+                            </h5>
+                            <button
+                                onClick={() =>
+                                    setModalVisibility(false)
+                                }
+                                type="button"
+                                className="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                            >
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <AvForm onValidSubmit={handleSubmit}>
+                                <AvField
+                                    value={
+                                        setSelectedReservationBook.status !== undefined
+                                            ? setSelectedReservationBook.status
+                                            : reservationStatus[0].label
+                                    }
+                                    type="select"
+                                    name="reserve_status"
+                                    label="Status"
+                                    onChange={handleChange} required>
+                                    {
+                                        reservationStatus.map(e => <option key={e.value}>{e.label}</option>)
+                                    }
+                                </AvField>
+                            </AvForm>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={handleSubmit}>
+                                Save changes
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={() =>
+                                    setModalVisibility(false)
+                                }
+                                data-dismiss="modal"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Modal>
+                )}
+            </Formik>
         </>
     );
 }

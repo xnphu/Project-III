@@ -17,6 +17,8 @@ const Admin = () => {
     const token = useSelector(state => state.token.token);
     const saveAuthor = author => dispatch(saveAuthor(author));
 
+    const [isReloadBookData, setIsReloadBookData] = useState(false);
+
     return (
         <div className="page-content">
             <Container fluid>
@@ -32,9 +34,9 @@ const Admin = () => {
                                 </Col>
                             </Row>
                             <ManageAuthor />
-                            <ManageBook />
+                            <ManageBook isReloadBookData={isReloadBookData} />
                             <ManageLibraryCard />
-                            <ManageBookReservation />
+                            <ManageBookReservation isReloadBookData={isReloadBookData} setIsReloadBookData={setIsReloadBookData} />
                         </>
                 }
             </Container>
