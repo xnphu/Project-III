@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import { LIMIT } from './type';
 
 export const ERRORS = {
   BAD_STRUCTURE: createError.BadRequest('Bad Structure'),
@@ -6,16 +7,17 @@ export const ERRORS = {
   UNAUTHORIZED_ERROR: createError.Unauthorized('Không được cấp quyền!'),
   INVALID_PASSWORD_ERROR: createError.BadRequest('Mật khẩu sai!'),
   NOTHING_CHANGED: createError.BadGateway('Không có gì thay đổi'),
-  USER_EXIST: createError.BadRequest('Tài khoản đã tồn tại'),
-  USER_NOT_EXIST: createError.BadRequest('Tài khoản không tồn tại'),
-  BOOK_EXIST: createError.BadRequest('Sách đã tồn tại'),
-  BOOK_NOT_EXIST: createError.BadRequest('Sách không tồn tại'),
-  BOOK_STATUS_NOT_AVAILABLE: createError.BadRequest('Trạng thái sách chưa sẵn sàng để đặt'),
-  LIBRARYCARD_EXIST: createError.BadRequest('Thẻ thư viện đã tồn tại'),
-  LIBRARYCARD_NOT_EXIST: createError.BadRequest('Thẻ thư viện không tồn tại'),
-  LIBRARYCARD_NOT_EXIST_OR_ACTIVE: createError.BadRequest('Thẻ thư viện không tồn tại hoặc chưa kích hoạt'),
-  AUTHOR_EXIST: createError.BadRequest('Tác giả đã tồn tại'),
-  AUTHOR_NOT_EXIST: createError.BadRequest('Tác giả không tồn tại'),
-  BOOK_RESERVE_REACH_LIMIT: createError.BadRequest('Đặt sách đạt giới hạn'),
-  BOOK_RESERVE_NOT_EXIST: createError.BadRequest('Thông tin đặt sách không tồn tại'),
+  USER_EXIST: createError.BadRequest('User is exist'),
+  USER_NOT_EXIST: createError.BadRequest('User is not exist'),
+  BOOK_EXIST: createError.BadRequest('Book is exist'),
+  BOOK_NOT_EXIST: createError.BadRequest('Book is not exist'),
+  BOOK_STATUS_NOT_AVAILABLE: createError.BadRequest('Book is not ready to reserved'),
+  LIBRARYCARD_EXIST: createError.BadRequest('Library card is exist'),
+  LIBRARYCARD_NOT_EXIST: createError.BadRequest('Library card is not exist'),
+  LIBRARYCARD_NOT_EXIST_OR_ACTIVE: createError.BadRequest('Library card is not exist or not actived by Admin/Librarian'),
+  AUTHOR_EXIST: createError.BadRequest('Author is exist'),
+  AUTHOR_NOT_EXIST: createError.BadRequest('Author is not exist'),
+  BOOK_RESERVE_REACH_LIMIT: createError.BadRequest(`Number of books you reserve reach limit (${LIMIT.RESERVATION} times)`),
+  BOOK_RESERVE_BY_MEMBER_BEFORE: createError.BadRequest('You reserved this book before, please wait for Admin/ Librarian process your request'),
+  BOOK_RESERVE_NOT_EXIST: createError.BadRequest('Book reserve information is not exist'),
 };

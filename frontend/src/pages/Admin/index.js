@@ -9,6 +9,7 @@ import { saveAuthor } from '../../store/actions/author';
 import ManageBook from "./ManageBook";
 import ManageAuthor from "./ManageAuthor";
 import ManageBookReservation from "./ManageBookReservation";
+import ManageLibraryCard from "./ManageLibraryCard";
 
 const Admin = () => {
     const role = useSelector(state => state.token.role);
@@ -32,6 +33,7 @@ const Admin = () => {
                             </Row>
                             <ManageAuthor />
                             <ManageBook />
+                            <ManageLibraryCard />
                             <ManageBookReservation />
                         </>
                 }

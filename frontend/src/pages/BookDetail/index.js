@@ -5,14 +5,19 @@ import axios from 'axios';
 import { BASE_API_URL, BOOK_STATUS, BOOK_STATUS_LABEL, FORMAT } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import dayjs from 'dayjs';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const BookDetail = (props) => {
     const bookId = props.match.params.id;
 
+    const history = useHistory();
+
     const token = useSelector(state => state.token.token);
+    const libraryCard = useSelector(state => state.libraryCard);
 
     const [book, setBook] = useState({});
+    const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
         fetchBookById();
@@ -26,7 +31,8 @@ const BookDetail = (props) => {
                 setBook(response.data);
             }
         } catch (error) {
-            console.log('err fetchBookById', error.response.data);
+            console.log('err fetchBookById', error?.response?.data);
+
         }
     }
 
@@ -40,6 +46,16 @@ const BookDetail = (props) => {
             }
         } catch (error) {
             console.log('err ', error?.response?.data);
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Fail to reserve this book"
+                    onConfirm={() => setAlert(<></>)}
+                    onCancel={() => setAlert(<></>)}
+                >
+                    {error?.response?.data.message?.message ?? ''}
+                </SweetAlert>
+            );
         }
     }
 
@@ -50,7 +66,7 @@ const BookDetail = (props) => {
                     <div
                         className="mt-3 text-center"
                         style={{ color: '#556ee6' }}
-                        onClick={() => createBookReservation()}
+                        onClick={() => handleClickCreateBookReservation()}
                     >
                         Reserve this book
                     </div>
@@ -87,9 +103,30 @@ const BookDetail = (props) => {
         }
     }
 
+    const handleClickCreateBookReservation = () => {
+        if (libraryCard?.id != undefined) {
+            createBookReservation();
+        } else {
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Fail to reserve this book"
+                    confirmBtnText="Request a library card"
+                    onConfirm={() => history.push(`/library-card-request`)}
+                    onCancel={() => {
+                        setAlert(<></>);
+                    }}
+                >
+                    You don't have a library card to reserve this book
+                </SweetAlert>
+            );
+        }
+    }
+
     return (
         <div className="page-content">
             <Container fluid>
+                {alert}
                 <Card>
                     <CardBody>
                         <CardTitle className="mb-4 text-center"><h2>Book information</h2></CardTitle>

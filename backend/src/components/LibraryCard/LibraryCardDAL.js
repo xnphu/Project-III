@@ -4,7 +4,12 @@ import { ERRORS, TYPE_ID, LIBRARY_CARD, DATABASE_NAME, FORMAT } from '../../cons
 import moment from 'moment';
 
 export const getAllLibraryCard = async () => {
-    const sql = 'SELECT * FROM library_card';
+    const sql = `
+        SELECT lc.*, 
+        mi.name, mi.email, mi.phone 
+        FROM ${DATABASE_NAME}.library_card lc
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = lc.member_id
+    `;
     return dbUtil.query(sql, []);
 };
 

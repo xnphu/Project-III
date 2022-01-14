@@ -105,7 +105,7 @@ class Header extends Component {
                 </Link>
               </div>
 
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-sm px-3 font-size-16 d-lg-none header-item waves-effect waves-light"
                 data-toggle="collapse"
@@ -123,7 +123,7 @@ class Header extends Component {
                   />
                   <span className="bx bx-search-alt"></span>
                 </div>
-              </form>
+              </form> */}
 
               
 

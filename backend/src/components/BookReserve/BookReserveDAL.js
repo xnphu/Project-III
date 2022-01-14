@@ -16,6 +16,7 @@ export const requestBookReserve = async ({ member_id, book_id }) => {
     const checkMemberInfo = await checkMemberInfoExist(member_id);
     const checkBookStatus = await checkBookAvailable(book_id);
     const checkBookReserveLimit = await checkMemberReserveReachLimit(member_id);
+    const checkReserveBefore = await checkMemberReserveBookBefore(book_id, member_id);
 
     if (!check) {
         return Promise.reject({ error: 1, message: ERRORS.LIBRARYCARD_NOT_EXIST_OR_ACTIVE });
@@ -25,6 +26,8 @@ export const requestBookReserve = async ({ member_id, book_id }) => {
         return Promise.reject({ error: 3, message: ERRORS.BOOK_STATUS_NOT_AVAILABLE });
     } else if (checkBookReserveLimit) {
         return Promise.reject({ error: 4, message: ERRORS.BOOK_RESERVE_REACH_LIMIT });
+    } else if (checkReserveBefore) {
+        return Promise.reject({ error: 5, message: ERRORS.BOOK_RESERVE_BY_MEMBER_BEFORE });
     }
 
     const sql = 'INSERT INTO book_reservation(id, book_id, member_id, create_date, status) VALUES (?, ?, ?, ?, ?)';
@@ -95,12 +98,27 @@ export const getBookReserveByUserId = async (id) => {
     return list;
 };
 
+// check when user serve book before (in status waiting/pending, wait for admin process request)
+export const checkMemberReserveBookBefore = async (book_id, member_id) => {
+    const sql = `
+        SELECT * FROM book_reservation 
+        WHERE book_id = ? 
+        AND member_id = ?
+        AND status = ${RESERVATION_STATUS.WAITING} 
+        OR status = ${RESERVATION_STATUS.PENDING}
+    `;
+    const result = await dbUtil.query(sql, [book_id, member_id]);
+    if (result.length > 0) {
+        return true;
+    }
+    return false;
+};
+
 export const checkMemberReserveReachLimit = async (id) => {
     const sql = `
         SELECT COUNT(member_id) as count 
         FROM book_reservation WHERE member_id = ? 
-        AND status = ${RESERVATION_STATUS.WAITING} 
-        OR status = ${RESERVATION_STATUS.PENDING}
+        AND status = ${RESERVATION_STATUS.COMPLETED} 
     `;
     const result = await dbUtil.queryOne(sql, [id]);
     if (result.count >= LIMIT.RESERVATION) {
