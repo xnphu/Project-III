@@ -17,13 +17,16 @@ import axios from 'axios';
 import { BASE_API_URL, BOOK_STATUS, BOOK_STATUS_LABEL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { saveBook } from '../../store/actions/book';
+import { saveLibraryCard } from '../../store/actions/library-card';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
 
 const Home = () => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
+    const userId = useSelector(state => state.profile.id);
     const books = useSelector(state => state.book.books);
     const onSaveBook = book => dispatch(saveBook(book));
+    const onUpdateLibraryCard = libraryCard => dispatch(saveLibraryCard(libraryCard));
 
     const [bookStatus, setBookStatus] = useState([
         { value: BOOK_STATUS.AVAILABLE, label: BOOK_STATUS_LABEL.AVAILABLE },
@@ -39,22 +42,28 @@ const Home = () => {
     };
 
     const [filterFields, setFilterFields] = useState([
-        { id: 1, name: "Titles", link: "#" },
-        { id: 2, name: "Authors", link: "#" },
-        { id: 3, name: "Subjects", link: "#" },
+        { id: 1, name: "Keywords", link: "#" },
+        { id: 2, name: "Titles", link: "#" },
+        { id: 3, name: "Authors", link: "#" },
+        { id: 4, name: "Subjects", link: "#" },
     ]);
     const [selectFilterName, setSelectFilterName] = useState('');
+    const [sortBy, setSortBy] = useState('');
     const [isShowFilterDropdown, setIsShowFilterDropdown] = useState(false);
 
     const [searchKeyword, setSearchKeyword] = useState('');
 
     useEffect(() => {
         fetchAllBooks();
+    }, [sortBy]);
+
+    useEffect(() => {
+        getLibraryCard();
     }, []);
 
     const fetchAllBooks = async () => {
         try {
-            const response = await axios.get(`${BASE_API_URL}/books/`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.get(`${BASE_API_URL}/books/?sortBy=${sortBy}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
                 var allBooks = response.data;
@@ -75,26 +84,37 @@ const Home = () => {
         }
     }
 
+    const getLibraryCard = async (value) => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/library-card/${userId}/member/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res getLibraryCard', response.data);
+            if (response.data) {
+                onUpdateLibraryCard(response.data);
+            }
+        } catch (error) {
+            console.log('err getLibraryCard', error.response.data);
+        }
+    }
+
     const searchKeywordLowerCase = searchKeyword.toLowerCase();
     var booksFilter = books;
 
     switch (selectFilterName) {
-        case filterFields[0].name:
+        case filterFields[1].name:
             booksFilter = books.filter(book => book.title.toLowerCase().includes(searchKeywordLowerCase));
             break;
-        case filterFields[1].name:
+        case filterFields[2].name:
             booksFilter = books.filter(book => book.author_name.toLowerCase().includes(searchKeywordLowerCase));
             break;
-        case filterFields[2].name:
+        case filterFields[3].name:
             booksFilter = books.filter(book => book.subject.toLowerCase().includes(searchKeywordLowerCase));
             break;
-        case '':
+        default:
             booksFilter = books.filter(book =>
                 book.title.toLowerCase().includes(searchKeywordLowerCase) ||
                 book.author_name.toLowerCase().includes(searchKeywordLowerCase) ||
                 book.subject.toLowerCase().includes(searchKeywordLowerCase)
             );
-        default:
             break;
     }
 
@@ -115,7 +135,11 @@ const Home = () => {
                                         <ul className="list-unstyled product-list">
                                             {
                                                 filterFields.map((field, key) =>
-                                                    <li key={"_li_" + key}><Link to={field.link}><i className="font-size-14"></i>{field.name}</Link></li>
+                                                    <li key={"_li_" + key} onClick={() => setSortBy(field.name)}>
+                                                        <Link to={field.link}>
+                                                            {`${field.name} (A->Z) `}
+                                                            {sortBy === field.name ? <i className="mdi mdi-check" style={{ color: '#556ee6' }}></i> : <span></span>}
+                                                        </Link></li>
                                                 )
                                             }
                                         </ul>
@@ -127,7 +151,7 @@ const Home = () => {
                             <Row className="mb-3">
                                 <Col xl="4" sm="6">
                                     <div className="mt-2">
-                                        <h5>Books</h5>
+                                        <h5>List all books</h5>
                                     </div>
                                 </Col>
                                 <Col lg="8" sm="6">
@@ -188,11 +212,6 @@ const Home = () => {
                                                             <div className="text-muted mb-3">
                                                                 {book.subject}
                                                             </div>
-                                                            <h5 className="my-0">
-                                                                <span className="text-muted mr-2">
-                                                                    {book.status}
-                                                                </span>
-                                                            </h5>
                                                         </div>
                                                     </CardBody>
                                                 </Card>

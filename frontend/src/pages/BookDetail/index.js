@@ -41,7 +41,16 @@ const BookDetail = (props) => {
             const response = await axios.post(`${BASE_API_URL}/book-reserve/`, { book_id: bookId }, { headers: { Authorization: `Bearer ${token}` } });
             console.log('createBookReservation ', response.data);
             if (response.data) {
-                // onSaveAuthor({ authors: response.data, total: response.data.length });
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Reserve book success"
+                        onConfirm={() => setAlert(<></>)}
+                        onCancel={() => setAlert(<></>)}
+                    >
+                        You must come to library to confirm your reservation within 1 day, start lending this book or we will cancel your reservation.
+                    </SweetAlert>
+                );
                 fetchBookById();
             }
         } catch (error) {
@@ -60,47 +69,57 @@ const BookDetail = (props) => {
     }
 
     const renderWithBookStatus = () => {
-        switch (book.status) {
-            case BOOK_STATUS.AVAILABLE:
-                return (<>
-                    <div
-                        className="mt-3 text-center"
-                        style={{ color: '#556ee6' }}
-                        onClick={() => handleClickCreateBookReservation()}
-                    >
-                        Reserve this book
-                    </div>
-                </>
-                );
-                break;
-            case BOOK_STATUS.RESERVED:
-                return (<>
-                    <div className="mt-3 text-center">
-                        This book is reserved from <>{dayjs(book.reservation_date).format(FORMAT.DATETIME)}</>
-                    </div>
-                </>
-                );
-                break;
-            case BOOK_STATUS.LOANED:
-                return (<>
-                    <div className="mt-3 text-center">
-                        This book is loaned
-                    </div>
-                </>
-                );
-                break;
-            case BOOK_STATUS.LOST:
-                return (<>
-                    <div className="mt-3 text-center">
-                        This book is lost
-                    </div>
-                </>
-                );
-                break;
-            default:
-                return (<></>);
-                break;
-        }
+        // switch (book.status) {
+        //     case BOOK_STATUS.AVAILABLE:
+        //         return (<>
+        //             <div
+        //                 className="mt-3 text-center"
+        //                 style={{ color: '#556ee6' }}
+        //                 onClick={() => handleClickCreateBookReservation()}
+        //             >
+        //                 Reserve this book
+        //             </div>
+        //         </>
+        //         );
+        //         break;
+        //     case BOOK_STATUS.RESERVED:
+        //         return (<>
+        //             <div className="mt-3 text-center">
+        //                 This book is reserved from <>{dayjs(book.reservation_date).format(FORMAT.DATETIME)}</>
+        //             </div>
+        //         </>
+        //         );
+        //         break;
+        //     case BOOK_STATUS.LOANED:
+        //         return (<>
+        //             <div className="mt-3 text-center">
+        //                 This book is loaned
+        //             </div>
+        //         </>
+        //         );
+        //         break;
+        //     case BOOK_STATUS.LOST:
+        //         return (<>
+        //             <div className="mt-3 text-center">
+        //                 This book is lost
+        //             </div>
+        //         </>
+        //         );
+        //         break;
+        //     default:
+        //         return (<></>);
+        //         break;
+        // }
+        return (<>
+            <div
+                className="mt-3 text-center"
+                style={{ color: '#556ee6' }}
+                onClick={() => handleClickCreateBookReservation()}
+            >
+                Reserve this book
+            </div>
+        </>
+        );
     }
 
     const handleClickCreateBookReservation = () => {

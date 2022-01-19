@@ -18,6 +18,13 @@ export const getBookReserveByUserId = async (req, res) => {
     res.send(list);
 };
 
+export const getBookReserveByBookId = async (req, res) => {
+    const { book_id } = req.params;
+    const list = await dbAccess.getBookReserveByBookId(book_id);
+    res.send(list);
+};
+
+
 export const requestBookReserve = async (req, res) => {
     const member_id = req.userId;
     const { book_id } = req.body;

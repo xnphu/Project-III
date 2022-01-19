@@ -4,13 +4,11 @@ import { ERRORS, FORMAT } from '../../constant';
 import moment from 'moment';
 
 export const getAllBook = async (req, res) => {
-    var books = await dbAccess.getAllBook();
+    const { query } = req;
+    var books = await dbAccess.getAllBook(query.sortBy);
     for (let i = 0; i < books.length; i++) {
         books[i].publish_date = moment(books[i].publish_date).format(FORMAT.DATE);
         books[i].date_purchase = moment(books[i].date_purchase).format(FORMAT.DATE);
-        books[i].reservation_date = books[i].reservation_date != null ? moment(books[i].reservation_date).format(FORMAT.DATE) : books[i].reservation_date;
-        books[i].due_date = books[i].due_date != null ? moment(books[i].due_date).format(FORMAT.DATE) : books[i].due_date;
-        books[i].return_date = books[i].return_date != null ? moment(books[i].return_date).format(FORMAT.DATE) : books[i].return_date;
     }
     res.send(books);
 };
