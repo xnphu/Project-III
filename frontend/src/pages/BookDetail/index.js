@@ -14,13 +14,16 @@ const BookDetail = (props) => {
     const history = useHistory();
 
     const token = useSelector(state => state.token.token);
+    const userId = useSelector(state => state.profile.id);
     const libraryCard = useSelector(state => state.libraryCard);
 
     const [book, setBook] = useState({});
+    const [listBookReserve, setListBookReserve] = useState([]);
     const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
         fetchBookById();
+        fetchBookReserveByBookId();
     }, []);
 
     const fetchBookById = async () => {
@@ -32,6 +35,19 @@ const BookDetail = (props) => {
             }
         } catch (error) {
             console.log('err fetchBookById', error?.response?.data);
+
+        }
+    }
+
+    const fetchBookReserveByBookId = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/book-reserve/${bookId}/book`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('list book reserve', response.data);
+            if (response.data) {
+                setListBookReserve(response.data);
+            }
+        } catch (error) {
+            console.log('err fetchBookReserveByBookId', error?.response?.data);
 
         }
     }
@@ -69,56 +85,26 @@ const BookDetail = (props) => {
     }
 
     const renderWithBookStatus = () => {
-        // switch (book.status) {
-        //     case BOOK_STATUS.AVAILABLE:
-        //         return (<>
-        //             <div
-        //                 className="mt-3 text-center"
-        //                 style={{ color: '#556ee6' }}
-        //                 onClick={() => handleClickCreateBookReservation()}
-        //             >
-        //                 Reserve this book
-        //             </div>
-        //         </>
-        //         );
-        //         break;
-        //     case BOOK_STATUS.RESERVED:
-        //         return (<>
-        //             <div className="mt-3 text-center">
-        //                 This book is reserved from <>{dayjs(book.reservation_date).format(FORMAT.DATETIME)}</>
-        //             </div>
-        //         </>
-        //         );
-        //         break;
-        //     case BOOK_STATUS.LOANED:
-        //         return (<>
-        //             <div className="mt-3 text-center">
-        //                 This book is loaned
-        //             </div>
-        //         </>
-        //         );
-        //         break;
-        //     case BOOK_STATUS.LOST:
-        //         return (<>
-        //             <div className="mt-3 text-center">
-        //                 This book is lost
-        //             </div>
-        //         </>
-        //         );
-        //         break;
-        //     default:
-        //         return (<></>);
-        //         break;
-        // }
-        return (<>
-            <div
-                className="mt-3 text-center"
-                style={{ color: '#556ee6' }}
-                onClick={() => handleClickCreateBookReservation()}
-            >
-                Reserve this book
-            </div>
-        </>
+        const listFilter = listBookReserve.filter(e => e.member_id === userId);
+        return (
+            <>
+                {
+                    listFilter.length === 0
+                        ? <div
+                            className="mt-3 text-center"
+                            style={{ color: '#556ee6', cursor: 'pointer' }}
+                            onClick={() => handleClickCreateBookReservation()}
+                        >
+                            Reserve this book
+                        </div>
+                        : <div
+                            className="mt-3 text-center"
+                            style={{ color: '#556ee6' }}
+                        >
+                            You reserved/lent this book
+                        </div>
+                }
+            </>
         );
     }
 
@@ -155,6 +141,19 @@ const BookDetail = (props) => {
                                     <img src={book.previewUrl} alt="" className="img-fluid mx-auto d-block" style={{ width: '150px', height: '200px' }} />
                                 </a>
                                 {renderWithBookStatus()}
+
+                                <div>
+                                    <h6 className="mt-3">List of members reserve/lend this book</h6>
+                                    <ul className="list-unstyled product-list">
+                                        {
+                                            listBookReserve.map((e, index) =>
+                                                <li key={"_li_" + index} >
+                                                    <div >{`${index+1}. ${e.name}`}</div>
+                                                </li>
+                                            )
+                                        }
+                                    </ul>
+                                </div>
                             </Col>
                             <Col xl="10">
                                 <h3 className="mb-3">{book.title}</h3>

@@ -99,7 +99,13 @@ export const getBookReserveByUserId = async (id) => {
     if (!check) {
         return Promise.reject(ERRORS.LIBRARYCARD_NOT_EXIST);
     }
-    const sql = 'SELECT * FROM book_reservation WHERE member_id = ?';
+    const sql = `
+        SELECT br.*, 
+        b.title 
+        FROM ${DATABASE_NAME}.book_reservation br
+        LEFT JOIN ${DATABASE_NAME}.books b ON b.id = br.book_id
+        WHERE br.member_id = ?
+    `;
     const list = await dbUtil.query(sql, [id]);
     return list;
 };

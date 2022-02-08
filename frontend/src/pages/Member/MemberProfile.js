@@ -21,6 +21,8 @@ import { saveLibraryCard } from '../../store/actions/library-card';
 import { Formik } from 'formik';
 import SweetAlert from "react-bootstrap-sweetalert";
 import LibraryCardContent from '../LibraryCardRequest/LibraryCardContent';
+import dayjs from 'dayjs';
+import { RESERVATION_STATUS, RESERVATION_STATUS_LABEL, FORMAT } from '../../constant';
 
 const MemberProfile = () => {
     const dispatch = useDispatch();
@@ -35,17 +37,26 @@ const MemberProfile = () => {
 
     const [genders, setGenders] = useState([{ id: 0, label: 'Female' }, { id: 1, label: 'Male' }]);
     const [miniCards, setMiniCards] = useState([
-        { title: "Total book lend", iconClass: "bx-check-circle", text: "0" },
-        { title: "Total book reserve", iconClass: "bx-hourglass", text: "0" },
-        { title: "Total fine", iconClass: "bx-package", text: "$0" }
+        { id: 0, title: "Total book lend", iconClass: "bx-check-circle", text: "0" },
+        { id: 1, title: "Total book reserve", iconClass: "bx-hourglass", text: "0" },
+        { id: 2, title: "Total fine", iconClass: "bx-package", text: "$0" }
     ]);
     const [modalVisibility, setModalVisibility] = useState(false);
+    const [reservationHistory, setReservationHistory] = useState([]);
     const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
         fetchMemberProfile();
         getLibraryCard();
+        fetchMemberReservationHistory();
     }, []);
+
+    useEffect(() => {
+        var temp = miniCards;
+        temp[1].text = reservationHistory.length;
+        console.log('lala', temp);
+        setMiniCards(temp);
+    }, [reservationHistory]);
 
     const fetchMemberProfile = async () => {
         try {
@@ -68,6 +79,18 @@ const MemberProfile = () => {
             }
         } catch (error) {
             console.log('err getLibraryCard', error.response.data);
+        }
+    }
+
+    const fetchMemberReservationHistory = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/book-reserve/${userId}/member`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('reservationHistory ', response.data);
+            if (response.data) {
+                setReservationHistory(response.data);
+            }
+        } catch (error) {
+            console.log('err fetchMemberReservationHistory', error);
         }
     }
 
@@ -115,6 +138,8 @@ const MemberProfile = () => {
             );
         }
     }
+
+    console.log('ddddd', miniCards);
 
     return (
         <div className="page-content">
@@ -219,38 +244,6 @@ const MemberProfile = () => {
                                 </div>
                             </CardBody>
                         </Card>
-
-                        {/* <Card>
-                            <CardBody>
-                                <CardTitle className="mb-5">Experience</CardTitle>
-                                <div className="">
-                                    <ul className="verti-timeline list-unstyled">
-                                        {
-                                            experiences.map((experience, i) =>
-                                                <li className={experience.id === 1 ? "event-list active" : "event-list"} key={"_exp_" + i} >
-                                                    <div className="event-timeline-dot">
-                                                        <i className={experience.id === 1 ? "bx bx-right-arrow-circle bx-fade-right" : "bx bx-right-arrow-circle"}></i>
-                                                    </div>
-                                                    <Media>
-                                                        <div className="mr-3">
-                                                            <i className={"bx " + experience.iconClass + " h4 text-primary"}></i>
-                                                        </div>
-                                                        <Media body>
-                                                            <div>
-                                                                <h5 className="font-size-15"><Link to={experience.link} className="text-dark">{experience.designation}</Link></h5>
-                                                                <span className="text-primary">{experience.timeDuration}</span>
-                                                            </div>
-                                                        </Media>
-                                                    </Media>
-                                                </li>
-                                            )
-                                        }
-
-                                    </ul>
-                                </div>
-
-                            </CardBody>
-                        </Card> */}
                     </Col>
 
                     <Col xl="8">
@@ -258,7 +251,7 @@ const MemberProfile = () => {
                         <Row>
                             {
                                 miniCards.map((card, key) =>
-                                    <MiniCards title={card.title} text={card.text} iconClass={card.iconClass} key={"_card_" + key} />
+                                    <MiniCards content={card} title={card.title} text={card.text} iconClass={card.iconClass} key={"_card_" + key} />
                                 )
                             }
 
@@ -274,69 +267,38 @@ const MemberProfile = () => {
                             <CardBody>
                                 <CardTitle className="mb-4">Book reserve history</CardTitle>
                                 <div className="table-responsive">
-                                    {/* <Table className="table table-nowrap table-hover mb-0">
-                                        <thead>
+                                    <Table className="table-centered table-nowrap table-hover">
+                                        <thead className="thead-light">
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Projects</th>
-                                                <th scope="col">Start Date</th>
-                                                <th scope="col">Deadline</th>
-                                                <th scope="col">Budget</th>
+                                                <th scope="col">Book title</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Create date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Skote admin UI</td>
-                                                <td>2 Sep, 2019</td>
-                                                <td>20 Oct, 2019</td>
-                                                <td>$506</td>
-                                            </tr>
+                                            {
+                                                reservationHistory
+                                                    .map((e, i) =>
+                                                        <tr key={e.id} >
+                                                            <td>
+                                                                <p className="text-muted mb-0">{e.id}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p className="text-muted mb-0">{e.title}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p className="text-muted mb-0">{e.status}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p className="text-muted mb-0">{dayjs(e.create_date).format(FORMAT.DATETIME)}</p>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                            }
 
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Skote admin Logo</td>
-                                                <td>1 Sep, 2019</td>
-                                                <td>2 Sep, 2019</td>
-                                                <td>$94</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Redesign - Landing page</td>
-                                                <td>21 Sep, 2019</td>
-                                                <td>29 Sep, 2019</td>
-                                                <td>$156</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">4</th>
-                                                <td>App Landing UI</td>
-                                                <td>29 Sep, 2019</td>
-                                                <td>04 Oct, 2019</td>
-                                                <td>$122</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">5</th>
-                                                <td>Blog Template</td>
-                                                <td>05 Oct, 2019</td>
-                                                <td>16 Oct, 2019</td>
-                                                <td>$164</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">6</th>
-                                                <td>Redesign - Multipurpose Landing</td>
-                                                <td>17 Oct, 2019</td>
-                                                <td>05 Nov, 2019</td>
-                                                <td>$192</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">7</th>
-                                                <td>Logo Branding</td>
-                                                <td>04 Nov, 2019</td>
-                                                <td>05 Nov, 2019</td>
-                                                <td>$94</td>
-                                            </tr>
                                         </tbody>
-                                    </Table> */}
+                                    </Table>
                                 </div>
                             </CardBody>
                         </Card>

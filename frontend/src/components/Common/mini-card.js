@@ -5,6 +5,7 @@ import { Col, Card, CardBody, Media } from "reactstrap";
 class MiniCards extends Component {
 
     render() {
+        console.log('lolo', this.props.content);
         return (
             <React.Fragment>
                 <Col md="4">
@@ -13,7 +14,7 @@ class MiniCards extends Component {
                             <Media>
                                 <Media body>
                                     <p className="text-muted font-weight-medium">{this.props.title}</p>
-                                    <h4 className="mb-0">{this.props.text}</h4>
+                                    <h4 className="mb-0">{this.props.content.text}</h4>
                                 </Media>
 
                                 <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
