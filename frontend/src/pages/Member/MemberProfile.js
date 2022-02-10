@@ -44,6 +44,7 @@ const MemberProfile = () => {
     const [modalVisibility, setModalVisibility] = useState(false);
     const [reservationHistory, setReservationHistory] = useState([]);
     const [alert, setAlert] = useState(<></>);
+    const [isReloadCard, setIsReloadCard] = useState(false);
 
     useEffect(() => {
         fetchMemberProfile();
@@ -54,9 +55,8 @@ const MemberProfile = () => {
     useEffect(() => {
         var temp = miniCards;
         temp[1].text = reservationHistory.length;
-        console.log('lala', temp);
         setMiniCards(temp);
-    }, [reservationHistory]);
+    }, [reservationHistory, isReloadCard]);
 
     const fetchMemberProfile = async () => {
         try {
@@ -88,6 +88,9 @@ const MemberProfile = () => {
             console.log('reservationHistory ', response.data);
             if (response.data) {
                 setReservationHistory(response.data);
+
+                // re-render card with new data
+                setIsReloadCard(!isReloadCard);
             }
         } catch (error) {
             console.log('err fetchMemberReservationHistory', error);
@@ -138,8 +141,6 @@ const MemberProfile = () => {
             );
         }
     }
-
-    console.log('ddddd', miniCards);
 
     return (
         <div className="page-content">
@@ -251,7 +252,7 @@ const MemberProfile = () => {
                         <Row>
                             {
                                 miniCards.map((card, key) =>
-                                    <MiniCards content={card} title={card.title} text={card.text} iconClass={card.iconClass} key={"_card_" + key} />
+                                    <MiniCards content={card} title={card.title} text={card.text} iconClass={card.iconClass} key={`_card_${card.id}` + card.text} />
                                 )
                             }
 
