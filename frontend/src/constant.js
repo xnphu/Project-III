@@ -1,5 +1,11 @@
 export const BASE_API_URL = 'http://localhost:8080';
 
+export const ROLE = {
+    ADMIN: 0,
+    LIBRARIAN: 1,
+    MEMBER: 2,
+};
+
 export const BOOK_STATUS = {
     AVAILABLE: 1,
     RESERVED: 2,
