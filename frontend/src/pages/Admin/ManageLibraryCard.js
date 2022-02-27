@@ -81,7 +81,7 @@ const ManageLibraryCard = () => {
                     >
                     </SweetAlert>
                 );
-                setIsReloadData(true);
+                setIsReloadData(!isReloadData);
             }
         } catch (error) {
             console.log('err ', error);

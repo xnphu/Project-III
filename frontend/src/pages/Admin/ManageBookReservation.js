@@ -22,6 +22,7 @@ const ManageBookReservation = (props) => {
         { value: RESERVATION_STATUS.PENDING, label: RESERVATION_STATUS_LABEL.PENDING },
         { value: RESERVATION_STATUS.COMPLETED, label: RESERVATION_STATUS_LABEL.COMPLETED },
         { value: RESERVATION_STATUS.CANCELED, label: RESERVATION_STATUS_LABEL.CANCELED },
+        { value: RESERVATION_STATUS.VERIFIED, label: RESERVATION_STATUS_LABEL.VERIFIED },
     ]);
 
     const BOOK_RESERVATION_PAGE_SIZE = 5;
@@ -91,7 +92,7 @@ const ManageBookReservation = (props) => {
                     >
                     </SweetAlert>
                 );
-                setIsReloadData(true);
+                setIsReloadData(!isReloadData);
                 props.setIsReloadBookData(!props.isReloadBookData); 
             }
         } catch (error) {
@@ -209,8 +210,8 @@ const ManageBookReservation = (props) => {
             </Row>
             <Formik
                 initialValues={{
-                    reserve_status: setSelectedReservationBook.status !== undefined
-                        ? setSelectedReservationBook.status
+                    reserve_status: selectedReservationBook.status !== undefined
+                        ? selectedReservationBook.status
                         : reservationStatus[0].label,
                 }}
                 onSubmit={(values) => {
@@ -250,8 +251,8 @@ const ManageBookReservation = (props) => {
                             <AvForm onValidSubmit={handleSubmit}>
                                 <AvField
                                     value={
-                                        setSelectedReservationBook.status !== undefined
-                                            ? setSelectedReservationBook.status
+                                        selectedReservationBook.status !== undefined
+                                            ? selectedReservationBook.status
                                             : reservationStatus[0].label
                                     }
                                     type="select"

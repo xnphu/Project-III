@@ -30,6 +30,7 @@ export const RESERVATION_STATUS = {
     PENDING: 2,
     COMPLETED: 3,
     CANCELED: 4,
+    VERIFIED: 5,
 };
 
 export const RESERVATION_STATUS_LABEL = {
@@ -37,6 +38,7 @@ export const RESERVATION_STATUS_LABEL = {
     PENDING: 'Pending',
     COMPLETED: 'Completed',
     CANCELED: 'Canceled',
+    VERIFIED: 'Verified',
 };
 
 export const LIMIT = {

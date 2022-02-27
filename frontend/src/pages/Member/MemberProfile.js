@@ -1,17 +1,10 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Card, CardBody, CardTitle, Media, Table, Modal } from "reactstrap";
 import { AvForm, AvField } from "availity-reactstrap-validation";
 
 //Import Breadcrumb
 import Breadcrumbs from '../../components/Common/Breadcrumb';
-
-//Import mini card widgets
-import MiniCards from "../../components/Common/mini-card";
-
-//Import Images
-import profile1 from "../../assets/images/profile-img.png"
-import avatarDummy from "../../assets/images/users/avatar-dummy.jpeg";
 
 import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
@@ -20,9 +13,15 @@ import { updateProfile } from '../../store/actions/user';
 import { saveLibraryCard } from '../../store/actions/library-card';
 import { Formik } from 'formik';
 import SweetAlert from "react-bootstrap-sweetalert";
-import LibraryCardContent from '../LibraryCardRequest/LibraryCardContent';
 import dayjs from 'dayjs';
 import { RESERVATION_STATUS, RESERVATION_STATUS_LABEL, FORMAT } from '../../constant';
+
+import LibraryCardRequest from '../LibraryCardRequest/index';
+import AvatarCard from './AvatarCard';
+import PersonalInformationCard from './PersonalInformationCard';
+import TotalNumberCard from './TotalNumberCard';
+import ReservationHistoryTable from './ReservationHistoryTable';
+import LendingHistoryTable from './LendingHistoryTable';
 
 const MemberProfile = () => {
     const dispatch = useDispatch();
@@ -40,6 +39,13 @@ const MemberProfile = () => {
         { id: 0, title: "Total book lend", iconClass: "bx-check-circle", text: "0" },
         { id: 1, title: "Total book reserve", iconClass: "bx-hourglass", text: "0" },
         { id: 2, title: "Total fine", iconClass: "bx-package", text: "$0" }
+    ]);
+    const [reservationStatus, setReservationStatus] = useState([
+        { value: RESERVATION_STATUS.WAITING, label: RESERVATION_STATUS_LABEL.WAITING },
+        { value: RESERVATION_STATUS.PENDING, label: RESERVATION_STATUS_LABEL.PENDING },
+        { value: RESERVATION_STATUS.COMPLETED, label: RESERVATION_STATUS_LABEL.COMPLETED },
+        { value: RESERVATION_STATUS.CANCELED, label: RESERVATION_STATUS_LABEL.CANCELED },
+        { value: RESERVATION_STATUS.VERIFIED, label: RESERVATION_STATUS_LABEL.VERIFIED },
     ]);
     const [modalVisibility, setModalVisibility] = useState(false);
     const [reservationHistory, setReservationHistory] = useState([]);
@@ -87,7 +93,16 @@ const MemberProfile = () => {
             const response = await axios.get(`${BASE_API_URL}/book-reserve/${userId}/member`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('reservationHistory ', response.data);
             if (response.data) {
-                setReservationHistory(response.data);
+                var list = response.data;
+                for (let i = 0; i < list.length; i++) {
+                    list[i].create_date = dayjs(list[i].create_date).format(FORMAT.DATETIME);
+                    for (let j = 0; j < reservationStatus.length; j++) {
+                        if (list[i].status === reservationStatus[j].value) {
+                            list[i].status = reservationStatus[j].label;
+                        }
+                    }
+                }
+                setReservationHistory(list);
 
                 // re-render card with new data
                 setIsReloadCard(!isReloadCard);
@@ -151,229 +166,22 @@ const MemberProfile = () => {
                 {alert}
                 <Row>
                     <Col xl="4">
-                        <Card className="overflow-hidden">
-                            <div className="bg-soft-primary">
-                                <Row>
-                                    <Col xs="7">
-                                        <div className="text-primary p-3">
-                                            <h5 className="text-primary">Welcome Back !</h5>
-                                            {/* <p>It will seem like simplified</p> */}
-                                        </div>
-                                    </Col>
-                                    <Col xs="5" className="align-self-end">
-                                        <img src={profile1} alt="" className="img-fluid" />
-                                    </Col>
-                                </Row>
-                            </div>
-                            <CardBody className="pt-0">
-                                <Row>
-                                    <Col sm="4">
-                                        <div className="avatar-md profile-user-wid mb-4">
-                                            <img src={avatarDummy} alt="" className="img-thumbnail rounded-circle" />
-                                        </div>
-                                        <h5 className="font-size-15 text-truncate">{profile.username}</h5>
-                                        {/* <p className="text-muted mb-0 text-truncate">UI/UX Designer</p> */}
-                                    </Col>
-
-                                    <Col sm={8}>
-                                        <div className="pt-4">
-                                            {/* <Row>
-                                                <Col xs="6">
-                                                    <h5 className="font-size-15">125</h5>
-                                                    <p className="text-muted mb-0">Projects</p>
-                                                </Col>
-                                                <Col xs="6">
-                                                    <h5 className="font-size-15">$1245</h5>
-                                                    <p className="text-muted mb-0">Revenue</p>
-                                                </Col>
-                                            </Row> */}
-                                            <div className="mt-4">
-                                                <div onClick={() => setModalVisibility(true)} className="btn btn-primary waves-effect waves-light btn-sm">Edit Profile <i className="mdi mdi-arrow-right ml-1"></i></div>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-
-                        <Card>
-                            <CardBody>
-                                <CardTitle className="mb-4">Personal Information</CardTitle>
-
-                                <div className="table-responsive">
-                                    <Table className="table-nowrap mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">Full Name :</th>
-                                                <td>{profile.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">DOB :</th>
-                                                <td>{profile.date_of_birth}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Gender :</th>
-                                                <td>
-                                                    {
-                                                        profile.gender != undefined
-                                                            ? profile.gender == 1
-                                                                ? 'Male'
-                                                                : 'Female'
-                                                            : ''
-                                                    }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Mobile :</th>
-                                                <td>{profile.phone}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">E-mail :</th>
-                                                <td>{profile.email}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Location :</th>
-                                                <td>
-                                                    {profile.street != undefined && profile.city != undefined && profile.country != undefined
-                                                        ? `${profile.street}, ${profile.city}, ${profile.country}`
-                                                        : ''
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </div>
-                            </CardBody>
-                        </Card>
+                        <AvatarCard profile={profile} onClickOpenModal={() => setModalVisibility(true)} />
+                        <PersonalInformationCard profile={profile} />
                     </Col>
 
                     <Col xl="8">
-
                         <Row>
-                            {
-                                miniCards.map((card, key) =>
-                                    <MiniCards content={card} title={card.title} text={card.text} iconClass={card.iconClass} key={`_card_${card.id}` + card.text} />
-                                )
-                            }
-
+                            <TotalNumberCard miniCards={miniCards} />
                         </Row>
                         <Card>
                             <CardBody>
                                 <CardTitle className="mb-4">Library card</CardTitle>
-                                <LibraryCardContent libraryCard={libraryCard} />
+                                <LibraryCardRequest />
                             </CardBody>
                         </Card>
-
-                        <Card>
-                            <CardBody>
-                                <CardTitle className="mb-4">Book reserve history</CardTitle>
-                                <div className="table-responsive">
-                                    <Table className="table-centered table-nowrap table-hover">
-                                        <thead className="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Book title</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Create date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                reservationHistory
-                                                    .map((e, i) =>
-                                                        <tr key={e.id} >
-                                                            <td>
-                                                                <p className="text-muted mb-0">{e.id}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p className="text-muted mb-0">{e.title}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p className="text-muted mb-0">{e.status}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p className="text-muted mb-0">{dayjs(e.create_date).format(FORMAT.DATETIME)}</p>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                            }
-
-                                        </tbody>
-                                    </Table>
-                                </div>
-                            </CardBody>
-                        </Card>
-
-                        <Card>
-                            <CardBody>
-                                <CardTitle className="mb-4">Book lend history</CardTitle>
-                                <div className="table-responsive">
-                                    {/* <Table className="table table-nowrap table-hover mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Projects</th>
-                                                <th scope="col">Start Date</th>
-                                                <th scope="col">Deadline</th>
-                                                <th scope="col">Budget</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Skote admin UI</td>
-                                                <td>2 Sep, 2019</td>
-                                                <td>20 Oct, 2019</td>
-                                                <td>$506</td>
-                                            </tr>
-
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Skote admin Logo</td>
-                                                <td>1 Sep, 2019</td>
-                                                <td>2 Sep, 2019</td>
-                                                <td>$94</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Redesign - Landing page</td>
-                                                <td>21 Sep, 2019</td>
-                                                <td>29 Sep, 2019</td>
-                                                <td>$156</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">4</th>
-                                                <td>App Landing UI</td>
-                                                <td>29 Sep, 2019</td>
-                                                <td>04 Oct, 2019</td>
-                                                <td>$122</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">5</th>
-                                                <td>Blog Template</td>
-                                                <td>05 Oct, 2019</td>
-                                                <td>16 Oct, 2019</td>
-                                                <td>$164</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">6</th>
-                                                <td>Redesign - Multipurpose Landing</td>
-                                                <td>17 Oct, 2019</td>
-                                                <td>05 Nov, 2019</td>
-                                                <td>$192</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">7</th>
-                                                <td>Logo Branding</td>
-                                                <td>04 Nov, 2019</td>
-                                                <td>05 Nov, 2019</td>
-                                                <td>$94</td>
-                                            </tr>
-                                        </tbody>
-                                    </Table> */}
-                                </div>
-                            </CardBody>
-                        </Card>
+                        <ReservationHistoryTable reservationHistory={reservationHistory} />
+                        <LendingHistoryTable reservationHistory={reservationHistory} />
                     </Col>
                 </Row>
                 <Formik

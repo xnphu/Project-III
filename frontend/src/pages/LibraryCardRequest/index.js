@@ -40,6 +40,16 @@ const LibraryCardRequest = () => {
             console.log('res requestLibraryCard', response.data);
             if (response.data) {
                 onUpdateLibraryCard(response.data);
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Request library card success!"
+                        onConfirm={() => setAlert(<></>)}
+                        onCancel={() => setAlert(<></>)}
+                        confirmBtnText={'OK'}
+                    >
+                    </SweetAlert>
+                );
             }
         } catch (error) {
             console.log('err requestLibraryCard', error.response.data);
@@ -47,9 +57,9 @@ const LibraryCardRequest = () => {
                 <SweetAlert
                     danger
                     title="Request library card fail!"
-                    onConfirm={() => history.push(`profile/${userId}`)}
+                    onConfirm={() => setAlert(<></>)}
                     onCancel={() => setAlert(<></>)}
-                    confirmBtnText={'To profile page'}
+                    confirmBtnText={'OK'}
                 >
                     You need to add your profile information
                 </SweetAlert>
@@ -62,23 +72,16 @@ const LibraryCardRequest = () => {
     }, []);
 
     return (
-        <div className="page-content">
-            <Container fluid>
-                {alert}
-                <Card>
-                    <CardBody>
-                        <CardTitle className="mb-4 text-center"><h2>Request Library card</h2></CardTitle>
-                        {
-                            libraryCard.id == undefined
-                                ? <div className="mb-4 text-center">You don't have a library card, <Link to={'#'} onClick={() => requestLibraryCard()}>Click here</Link> to request to Admin/Librarian.</div>
-                                : <>
-                                    <h4 className="text-center">Your library card</h4>
-                                    <LibraryCardContent libraryCard={libraryCard} />
-                                </>
-                        }
-                    </CardBody>
-                </Card>
-            </Container>
+        <div>
+            {alert}
+            {
+                libraryCard.id == undefined
+                    ? <div className="mb-4 text-center">You don't have a library card, <Link to={'#'} onClick={() => requestLibraryCard()}>Click here</Link> to request to Admin/Librarian.</div>
+                    : <>
+                        <h4 className="text-center">Your library card</h4>
+                        <LibraryCardContent libraryCard={libraryCard} />
+                    </>
+            }
         </div>
     );
 }
