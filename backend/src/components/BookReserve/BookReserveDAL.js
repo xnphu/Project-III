@@ -5,6 +5,7 @@ import moment from 'moment';
 import { checkMemberInfoExist } from '../Member/MemberDAL';
 import { checkLibraryCardExistAndActive } from '../LibraryCard/LibraryCardDAL';
 import { checkBookAvailable, checkBookAvailableForReserve } from '../Book/BookDAL';
+import { createBookLend } from '../BookLend/BookLendDAL';
 
 export const getAllBookReserve = async () => {
     const sql = `
@@ -52,9 +53,15 @@ export const requestBookReserve = async ({ member_id, book_id }) => {
 export const updateBookReserve = async ({ id, book_id, member_id, create_date, status }) => {
     const check = await checkLibraryCardExist(id);
     if (check) {
-        const libraryCardData = { id, book_id, member_id, create_date, status };
+        const bookReserveData = { id, book_id, member_id, create_date, status };
         const sql = 'UPDATE book_reservation SET ? WHERE id = ?';
-        await dbUtil.query(sql, [libraryCardData, id]);
+        await dbUtil.query(sql, [bookReserveData, id]);
+
+        // if admin verify book reserve -> user start lending book
+        if(status = RESERVATION_STATUS.VERIFIED) {
+            await createBookLend({ book_id, member_id });
+        }
+
         const info = await getBookReserveById(id);
         return info;
     } else {

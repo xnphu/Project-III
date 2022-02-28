@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import { Row, Col, Card, CardBody, CardTitle, Table } from "reactstrap";
 import TablePagination from '../../components/CommonForBoth/TablePagination';
 
-const ReservationHistoryTable = ({ reservationHistory }) => {
+const ReservationHistoryTable = () => {
+    const reservationHistory = useSelector(state => state.bookReserve.member);
+
     const BOOK_RESERVATION_PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState(0);
     const handleClickPage = (event, index) => {
@@ -14,7 +17,7 @@ const ReservationHistoryTable = ({ reservationHistory }) => {
     const [searchKeyword, setSearchKeyword] = useState('');
 
     const searchKeywordLowerCase = searchKeyword.toLowerCase();
-    const listBookReservationFilter = reservationHistory.filter(e => e.title.toLowerCase().includes(searchKeywordLowerCase));
+    const listBookReservationFilter = reservationHistory ? reservationHistory.filter(e => e.title.toLowerCase().includes(searchKeywordLowerCase)) : [];
 
     return (
         <Card>
@@ -66,23 +69,19 @@ const ReservationHistoryTable = ({ reservationHistory }) => {
                         </tbody>
                     </Table>
                 </div>
-            <Row>
-                <Col lg="12">
-                    <TablePagination
-                        pageSize={BOOK_RESERVATION_PAGE_SIZE}
-                        length={listBookReservationFilter.length}
-                        currentPage={currentPage}
-                        handleClickPage={handleClickPage}
-                    />
-                </Col>
-            </Row>
-        </CardBody>
+                <Row>
+                    <Col lg="12">
+                        <TablePagination
+                            pageSize={BOOK_RESERVATION_PAGE_SIZE}
+                            length={listBookReservationFilter.length}
+                            currentPage={currentPage}
+                            handleClickPage={handleClickPage}
+                        />
+                    </Col>
+                </Row>
+            </CardBody>
         </Card >
     );
 }
-
-ReservationHistoryTable.propTypes = {
-    reservationHistory: PropTypes.array.isRequired,
-};
 
 export default ReservationHistoryTable;

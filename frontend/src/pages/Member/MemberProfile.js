@@ -11,6 +11,8 @@ import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProfile } from '../../store/actions/user';
 import { saveLibraryCard } from '../../store/actions/library-card';
+import { saveBookReserve } from '../../store/actions/book-reserve';
+import { saveBookLend } from '../../store/actions/book-lend';
 import { Formik } from 'formik';
 import SweetAlert from "react-bootstrap-sweetalert";
 import dayjs from 'dayjs';
@@ -27,18 +29,21 @@ const MemberProfile = () => {
     const dispatch = useDispatch();
     const onUpdateProfile = profile => dispatch(updateProfile(profile));
     const onUpdateLibraryCard = libraryCard => dispatch(saveLibraryCard(libraryCard));
-
+    const onUpdateBookReserveMember = bookReserve => dispatch(saveBookReserve(bookReserve));
+    const onUpdateBookLendMember = bookLend => dispatch(saveBookLend(bookLend));
 
     const token = useSelector(state => state.token.token);
     const userId = useSelector(state => state.profile.id);
     const profile = useSelector(state => state.profile);
-    const libraryCard = useSelector(state => state.libraryCard);
+    // const libraryCard = useSelector(state => state.libraryCard);
+    const reservationHistory = useSelector(state => state.bookReserve.member);
+    const lendingHistory = useSelector(state => state.bookLend.member);
 
     const [genders, setGenders] = useState([{ id: 0, label: 'Female' }, { id: 1, label: 'Male' }]);
     const [miniCards, setMiniCards] = useState([
         { id: 0, title: "Total book lend", iconClass: "bx-check-circle", text: "0" },
         { id: 1, title: "Total book reserve", iconClass: "bx-hourglass", text: "0" },
-        { id: 2, title: "Total fine", iconClass: "bx-package", text: "$0" }
+        { id: 2, title: "Total fine ($)", iconClass: "bx-package", text: "$0" }
     ]);
     const [reservationStatus, setReservationStatus] = useState([
         { value: RESERVATION_STATUS.WAITING, label: RESERVATION_STATUS_LABEL.WAITING },
@@ -48,7 +53,7 @@ const MemberProfile = () => {
         { value: RESERVATION_STATUS.VERIFIED, label: RESERVATION_STATUS_LABEL.VERIFIED },
     ]);
     const [modalVisibility, setModalVisibility] = useState(false);
-    const [reservationHistory, setReservationHistory] = useState([]);
+
     const [alert, setAlert] = useState(<></>);
     const [isReloadCard, setIsReloadCard] = useState(false);
 
@@ -56,13 +61,22 @@ const MemberProfile = () => {
         fetchMemberProfile();
         getLibraryCard();
         fetchMemberReservationHistory();
+        fetchMemberLendingHistory();
     }, []);
 
     useEffect(() => {
         var temp = miniCards;
+        var tempFine = 0;
+
+        for (let i = 0; i < lendingHistory.length; i++) {
+            tempFine += parseInt(lendingHistory[i].fine_amount);
+        }
+        temp[0].text = lendingHistory.length;
         temp[1].text = reservationHistory.length;
+        temp[2].text = tempFine;
+
         setMiniCards(temp);
-    }, [reservationHistory, isReloadCard]);
+    }, [isReloadCard]);
 
     const fetchMemberProfile = async () => {
         try {
@@ -102,13 +116,34 @@ const MemberProfile = () => {
                         }
                     }
                 }
-                setReservationHistory(list);
+                onUpdateBookReserveMember({ member: list });
 
                 // re-render card with new data
                 setIsReloadCard(!isReloadCard);
             }
         } catch (error) {
             console.log('err fetchMemberReservationHistory', error);
+        }
+    }
+
+    const fetchMemberLendingHistory = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/book-lend/${userId}/member`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('lendingHistory ', response.data);
+            if (response.data) {
+                var list = response.data;
+                for (let i = 0; i < list.length; i++) {
+                    list[i].create_date = dayjs(list[i].create_date).format(FORMAT.DATETIME);
+                    list[i].due_date = dayjs(list[i].due_date).format(FORMAT.DATETIME);
+                    list[i].return_date = list[i].return_date != null ? dayjs(list[i].return_date).format(FORMAT.DATETIME) : '';
+                }
+                onUpdateBookLendMember({ member: list });
+
+                // re-render card with new data
+                setIsReloadCard(!isReloadCard);
+            }
+        } catch (error) {
+            console.log('err fetchMemberLendingHistory', error);
         }
     }
 
@@ -180,8 +215,8 @@ const MemberProfile = () => {
                                 <LibraryCardRequest />
                             </CardBody>
                         </Card>
-                        <ReservationHistoryTable reservationHistory={reservationHistory} />
-                        <LendingHistoryTable reservationHistory={reservationHistory} />
+                        <ReservationHistoryTable />
+                        <LendingHistoryTable />
                     </Col>
                 </Row>
                 <Formik

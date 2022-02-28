@@ -10,12 +10,14 @@ import profile from './me';
 import book from './book';
 import author from './author';
 import libraryCard from './library-card';
+import bookReserve from './book-reserve';
+import bookLend from './book-lend';
 
 const config = {
   key: 'root',
   timeout: 30000,
   storage: storage,
-  whitelist: ['token', 'profile', 'author', 'book', 'libraryCard'],
+  whitelist: ['token', 'profile', 'author', 'book', 'libraryCard', 'bookReserve', 'bookLend'],
   blacklist: ['form']
 };
 
@@ -39,6 +41,8 @@ const reducers = combineReducers({
   author,
   book,
   libraryCard,
+  bookReserve,
+  bookLend,
   layout,
 });
 

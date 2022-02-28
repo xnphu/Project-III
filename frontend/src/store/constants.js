@@ -40,6 +40,14 @@ export const ACTION_ADD_BOOK = 'book/add';
 export const ACTION_SAVE_LIBRARY_CARD = 'library-card/save';
 export const ACTION_ADD_LIBRARY_CARD = 'library-card/add';
 
+// BOOK RESERVE
+export const ACTION_SAVE_BOOK_RESERVE = 'book-reserve/save';
+export const ACTION_ADD_BOOK_RESERVE = 'book-reserve/add';
+
+// BOOK LEND
+export const ACTION_SAVE_BOOK_LEND = 'book-lend/save';
+export const ACTION_ADD_BOOK_LEND = 'book-lend/add';
+
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";
 

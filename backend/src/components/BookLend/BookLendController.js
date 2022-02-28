@@ -12,9 +12,9 @@ export const getBookLendById = async (req, res) => {
     res.send(bookLend);
 };
 
-export const getLibraryCardByUserId = async (req, res) => {
+export const getBookLendByUserId = async (req, res) => {
     const id = req.userId;
-    const bookLend = await dbAccess.getLibraryCardByUserId(id);
+    const bookLend = await dbAccess.getBookLendByUserId(id);
     res.send(bookLend);
 };
 

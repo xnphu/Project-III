@@ -1,6 +1,6 @@
 import * as dbUtil from '../../util/databaseUtil';
 import * as generateIdUtil from '../../util/generateIdUtil';
-import { ERRORS, TYPE_ID, FORMAT } from '../../constant';
+import { ERRORS, TYPE_ID, DATABASE_NAME, FORMAT } from '../../constant';
 import moment from 'moment';
 import { checkBookExist } from '../Book/BookDAL';
 
@@ -77,14 +77,20 @@ export const checkLibraryCardMemberIdExist = async (id) => {
     return false;
 };
 
-export const getLibraryCardByUserId = async (id) => {
+export const getBookLendByUserId = async (id) => {
     const check = await checkLibraryCardMemberIdExist(id);
     if (!check) {
         return Promise.reject(ERRORS.LIBRARYCARD_NOT_EXIST);
     }
-    const sql = 'SELECT * FROM library_card WHERE member_id = ?';
-    const libraryCard = await dbUtil.queryOne(sql, [id]);
-    return libraryCard;
+    const sql = `
+        SELECT bl.*, 
+        b.title 
+        FROM ${DATABASE_NAME}.book_lending bl
+        LEFT JOIN ${DATABASE_NAME}.books b ON b.id = bl.book_id
+        WHERE bl.member_id = ?
+    `;
+    const list = await dbUtil.query(sql, [id]);
+    return list;
 };
 
 export const checkMemberInfoExist = async (id) => {
