@@ -21,4 +21,5 @@ export const ERRORS = {
   BOOK_RESERVE_REACH_LIMIT: createError.BadRequest(`Number of books you reserve reach limit (${LIMIT.RESERVATION} times)`),
   BOOK_RESERVE_BY_MEMBER_BEFORE: createError.BadRequest('You reserved this book before'),
   BOOK_RESERVE_NOT_EXIST: createError.BadRequest('Book reserve information is not exist'),
+  BOOK_LEND_NOT_EXIST: createError.BadRequest('Book lend information is not exist'),
 };

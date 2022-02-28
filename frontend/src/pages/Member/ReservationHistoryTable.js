@@ -13,6 +13,9 @@ const ReservationHistoryTable = ({ reservationHistory }) => {
     };
     const [searchKeyword, setSearchKeyword] = useState('');
 
+    const searchKeywordLowerCase = searchKeyword.toLowerCase();
+    const listBookReservationFilter = reservationHistory.filter(e => e.title.toLowerCase().includes(searchKeywordLowerCase));
+
     return (
         <Card>
             <CardBody>
@@ -30,57 +33,51 @@ const ReservationHistoryTable = ({ reservationHistory }) => {
                         </div>
                     </form>
                 </div>
-                <>
-                    {
-                        reservationHistory.length != 0
-                            ? <div className="table-responsive">
-                                <Table className="table-centered table-nowrap table-hover">
-                                    <thead className="thead-light">
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Book title</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Create date</th>
+                <div className="table-responsive">
+                    <Table className="table-centered table-nowrap table-hover">
+                        <thead className="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Book title</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Create date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                listBookReservationFilter
+                                    .map((e, i) =>
+                                        <tr key={e.id} >
+                                            <td>
+                                                <p className="text-muted mb-0">{e.id}</p>
+                                            </td>
+                                            <td>
+                                                <p className="text-muted mb-0">{e.title}</p>
+                                            </td>
+                                            <td>
+                                                <p className="text-muted mb-0">{e.status}</p>
+                                            </td>
+                                            <td>
+                                                <p className="text-muted mb-0">{e.create_date}</p>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            reservationHistory
-                                                .map((e, i) =>
-                                                    <tr key={e.id} >
-                                                        <td>
-                                                            <p className="text-muted mb-0">{e.id}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className="text-muted mb-0">{e.title}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className="text-muted mb-0">{e.status}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p className="text-muted mb-0">{e.create_date}</p>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                        }
-                                    </tbody>
-                                </Table>
-                            </div>
-                            : <h5 className="text-center">No data</h5>
-                    }
-                </>
-                <Row>
-                    <Col lg="12">
-                        <TablePagination
-                            pageSize={BOOK_RESERVATION_PAGE_SIZE}
-                            length={reservationHistory.length}
-                            currentPage={currentPage}
-                            handleClickPage={handleClickPage}
-                        />
-                    </Col>
-                </Row>
-            </CardBody>
-        </Card>
+                                    )
+                            }
+                        </tbody>
+                    </Table>
+                </div>
+            <Row>
+                <Col lg="12">
+                    <TablePagination
+                        pageSize={BOOK_RESERVATION_PAGE_SIZE}
+                        length={listBookReservationFilter.length}
+                        currentPage={currentPage}
+                        handleClickPage={handleClickPage}
+                    />
+                </Col>
+            </Row>
+        </CardBody>
+        </Card >
     );
 }
 
