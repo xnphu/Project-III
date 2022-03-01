@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.27, for macos11 (x86_64)
 --
 -- Host: localhost    Database: library_management
 -- ------------------------------------------------------
--- Server version	8.0.20
+-- Server version	8.0.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -51,8 +51,9 @@ CREATE TABLE `book_lending` (
   `id` varchar(45) NOT NULL,
   `book_id` varchar(45) NOT NULL,
   `member_id` varchar(45) NOT NULL,
+  `create_date` datetime NOT NULL,
   `due_date` datetime NOT NULL,
-  `return_date` varchar(45) NOT NULL,
+  `return_date` datetime DEFAULT NULL,
   `fine_amount` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `book_id` (`book_id`),
@@ -68,6 +69,7 @@ CREATE TABLE `book_lending` (
 
 LOCK TABLES `book_lending` WRITE;
 /*!40000 ALTER TABLE `book_lending` DISABLE KEYS */;
+INSERT INTO `book_lending` VALUES ('22030007','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-02-28 00:00:00','2022-03-07 00:00:00','2022-03-06 00:00:00',50),('22030008','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:41:00','2022-03-08 01:41:00',NULL,0),('22030013','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:51:00','2022-03-08 01:51:00',NULL,0),('22030015','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:55:00','2022-03-08 01:55:00',NULL,0),('22030016','2210012','22020014','2022-03-01 02:08:00','2022-03-08 02:08:00',NULL,0);
 /*!40000 ALTER TABLE `book_lending` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +100,7 @@ CREATE TABLE `book_reservation` (
 
 LOCK TABLES `book_reservation` WRITE;
 /*!40000 ALTER TABLE `book_reservation` DISABLE KEYS */;
-INSERT INTO `book_reservation` VALUES ('22010001','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-11 14:01:00'),('22010002','2210002','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-14 10:32:00'),('22010008','2210002','21120005',3,'2022-01-19 15:56:00'),('22010009','22010001','21120005',3,'2022-01-19 17:11:00'),('22020010','2210007','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-02-10 09:40:00'),('22020011','2210012','22020014',2,'2022-02-26 02:14:00');
+INSERT INTO `book_reservation` VALUES ('22010001','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-11 14:01:00'),('22010002','2210002','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-14 10:32:00'),('22010008','2210002','21120005',3,'2022-01-19 15:56:00'),('22010009','22010001','21120005',3,'2022-01-19 17:11:00'),('22020010','2210007','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-02-10 09:40:00'),('22020011','2210012','22020014',5,'2022-02-26 02:14:00');
 /*!40000 ALTER TABLE `book_reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,6 +172,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
+INSERT INTO `feedback` VALUES ('22030001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','hi','hello'),('22030003','21120005','hi 2 edit','hello 2 edit'),('22030004','21120005','hi 3','hello 3');
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,7 +226,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES ('00205e4f-3663-46e2-8dc0-376677466bf1','librarian1','$2b$12$zSg/80IEGQdxFfHEXIPc..hLBeNWRJzxQngidY.KA9xW872zYYeya',1),('21120001','librarian2','$2b$12$RkkSj9YHWPLv0bO1CnwtweC9zjr3xCeZ/z3JtM/cN4IAjXVDIpXUO',1),('21120002','librarian3','$2b$12$tgCbXQJiAhyTgJ6RD6M93OmSHiHUBZhijuB0hUnVrlptohcAzDUAu',1),('21120003','user1','$2b$12$szMFnMKmzLg0JJ3B2tNfN.KZyzeJ8dET2sF4ktqawRElvUyXMK9jq',2),('21120004','phu','$2b$12$jVcDv4lz5xd.cm199BdFVeyjf.rOoMS6T0rQ4K1K6qrrNhiBU4CyW',2),('21120005','phu1','$2b$12$JlrLIIqrywuMzqja6WDh3umqHOpv4EgCcwdpntptwsDaPzsP122H2',2),('21120006','phu2','$2b$12$fyoSccBTShLwKoKw4obg3eks7ETQi9SzzzWd6/8ln1D2BnOrW62v6',2),('21120007','phu3','$2b$12$vmveTec89Vltzz0aLTZCt.Ck1GzVp.gxzbBuw.0O/HKq8w0pZNj0S',2),('21120008','phu4','$2b$12$HdycSD2HNevzxR9oCQmjNeGgBX4J9jXizNRq.O499JL2HKE88.zVO',2),('22010009','phu8','$2b$12$KAyK/U3Gfc3ZMXuwZpqLjOFLY2omQ3ouQwyjT.s0zZIzvGnIMIxAq',2),('22010010','user69','$2b$12$d.SnwIxzsTKmyH6dBGOp1.HRiE87pmLC0npiYAAGTY6gOPgcOhIAS',2),('22010011','user89','$2b$12$m5wGTVR/yBVpiWD7Gxx2OeUONxnwIbZMhZ0tuGPl7nVBBqK0zKcUq',2),('22010012','phu00','$2b$12$8t4HgxpqwcBM/0tXUDCDZuMEaKxDMSHjIImNlyyZrfOIOtkyIMQjO',2),('22020013','phu77','$2b$12$baKx4zJI5s4IA6MjSwc.BOeD8fbBW45N679tOQNc2F6cwW1lh.Ae6',2),('22020014','phu66','$2b$12$kF6ruXZywgze.9XRlf973e.8LaMYyFMofMr3raiMTIlYKPIwq7dA.',2),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','admin','$2b$12$gLUfkvf27PnB3QgVvrJAmeN1qdmRMJXH4fx8gGJN9r8LGxtQLvmOq',0);
+INSERT INTO `member` VALUES ('00205e4f-3663-46e2-8dc0-376677466bf1','librarian1','$2b$12$zSg/80IEGQdxFfHEXIPc..hLBeNWRJzxQngidY.KA9xW872zYYeya',1),('21120001','librarian2','$2b$12$RkkSj9YHWPLv0bO1CnwtweC9zjr3xCeZ/z3JtM/cN4IAjXVDIpXUO',1),('21120002','librarian3','$2b$12$tgCbXQJiAhyTgJ6RD6M93OmSHiHUBZhijuB0hUnVrlptohcAzDUAu',1),('21120003','user1','$2b$12$szMFnMKmzLg0JJ3B2tNfN.KZyzeJ8dET2sF4ktqawRElvUyXMK9jq',2),('21120004','phu','$2b$12$jVcDv4lz5xd.cm199BdFVeyjf.rOoMS6T0rQ4K1K6qrrNhiBU4CyW',2),('21120005','phu1','$2b$12$JlrLIIqrywuMzqja6WDh3umqHOpv4EgCcwdpntptwsDaPzsP122H2',2),('21120006','phu2','$2b$12$fyoSccBTShLwKoKw4obg3eks7ETQi9SzzzWd6/8ln1D2BnOrW62v6',2),('21120007','phu3','$2b$12$vmveTec89Vltzz0aLTZCt.Ck1GzVp.gxzbBuw.0O/HKq8w0pZNj0S',2),('21120008','phu4','$2b$12$HdycSD2HNevzxR9oCQmjNeGgBX4J9jXizNRq.O499JL2HKE88.zVO',2),('22010009','phu8','$2b$12$KAyK/U3Gfc3ZMXuwZpqLjOFLY2omQ3ouQwyjT.s0zZIzvGnIMIxAq',2),('22010010','user69','$2b$12$d.SnwIxzsTKmyH6dBGOp1.HRiE87pmLC0npiYAAGTY6gOPgcOhIAS',2),('22010011','user89','$2b$12$m5wGTVR/yBVpiWD7Gxx2OeUONxnwIbZMhZ0tuGPl7nVBBqK0zKcUq',2),('22010012','phu00','$2b$12$8t4HgxpqwcBM/0tXUDCDZuMEaKxDMSHjIImNlyyZrfOIOtkyIMQjO',2),('22020013','phu77','$2b$12$baKx4zJI5s4IA6MjSwc.BOeD8fbBW45N679tOQNc2F6cwW1lh.Ae6',2),('22020014','phu66','$2b$12$kF6ruXZywgze.9XRlf973e.8LaMYyFMofMr3raiMTIlYKPIwq7dA.',2),('22030015','phu22','$2b$12$F1qrs/7O6V1fmfIdHEGBVOhbOMlOV4n2Pk0YS.g9m4LvPaR7Tr51a',2),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','admin','$2b$12$gLUfkvf27PnB3QgVvrJAmeN1qdmRMJXH4fx8gGJN9r8LGxtQLvmOq',0);
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -307,7 +310,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',14),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',0);
+INSERT INTO `serial_number` VALUES (1,1,'member',15),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',16),(8,8,'feedback',5);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -320,4 +323,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-28  3:54:24
+-- Dump completed on 2022-03-02  3:35:16

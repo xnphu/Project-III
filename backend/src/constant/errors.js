@@ -22,4 +22,5 @@ export const ERRORS = {
   BOOK_RESERVE_BY_MEMBER_BEFORE: createError.BadRequest('You reserved this book before'),
   BOOK_RESERVE_NOT_EXIST: createError.BadRequest('Book reserve information is not exist'),
   BOOK_LEND_NOT_EXIST: createError.BadRequest('Book lend information is not exist'),
+  FEEDBACK_NOT_EXIST: createError.BadRequest('Feedback is not exist'),
 };

@@ -5,6 +5,7 @@ import LibraryCardRouter from './LibraryCard/LibraryCardRouter';
 import AuthorRouter from './Author/AuthorRouter';
 import BookReserveRouter from './BookReserve/BookReserveRouter';
 import BookLendRouter from './BookLend/BookLendRouter';
+import FeedbackRouter from './Feedback/FeedbackRouter';
 import DefaultRouter from './Default/DefaultRouter';
 
 export default [
@@ -15,5 +16,6 @@ export default [
   AuthorRouter,
   BookReserveRouter,
   BookLendRouter,
+  FeedbackRouter,
   DefaultRouter,
 ];

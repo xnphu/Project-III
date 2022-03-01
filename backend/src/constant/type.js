@@ -6,6 +6,7 @@ export const TYPE_ID = {
     LIBRARY_CARD: 5,
     BOOK_RESERVE: 6,
     BOOK_LEND: 7,
+    FEEDBACK: 8,
 };
 
 export const ROLE = {
