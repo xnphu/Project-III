@@ -117,7 +117,7 @@ const BookDetail = (props) => {
                     danger
                     title="Fail to reserve this book"
                     confirmBtnText="Request a library card"
-                    onConfirm={() => history.push(`/library-card-request`)}
+                    onConfirm={() => history.push(`/profile/${userId}`)}
                     onCancel={() => {
                         setAlert(<></>);
                     }}
