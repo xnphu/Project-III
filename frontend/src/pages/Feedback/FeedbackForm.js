@@ -11,11 +11,14 @@ import { Formik } from "formik";
 import axios from "axios";
 import { BASE_API_URL } from "../../constant";
 import { useSelector, useDispatch } from "react-redux";
+import { addFeedback } from '../../store/actions/feedback';
 
 const FeedbackForm = ({ setAlert }) => {
+    const dispatch = useDispatch();
     const token = useSelector((state) => state.token.token);
-
     const formRef = useRef(null);
+
+    const onAddFeedback= feedback => dispatch(addFeedback(feedback));
 
     const createFeedback = async (feedback) => {
         try {
@@ -26,6 +29,7 @@ const FeedbackForm = ({ setAlert }) => {
             });
             console.log("res ", response.data);
             if (response.data) {
+                onAddFeedback(response.data);
                 setAlert(
                     <SweetAlert
                         success

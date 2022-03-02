@@ -51,6 +51,8 @@ export const ACTION_ADD_BOOK_LEND = 'book-lend/add';
 // FEEDBACK
 export const ACTION_SAVE_FEEDBACK = 'feedback/save';
 export const ACTION_EDIT_FEEDBACK = 'feedback/edit';
+export const ACTION_ADD_FEEDBACK = 'feedback/add';
+export const ACTION_DELETE_FEEDBACK = 'feedback/delete';
 
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";

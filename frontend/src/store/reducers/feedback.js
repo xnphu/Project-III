@@ -1,12 +1,15 @@
 import {
     ACTION_SAVE_FEEDBACK,
+    ACTION_ADD_FEEDBACK,
     ACTION_EDIT_FEEDBACK,
+    ACTION_DELETE_FEEDBACK,
     ACTION_LOGOUT
 } from '../constants';
 import update from 'react-addons-update';
 
 const defaultState = {
     feedbacks: [],
+    member: [],
     total: 0
 }
 
@@ -16,6 +19,26 @@ export default (state = defaultState, action) => {
     if (type === ACTION_SAVE_FEEDBACK) {
         return {
             ...payload
+        };
+    }
+
+    if (type === ACTION_ADD_FEEDBACK) {
+        var newMember = state.member;
+        newMember.push(payload);
+        return {
+            ...state,
+            member: newMember,
+        };
+    }
+
+    if (type === ACTION_DELETE_FEEDBACK) {
+        var feedbackFilter = state.feedbacks.filter((e) => e.id != payload.id);
+        console.log('lala ', payload);
+        console.log('lala2 ', feedbackFilter);
+        return {
+            ...state,
+            feedbacks: feedbackFilter,
+            total: state.total
         };
     }
 

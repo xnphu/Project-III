@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
+import { Row, Col, Card, CardBody, CardTitle, Modal, Table, Button } from "reactstrap";
 import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
@@ -9,7 +9,7 @@ import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { editFeedback, saveFeedback } from '../../store/actions/feedback';
+import { editFeedback, saveFeedback, deleteFeedback } from '../../store/actions/feedback';
 
 const ManageFeedback = () => {
     const dispatch = useDispatch();
@@ -17,6 +17,8 @@ const ManageFeedback = () => {
     const feedbacks = useSelector(state => state.feedback.feedbacks);
 
     const onSaveFeedback = feedback => dispatch(saveFeedback(feedback));
+    const onEditFeedback = feedback => dispatch(editFeedback(feedback));
+    const onDeleteFeedback = id => dispatch(deleteFeedback(id));
 
     const [selectedFeedback, setSelectedFeedback] = useState({});
 
@@ -27,7 +29,6 @@ const ManageFeedback = () => {
         setCurrentPage(index);
     };
 
-    const [modalVisibility, setModalVisibility] = useState(false);
     const [modalCreateVisibility, setModalCreateVisibility] = useState(false);
 
     const [alert, setAlert] = useState(<></>);
@@ -60,7 +61,7 @@ const ManageFeedback = () => {
                 var newFeedback = response.data;
                 var list = feedbacks;
                 const index = list.findIndex((e) => e.id === newFeedback.id);
-                editFeedback({ answer: newFeedback.answer, index });
+                onEditFeedback({ answer: newFeedback.answer, index });
                 setModalCreateVisibility(false);
                 setAlert(
                     <SweetAlert
@@ -84,6 +85,35 @@ const ManageFeedback = () => {
         }
     }
 
+    const handleDeleteFeedback = async () => {
+        try {
+            const response = await axios.delete(`${BASE_API_URL}/feedback/${selectedFeedback.id}`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data.success) {
+                onDeleteFeedback({ id: selectedFeedback.id });
+                setModalCreateVisibility(false);
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Delete feedback success!"
+                        onConfirm={() => setAlert(<></>)}
+                        onCancel={() => setAlert(<></>)}
+                    ></SweetAlert>
+                );
+            }
+        } catch (error) {
+            console.log('err ', error);
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Delete feedback fail!"
+                    onConfirm={() => setAlert(<></>)}
+                    onCancel={() => setAlert(<></>)}
+                ></SweetAlert>
+            );
+        }
+    }
+
     return (
         <>
             {alert}
@@ -100,7 +130,6 @@ const ManageFeedback = () => {
                                             <th scope="col" style={{ width: "70px" }}>#</th>
                                             <th scope="col">Content</th>
                                             <th scope="col">Answer</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -156,43 +185,6 @@ const ManageFeedback = () => {
                     </Card>
                 </Col>
             </Row>
-            <Modal
-                className="modal-lg"
-                scrollable={true}
-                isOpen={modalVisibility}
-                toggle={() => setModalVisibility(!modalVisibility)}
-            >
-                <div className="modal-header">
-                    <h5
-                        className="modal-title mt-0"
-                        id="myLargeModalLabel"
-                    >
-                        Feeback Detail
-                    </h5>
-                    <button
-                        onClick={() =>
-                            setModalVisibility(false)
-                        }
-                        type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                    >
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <div className="mb-3"><b>Content: </b></div>
-                    <textarea
-                        name="content"
-                        style={{ height: "200px", width: '100%', resize: "none", padding: "5px" }}
-                        type="textarea"
-                        defaultValue={selectedFeedback?.content}
-                        disabled={true}
-                    />
-                    <div className="mb-3"><b>Answer: </b> {selectedFeedback?.answer}</div>
-                </div>
-            </Modal>
             <Formik
                 initialValues={{
                     answer: '',
@@ -272,6 +264,14 @@ const ManageFeedback = () => {
                                 data-dismiss="modal"
                             >
                                 Close
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={handleDeleteFeedback}
+                                data-dismiss="modal"
+                            >
+                                Delete this feedback
                             </button>
                         </div>
                     </Modal>
