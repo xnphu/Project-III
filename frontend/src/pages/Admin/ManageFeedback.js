@@ -1,134 +1,138 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
+import { Row, Col, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
+import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
+import { Formik } from 'formik';
+import TablePagination from '../../components/CommonForBoth/TablePagination';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 import axios from 'axios';
 import { BASE_API_URL } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
-import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
-import dayjs from 'dayjs';
-import { Formik } from 'formik';
-import TablePagination from '../../components/CommonForBoth/TablePagination';
-import { saveAuthor } from '../../store/actions/author';
 
-const ManageAuthor = () => {
+import { editFeedback, saveFeedback } from '../../store/actions/feedback';
+
+const ManageFeedback = () => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
-    const authors = useSelector(state => state.author.authors);
+    const feedbacks = useSelector(state => state.feedback.feedbacks);
 
-    const onSaveAuthor = author => dispatch(saveAuthor(author));
+    const onSaveFeedback = feedback => dispatch(saveFeedback(feedback));
 
-    const [selectedAuthor, setSelectedAuthor] = useState({});
+    const [selectedFeedback, setSelectedFeedback] = useState({});
 
-    const AUTHOR_PAGE_SIZE = 5;
+    const FEEDBACK_PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState(0);
     const handleClickPage = (event, index) => {
         event.preventDefault();
         setCurrentPage(index);
     };
 
-    const [searchKeyword, setSearchKeyword] = useState('');
-
     const [modalVisibility, setModalVisibility] = useState(false);
     const [modalCreateVisibility, setModalCreateVisibility] = useState(false);
 
+    const [alert, setAlert] = useState(<></>);
+
     useEffect(() => {
-        fetchAllAuthors();
+        fetchAllFeedbacks();
     }, []);
 
-    const fetchAllAuthors = async () => {
+    const fetchAllFeedbacks = async () => {
         try {
-            const response = await axios.get(`${BASE_API_URL}/authors/`, { headers: { Authorization: `Bearer ${token}` } });
-            console.log('authors ', response.data);
+            const response = await axios.get(`${BASE_API_URL}/feedback/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('feedbacks ', response.data);
             if (response.data) {
-                onSaveAuthor({ authors: response.data, total: response.data.length });
+                onSaveFeedback({ feedbacks: response.data, total: response.data.length });
             }
         } catch (error) {
             console.log('err ', error);
         }
     }
 
-    const searchKeywordLowerCase = searchKeyword.toLowerCase();
-    const authorsFilter = authors.filter(author => author.name.toLowerCase().includes(searchKeywordLowerCase));
-
-    const createNewAuthor = async (author) => {
+    const createNewAnswer = async (feedback) => {
         try {
-            console.log('author ', author);
+            console.log('feedback ', feedback);
+            var submitFeedback = selectedFeedback;
+            submitFeedback.answer = feedback.answer;
 
-            const response = await axios.post(`${BASE_API_URL}/authors/`, author, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.put(`${BASE_API_URL}/feedback/${selectedFeedback.id}`, submitFeedback, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
-                var newAuthor = response.data;
-                var list = authors;
-                list.push(newAuthor);
-                onSaveAuthor({ authors: list, total: list.length });
+                var newFeedback = response.data;
+                var list = feedbacks;
+                const index = list.findIndex((e) => e.id === newFeedback.id);
+                editFeedback({ answer: newFeedback.answer, index });
                 setModalCreateVisibility(false);
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Submit feedback success!"
+                        onConfirm={() => setAlert(<></>)}
+                        onCancel={() => setAlert(<></>)}
+                    ></SweetAlert>
+                );
             }
         } catch (error) {
             console.log('err ', error);
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Submit feedback fail!"
+                    onConfirm={() => setAlert(<></>)}
+                    onCancel={() => setAlert(<></>)}
+                ></SweetAlert>
+            );
         }
     }
 
     return (
         <>
+            {alert}
             <Row>
                 <Col lg="12">
                     <Card>
                         <CardBody>
-                            <CardTitle className="mt-4 float-sm-left">List of Authors </CardTitle>
-                            <Row className="float-sm-right">
-                                <div onClick={() => setModalCreateVisibility(true)} className="btn btn-primary mt-3 mb-3 mr-4 d-lg-block float-sm-right">Add new author <i className="bx bx-plus"></i></div>
-                                <form className="app-search d-none d-lg-block float-sm-right">
-                                    <div className="position-relative">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search..."
-                                            onChange={(e) => setSearchKeyword(e.target.value)}
-                                        />
-                                        <span className="bx bx-search-alt"></span>
-                                    </div>
-                                </form>
-                            </Row>
+                            <CardTitle className="mt-4 float-sm-left">List of Feedbacks </CardTitle>
 
                             <div className="table-responsive">
                                 <Table className="table-centered table-nowrap table-hover">
                                     <thead className="thead-light">
                                         <tr>
                                             <th scope="col" style={{ width: "70px" }}>#</th>
-                                            <th scope="col">Author name</th>
-                                            <th scope="col">Description</th>
+                                            <th scope="col">Content</th>
+                                            <th scope="col">Answer</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            authorsFilter
+                                            feedbacks
                                                 .slice(
-                                                    currentPage * AUTHOR_PAGE_SIZE,
-                                                    (currentPage + 1) * AUTHOR_PAGE_SIZE
+                                                    currentPage * FEEDBACK_PAGE_SIZE,
+                                                    (currentPage + 1) * FEEDBACK_PAGE_SIZE
                                                 )
-                                                .map((author, i) =>
+                                                .map((feedback, i) =>
                                                     <tr
-                                                        key={author.id}
+                                                        key={feedback.id}
                                                         onClick={() => {
-                                                            setSelectedAuthor(author);
-                                                            setModalVisibility(true);
+                                                            setSelectedFeedback(feedback);
+                                                            setModalCreateVisibility(true);
                                                         }}>
                                                         <td>
-                                                            <p className="text-muted mb-0">{author.id}</p>
+                                                            <p className="text-muted mb-0">{feedback.id}</p>
 
                                                         </td>
                                                         <td>
-                                                            <div>
-                                                                <p className="text-muted mb-0">{author.name}</p>
+                                                            <div
+                                                                style={{ height: "80px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                                                            >
+                                                                <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{feedback.content}</p>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div
                                                                 style={{ height: "80px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
                                                             >
-                                                                <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{author.description}</p>
+                                                                <p className="text-muted mb-0" style={{ whiteSpace: "pre-wrap" }}>{feedback.answer}</p>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -141,8 +145,8 @@ const ManageAuthor = () => {
                             <Row>
                                 <Col lg="12">
                                     <TablePagination
-                                        pageSize={AUTHOR_PAGE_SIZE}
-                                        length={authorsFilter.length}
+                                        pageSize={FEEDBACK_PAGE_SIZE}
+                                        length={feedbacks.length}
                                         currentPage={currentPage}
                                         handleClickPage={handleClickPage}
                                     />
@@ -163,7 +167,7 @@ const ManageAuthor = () => {
                         className="modal-title mt-0"
                         id="myLargeModalLabel"
                     >
-                        Author Information Detail
+                        Feeback Detail
                     </h5>
                     <button
                         onClick={() =>
@@ -178,17 +182,23 @@ const ManageAuthor = () => {
                     </button>
                 </div>
                 <div className="modal-body">
-                    <div className="mb-3"><b>Author name: </b> {selectedAuthor?.name}</div>
-                    <div className="mb-3"><b>Description: </b> {selectedAuthor?.description}</div>
+                    <div className="mb-3"><b>Content: </b></div>
+                    <textarea
+                        name="content"
+                        style={{ height: "200px", width: '100%', resize: "none", padding: "5px" }}
+                        type="textarea"
+                        defaultValue={selectedFeedback?.content}
+                        disabled={true}
+                    />
+                    <div className="mb-3"><b>Answer: </b> {selectedFeedback?.answer}</div>
                 </div>
             </Modal>
             <Formik
                 initialValues={{
-                    name: '',
-                    description: '',
+                    answer: '',
                 }}
                 onSubmit={(values) => {
-                    createNewAuthor(values);
+                    createNewAnswer(values);
                 }}
             >
                 {({
@@ -207,7 +217,7 @@ const ManageAuthor = () => {
                                 className="modal-title mt-0"
                                 id="myLargeModalLabel"
                             >
-                                Create new author
+                                Feeback Detail
                             </h5>
                             <button
                                 onClick={() =>
@@ -222,26 +232,25 @@ const ManageAuthor = () => {
                             </button>
                         </div>
                         <div className="modal-body">
-
                             <AvForm onValidSubmit={handleSubmit}>
-                                <AvField
-                                    name="name"
-                                    label="Author name"
-                                    placeholder="Type author name"
-                                    type="text"
-                                    errorMessage="Enter author name"
-                                    validate={{ required: { value: true } }}
-                                    onChange={handleChange}
+                                <div className="mb-3"><b>Content: </b></div>
+                                <textarea
+                                    name="content"
+                                    style={{ height: "200px", width: '100%', resize: "none", padding: "5px" }}
+                                    type="textarea"
+                                    defaultValue={selectedFeedback?.content}
+                                    disabled={true}
                                 />
 
+                                <div className="my-3"><b>Answer: </b></div>
                                 <AvField
-                                    style={{ maxHeight: '100px', height: '200px' }}
-                                    name="description"
-                                    label="Description"
-                                    placeholder="Type description"
+                                    style={{ resize: "none", height: '200px' }}
+                                    name="answer"
+                                    placeholder="Type answer"
                                     type="textarea"
-                                    errorMessage="Enter description"
+                                    errorMessage="Enter answer"
                                     validate={{ required: { value: true } }}
+                                    value={selectedFeedback?.answer}
                                     onChange={handleChange}
                                 />
                             </AvForm>
@@ -252,7 +261,7 @@ const ManageAuthor = () => {
                                 type="submit"
                                 className="btn btn-primary"
                                 onClick={handleSubmit}>
-                                Save changes
+                                Submit
                             </button>
                             <button
                                 type="button"
@@ -272,4 +281,4 @@ const ManageAuthor = () => {
     );
 }
 
-export default ManageAuthor;
+export default ManageFeedback;

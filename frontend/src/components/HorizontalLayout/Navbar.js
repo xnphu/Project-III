@@ -67,13 +67,13 @@ class Navbar extends Component {
                                         </Link>
                                     </li>
 
-                                    {/* <li className="nav-item dropdown">
-                                        <Link className="nav-link" to="/dashboard">
-                                            <i className="bx bx-home-circle mr-2"></i>Book Reserve {this.props.menuOpen}
+                                    <li className="nav-item dropdown">
+                                        <Link className="nav-link" to="/feedback">
+                                            <i className="bx bx-home-circle mr-2"></i>Feedback {this.props.menuOpen}
                                         </Link>
                                     </li>
 
-                                    <li className="nav-item dropdown">
+                                    {/*<li className="nav-item dropdown">
                                         <Link className="nav-link" to="/library-card-request">
                                             <i className="bx bx-home-circle mr-2"></i>Request Library Card {this.props.menuOpen}
                                         </Link>

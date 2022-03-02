@@ -19,9 +19,9 @@ const AppRoute = ({
 		<Route
 			{...rest}
 			render={props => {
-				console.log("propsloz", props);
-				console.log("tokenloz", token);
-				console.log("isAuthProtected", isAuthProtected);
+				// console.log("propsloz", props);
+				// console.log("tokenloz", token);
+				// console.log("isAuthProtected", isAuthProtected);
 				if (isAuthProtected && !token) {
 					return (
 						<Redirect to={{ pathname: "/login", state: { from: props.location } }} />

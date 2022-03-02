@@ -131,6 +131,8 @@ import Admin from "../pages/Admin/index";
 import BookDetail from "../pages/BookDetail/index";
 //Library Card
 import LibraryCardRequest from "../pages/LibraryCardRequest/index";
+//Feedback
+import Feedback from "../pages/Feedback/index";
 
 const authProtectedRoutes = [
 
@@ -147,6 +149,9 @@ const authProtectedRoutes = [
 
 	//Admin
 	{ path: "/admin", component: Admin },
+
+	//Feedback
+	{ path: "/feedback", component: Feedback },
 
 	//chat
 	{ path: "/chat", component: Chat },

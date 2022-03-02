@@ -48,6 +48,10 @@ export const ACTION_ADD_BOOK_RESERVE = 'book-reserve/add';
 export const ACTION_SAVE_BOOK_LEND = 'book-lend/save';
 export const ACTION_ADD_BOOK_LEND = 'book-lend/add';
 
+// FEEDBACK
+export const ACTION_SAVE_FEEDBACK = 'feedback/save';
+export const ACTION_EDIT_FEEDBACK = 'feedback/edit';
+
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";
 
