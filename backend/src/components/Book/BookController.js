@@ -43,3 +43,8 @@ export const searchBook = async (req, res) => {
     const books = await dbAccess.searchBook({ author_id, title, subject });
     res.status(201).json(books);
 };
+
+export const getBookSuggest = async (req, res) => {
+    const book = await dbAccess.getBookSuggest();
+    res.send(book);
+};

@@ -133,6 +133,8 @@ import BookDetail from "../pages/BookDetail/index";
 import LibraryCardRequest from "../pages/LibraryCardRequest/index";
 //Feedback
 import Feedback from "../pages/Feedback/index";
+//Book suggest
+import BookSuggest from "../pages/BookSuggest";
 
 const authProtectedRoutes = [
 
@@ -152,6 +154,9 @@ const authProtectedRoutes = [
 
 	//Feedback
 	{ path: "/feedback", component: Feedback },
+
+	//Book suggest
+	{ path: "/book-suggest", component: BookSuggest },
 
 	//chat
 	{ path: "/chat", component: Chat },

@@ -68,16 +68,16 @@ class Navbar extends Component {
                                     </li>
 
                                     <li className="nav-item dropdown">
+                                        <Link className="nav-link" to="/book-suggest">
+                                            <i className="bx bx-home-circle mr-2"></i>Book suggest {this.props.menuOpen}
+                                        </Link>
+                                    </li>
+
+                                    <li className="nav-item dropdown">
                                         <Link className="nav-link" to="/feedback">
                                             <i className="bx bx-home-circle mr-2"></i>Feedback {this.props.menuOpen}
                                         </Link>
                                     </li>
-
-                                    {/*<li className="nav-item dropdown">
-                                        <Link className="nav-link" to="/library-card-request">
-                                            <i className="bx bx-home-circle mr-2"></i>Request Library Card {this.props.menuOpen}
-                                        </Link>
-                                    </li> */}
 
                                     {
                                         this.props.role === 0 || this.props.role === 1 

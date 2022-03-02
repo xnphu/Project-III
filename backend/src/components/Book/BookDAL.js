@@ -29,6 +29,20 @@ export const getAllBook = async (sortBy) => {
     return dbUtil.query(sql, []);
 };
 
+export const getBookSuggest = async () => {
+    const sql = `
+        SELECT b.*, 
+        a.name as "author_name", a.description as "author_description",
+        r.number as "location_number"    
+        FROM ${DATABASE_NAME}.books b
+        LEFT JOIN ${DATABASE_NAME}.author a ON a.id = b.author_id
+        LEFT JOIN ${DATABASE_NAME}.rack r ON r.id = b.rack_id
+        ORDER BY RAND() 
+        LIMIT 5    
+    `;
+    return dbUtil.query(sql, []);
+};
+
 export const createBook = async ({ author_id, rack_id, isbn, price, title, description, subject, publisher, publish_date, date_purchase, language, number_of_pages, status }) => {
     const sql = 'INSERT INTO books(id, author_id,rack_id , isbn ,  price , title , description, subject , publisher , publish_date , date_purchase , language , number_of_pages, previewUrl , status ) VALUES (?, ?, ?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?)';
     const id = await generateIdUtil.generate(TYPE_ID.BOOK);

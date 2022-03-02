@@ -172,7 +172,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES ('22030001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','hi','hello'),('22030003','21120005','hi 2 edit','hello 2 edit'),('22030004','21120005','hi 3','hello 3');
+INSERT INTO `feedback` VALUES ('22030001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','hi','hello edit'),('22030003','21120005','hi 2 edit','hello 2 edit'),('22030004','21120005','hi 3','hello 3'),('22030006','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','feedback 1','answer 2'),('22030007','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','feedback 2','asd asd a');
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,7 +310,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',15),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',16),(8,8,'feedback',5);
+INSERT INTO `serial_number` VALUES (1,1,'member',15),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',16),(8,8,'feedback',13);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -323,4 +323,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-02  3:35:16
+-- Dump completed on 2022-03-03  4:29:59

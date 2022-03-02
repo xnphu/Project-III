@@ -8,6 +8,7 @@ const router = Router();
 // route
 router.get('', throwAsNext(controller.getAllBook));
 router.get('/:id', throwAsNext(controller.getBookById));
+router.get('/:id/suggest', throwAsNext(controller.getBookSuggest));
 router.post('', checkNotUserRole, throwAsNext(controller.createBook));
 router.put('/:id', checkNotUserRole, throwAsNext(controller.updateBook));
 router.delete('/:id', checkNotUserRole, throwAsNext(controller.deleteBook));
