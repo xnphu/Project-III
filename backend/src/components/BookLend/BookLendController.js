@@ -27,8 +27,8 @@ export const createBookLend = async (req, res) => {
 
 export const updateBookLend = async (req, res) => {
     const { id } = req.params;
-    const { book_id,  member_id, create_date, due_date, return_date, fine_amount } = req.body;
-    const bookLend = await dbAccess.updateBookLend({ id, book_id,  member_id, create_date, due_date, return_date, fine_amount });
+    const { book_id,  member_id, create_date, due_date, return_date, fine_amount, status } = req.body;
+    const bookLend = await dbAccess.updateBookLend({ id, book_id,  member_id, create_date, due_date, return_date, fine_amount, status });
     res.status(200).json(bookLend);
 };
 

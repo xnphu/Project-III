@@ -46,7 +46,9 @@ export const ACTION_ADD_BOOK_RESERVE = 'book-reserve/add';
 
 // BOOK LEND
 export const ACTION_SAVE_BOOK_LEND = 'book-lend/save';
+export const ACTION_EDIT_BOOK_LEND = 'book-lend/edit';
 export const ACTION_ADD_BOOK_LEND = 'book-lend/add';
+export const ACTION_DELETE_BOOK_LEND = 'book-lend/delete';
 
 // FEEDBACK
 export const ACTION_SAVE_FEEDBACK = 'feedback/save';

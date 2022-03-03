@@ -21,6 +21,7 @@ import ManageBook from "./ManageBook";
 import ManageAuthor from "./ManageAuthor";
 import ManageBookReservation from "./ManageBookReservation";
 import ManageLibraryCard from "./ManageLibraryCard";
+import ManageBookLending from "./ManageBookLending";
 
 const Admin = () => {
     const role = useSelector((state) => state.token.role);
@@ -40,7 +41,7 @@ const Admin = () => {
     return (
         <div className="page-content">
             <Container fluid>
-                {role != ROLE.ADMIN && role != ROLE.LIBRARIAN ? (
+                {role !== ROLE.ADMIN && role !== ROLE.LIBRARIAN ? (
                     <Pages401 />
                 ) : (
                     <>
@@ -104,6 +105,36 @@ const Admin = () => {
                                     <span className="d-none d-sm-block">Book Reservation</span>
                                 </NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink
+                                    style={{ cursor: "pointer" }}
+                                    className={classnames({
+                                        active: activeTab === "5",
+                                    })}
+                                    onClick={() => {
+                                        toggleTab("5");
+                                    }}
+                                >
+                                    <span className="d-none d-sm-block">Book Lending</span>
+                                </NavLink>
+                            </NavItem>
+                            {role === ROLE.ADMIN ? (
+                                <NavItem>
+                                    <NavLink
+                                        style={{ cursor: "pointer" }}
+                                        className={classnames({
+                                            active: activeTab === "6",
+                                        })}
+                                        onClick={() => {
+                                            toggleTab("6");
+                                        }}
+                                    >
+                                        <span className="d-none d-sm-block">Member</span>
+                                    </NavLink>
+                                </NavItem>
+                            ) : (
+                                <></>
+                            )}
                         </Nav>
 
                         <TabContent activeTab={activeTab}>
@@ -138,6 +169,30 @@ const Admin = () => {
                                     </Col>
                                 </Row>
                             </TabPane>
+                            <TabPane tabId="5">
+                                <Row>
+                                    <Col sm="12">
+                                        <ManageBookLending
+                                            isReloadBookData={isReloadBookData}
+                                            setIsReloadBookData={setIsReloadBookData}
+                                        />
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            {role === ROLE.ADMIN ? (
+                                <TabPane tabId="6">
+                                    <Row>
+                                        <Col sm="12">
+                                            <ManageBookReservation
+                                                isReloadBookData={isReloadBookData}
+                                                setIsReloadBookData={setIsReloadBookData}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </TabPane>
+                            ) : (
+                                <></>
+                            )}
                         </TabContent>
                     </>
                 )}

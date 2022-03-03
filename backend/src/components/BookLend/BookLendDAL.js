@@ -1,11 +1,16 @@
 import * as dbUtil from '../../util/databaseUtil';
 import * as generateIdUtil from '../../util/generateIdUtil';
-import { ERRORS, TYPE_ID, DATABASE_NAME, FORMAT } from '../../constant';
+import { ERRORS, TYPE_ID, DATABASE_NAME, FORMAT, LENDING_STATUS, FINE_PER_WEEK } from '../../constant';
 import moment from 'moment';
-import { checkBookExist } from '../Book/BookDAL';
+import { checkBookExist, getBookById } from '../Book/BookDAL';
 
 export const getAllBookLend = async () => {
-    const sql = 'SELECT * FROM book_lending';
+    const sql = `
+        SELECT bl.*, 
+        mi.name, mi.email, mi.phone 
+        FROM ${DATABASE_NAME}.book_lending bl
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = bl.member_id
+    `;
     return dbUtil.query(sql, []);
 };
 
@@ -20,22 +25,25 @@ export const createBookLend = async ({ member_id, book_id }) => {
         return Promise.reject({ error: 3, message: ERRORS.BOOK_NOT_EXIST });
     }
 
-    const sql = 'INSERT INTO book_lending(id, book_id,  member_id, create_date, due_date, fine_amount) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO book_lending(id, book_id,  member_id, create_date, due_date, fine_amount, status) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const id = await generateIdUtil.generate(TYPE_ID.BOOK_LEND);
     const create_date = moment(Date.now()).format(FORMAT.DATETIME);
     // due_date = create_date + 7 days
     const due_date = moment(Date.now()).add(7, 'd').format(FORMAT.DATETIME);
     const fine_amount = 0;
-    await dbUtil.query(sql, [id, book_id,  member_id, create_date, due_date, fine_amount]);
+    const status = LENDING_STATUS.LOAN;
+    await dbUtil.query(sql, [id, book_id,  member_id, create_date, due_date, fine_amount, status]);
 
     const bookLend = await getBookLendById(id);
     return bookLend;
 };
 
-export const updateBookLend = async ({ id, book_id,  member_id, create_date, due_date, return_date, fine_amount }) => {
+export const updateBookLend = async ({ id, book_id,  member_id, create_date, due_date, return_date, fine_amount, status }) => {
     const check = await checkBookLendExist(id);
     if (check) {
-        const bookLendData = { id, book_id,  member_id, create_date, due_date, return_date, fine_amount };
+        // check book lend over due fine
+        var fine = await calculateFine(book_id, fine_amount, due_date, return_date, status);
+        const bookLendData = { id, book_id,  member_id, create_date, due_date, return_date, fine_amount: fine, status };
         const sql = 'UPDATE book_lending SET ? WHERE id = ?';
         await dbUtil.query(sql, [bookLendData, id]);
         const libraryCard = await getBookLendById(id);
@@ -43,6 +51,33 @@ export const updateBookLend = async ({ id, book_id,  member_id, create_date, due
     } else {
         return Promise.reject(ERRORS.BOOK_LEND_NOT_EXIST);
     }
+};
+
+export const calculateFine = async (book_id, fine_amount, due_date, return_date, status) => {
+    var fine = fine_amount;
+
+    if (status === LENDING_STATUS.RETURNED) {
+        return fine;
+    }
+
+    var dateFrom = new Date(due_date);
+    var dateTo = return_date != null ? new Date(return_date) : new Date();
+    
+    // To calculate the time difference of two dates
+    var differenceInTime = dateTo.getTime() - dateFrom.getTime();
+    
+    // To calculate the no. of days between two dates
+    var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    console.log('lala ', differenceInDays);
+
+    if (differenceInDays <= 0) {
+        return fine;
+    } else if (differenceInDays > 0 && differenceInDays <= 30) {
+        return fine + Math.floor(differenceInDays / 7 + 1) * FINE_PER_WEEK;
+    } else {
+        const book = await getBookById(book_id);
+        return fine + book.price;
+    };
 };
 
 export const deleteBookLend = async (id) => {

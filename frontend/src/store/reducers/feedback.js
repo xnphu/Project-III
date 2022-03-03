@@ -33,8 +33,6 @@ export default (state = defaultState, action) => {
 
     if (type === ACTION_DELETE_FEEDBACK) {
         var feedbackFilter = state.feedbacks.filter((e) => e.id != payload.id);
-        console.log('lala ', payload);
-        console.log('lala2 ', feedbackFilter);
         return {
             ...state,
             feedbacks: feedbackFilter,

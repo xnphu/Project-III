@@ -41,6 +41,16 @@ export const RESERVATION_STATUS_LABEL = {
     VERIFIED: 'Verified',
 };
 
+export const LENDING_STATUS = {
+    LOAN: 1,
+    RETURNED: 2,
+};
+
+export const LENDING_STATUS_LABEL = {
+    LOAN: 'On loan',
+    RETURNED: 'Returned',
+};
+
 export const LIMIT = {
     RESERVATION: 5,
     LENDING: 5,

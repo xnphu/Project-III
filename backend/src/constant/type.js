@@ -40,7 +40,14 @@ export const RESERVATION_STATUS = {
     VERIFIED: 5,
 };
 
+export const LENDING_STATUS = {
+    LOAN: 1,
+    RETURNED: 2,
+};
+
 export const LIMIT = {
     RESERVATION: 5,
     LENDING: 5,
 };
+
+export const FINE_PER_WEEK = 5;
