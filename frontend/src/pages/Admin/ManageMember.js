@@ -161,10 +161,10 @@ const ManageMember = () => {
 
     const searchKeywordLowerCase = searchKeyword.toLowerCase();
     const listMemberFilter = members.filter(e =>
-        e.id.toLowerCase().includes(searchKeywordLowerCase) ||
-        e.name.toLowerCase().includes(searchKeywordLowerCase) ||
-        e.email.toLowerCase().includes(searchKeywordLowerCase) ||
-        e.phone.toLowerCase().includes(searchKeywordLowerCase)
+        e.id ? e.id.toLowerCase().includes(searchKeywordLowerCase) : true ||
+            e.name ? e.name.toLowerCase().includes(searchKeywordLowerCase) : true ||
+                e.email ? e.email.toLowerCase().includes(searchKeywordLowerCase) : true ||
+                    e.phone ? e.phone.toLowerCase().includes(searchKeywordLowerCase) : true
     );
 
     console.log('selectedMember  ', selectedMember);
@@ -243,7 +243,7 @@ const ManageMember = () => {
                                                                             : 'Female'
                                                                         : ''}
                                                                 </div>
-                                                                <div className="text-muted mb-0">{dayjs(e.date_of_birth).format(FORMAT.DATE)}</div>
+                                                                <div className="text-muted mb-0">{e.date_of_birth ? dayjs(e.date_of_birth).format(FORMAT.DATE) : ''}</div>
                                                                 <div className="text-muted mb-0">
                                                                     {
                                                                         e.street && e.city && e.country
@@ -254,7 +254,12 @@ const ManageMember = () => {
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{e.status == 1 ? 'Active' : 'Disable' }</p>
+                                                                <p className="text-muted mb-0">
+                                                                    {e.status
+                                                                        ? e.status === 1 ? 'Active' : 'Disable'
+                                                                        : 'Profile not found'
+                                                                    }
+                                                                </p>
                                                             </div>
                                                         </td>
                                                         <td>

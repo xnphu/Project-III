@@ -5,9 +5,6 @@ import moment from 'moment';
 
 export const getAllMember = async (req, res) => {
     var members = await dbAccess.getAllMember();
-    for (let i = 0; i < members.length; i++) {
-        members[i].date_of_birth = moment(members[i].date_of_birth).format(FORMAT.DATE);
-    }
     res.send(members);
 };
 

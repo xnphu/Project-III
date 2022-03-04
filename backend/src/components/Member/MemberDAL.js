@@ -1,9 +1,14 @@
 import * as dbUtil from '../../util/databaseUtil';
-import { ERRORS, FORMAT } from '../../constant';
+import { ERRORS, FORMAT, DATABASE_NAME } from '../../constant';
 import moment from 'moment';
 
 export const getAllMember = async () => {
-    const sql = 'SELECT mi.*, m.username, m.role FROM member_info mi, member m where mi.id = m.id';
+    const sql = `
+        SELECT mi.*, 
+        m.id, m.username, m.role 
+        FROM ${DATABASE_NAME}.member m 
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON m.id = mi.id
+    `;
     return dbUtil.query(sql, []);
 };
 
