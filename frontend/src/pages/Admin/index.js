@@ -22,6 +22,7 @@ import ManageAuthor from "./ManageAuthor";
 import ManageBookReservation from "./ManageBookReservation";
 import ManageLibraryCard from "./ManageLibraryCard";
 import ManageBookLending from "./ManageBookLending";
+import ManageMember from "./ManageMember";
 
 const Admin = () => {
     const role = useSelector((state) => state.token.role);
@@ -183,10 +184,7 @@ const Admin = () => {
                                 <TabPane tabId="6">
                                     <Row>
                                         <Col sm="12">
-                                            <ManageBookReservation
-                                                isReloadBookData={isReloadBookData}
-                                                setIsReloadBookData={setIsReloadBookData}
-                                            />
+                                            <ManageMember />
                                         </Col>
                                     </Row>
                                 </TabPane>

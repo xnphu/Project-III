@@ -55,6 +55,7 @@ CREATE TABLE `book_lending` (
   `due_date` datetime NOT NULL,
   `return_date` datetime DEFAULT NULL,
   `fine_amount` int NOT NULL,
+  `status` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `book_id` (`book_id`),
   KEY `member_id` (`member_id`),
@@ -69,7 +70,7 @@ CREATE TABLE `book_lending` (
 
 LOCK TABLES `book_lending` WRITE;
 /*!40000 ALTER TABLE `book_lending` DISABLE KEYS */;
-INSERT INTO `book_lending` VALUES ('22030007','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-02-28 00:00:00','2022-03-07 00:00:00','2022-03-06 00:00:00',50),('22030008','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:41:00','2022-03-08 01:41:00',NULL,0),('22030013','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:51:00','2022-03-08 01:51:00',NULL,0),('22030015','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:55:00','2022-03-08 01:55:00',NULL,0),('22030016','2210012','22020014','2022-03-01 02:08:00','2022-03-08 02:08:00',NULL,0);
+INSERT INTO `book_lending` VALUES ('22030007','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-02-28 00:00:00','2022-02-28 00:00:00','2022-03-18 00:00:00',15,1),('22030008','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:41:00','2022-03-12 00:00:00','2022-03-26 00:00:00',10,3),('22030013','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b','2022-03-01 01:51:00','2022-03-10 00:00:00',NULL,0,1),('22030016','2210012','22020014','2022-03-01 02:08:00','2022-03-11 00:00:00',NULL,0,1),('22030017','22010001','21120005','2022-03-04 15:14:00','2022-03-12 00:00:00','2022-03-09 00:00:00',0,2);
 /*!40000 ALTER TABLE `book_lending` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +101,7 @@ CREATE TABLE `book_reservation` (
 
 LOCK TABLES `book_reservation` WRITE;
 /*!40000 ALTER TABLE `book_reservation` DISABLE KEYS */;
-INSERT INTO `book_reservation` VALUES ('22010001','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-11 14:01:00'),('22010002','2210002','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-14 10:32:00'),('22010008','2210002','21120005',3,'2022-01-19 15:56:00'),('22010009','22010001','21120005',3,'2022-01-19 17:11:00'),('22020010','2210007','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-02-10 09:40:00'),('22020011','2210012','22020014',5,'2022-02-26 02:14:00');
+INSERT INTO `book_reservation` VALUES ('22010001','22010001','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-11 14:01:00'),('22010002','2210002','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-01-14 10:32:00'),('22010008','2210002','21120005',3,'2022-01-19 15:56:00'),('22010009','22010001','21120005',5,'2022-01-19 17:11:00'),('22020010','2210007','e7f5bc6b-ad05-4a2f-8085-86c11aea956b',3,'2022-02-10 09:40:00'),('22020011','2210012','22020014',5,'2022-02-26 02:14:00');
 /*!40000 ALTER TABLE `book_reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +240,6 @@ DROP TABLE IF EXISTS `member_info`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member_info` (
   `id` varchar(45) NOT NULL,
-  `student_id` varchar(45) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `phone` varchar(15) NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE `member_info` (
 
 LOCK TABLES `member_info` WRITE;
 /*!40000 ALTER TABLE `member_info` DISABLE KEYS */;
-INSERT INTO `member_info` VALUES ('21120005','20168411','user 5','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('21120006','','phu2','phu2@gmail.com','12312314134',1,'1999-11-11','a','s','d',1),('21120008','20160001','user 8','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('22010009','','A','a@gmail.com','120391203901239',0,'1999-01-01','a','s','d',1),('22010010','','aa','a@gmail.com','90127389012789',1,'1999-01-11','a','s','d',1),('22010012','','phu00','phu00@gmail.com','3123124',0,'1987-02-12','a','s','d',1),('22020013','','Nguyen Xuan Phu','phu77@gmail.com','120391203901239',0,'1999-11-11','a','s','d',1),('22020014','','A','phu66@gmail.com','1235435345',0,'1888-11-11','a','s','d',1),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','','Nguyễn Xuân Phú','admin@gmail.com','0123456789',1,'1988-01-01','Đống Đa','Hà Nội','Việt Nam',1);
+INSERT INTO `member_info` VALUES ('21120005','user 5','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('21120006','phu2','phu2@gmail.com','12312314134',1,'1999-11-11','a','s','d',1),('21120008','user 8','phunx@gmail.com','0123456789',1,'1998-01-01','Đống Đa','Hà Nội','Việt Nam',1),('22010009','A','a@gmail.com','120391203901239',0,'1999-01-01','a','s','d',1),('22010010','aa','a@gmail.com','90127389012789',1,'1999-01-11','a','s','d',1),('22010012','phu00','phu00@gmail.com','3123124',0,'1987-02-12','a','s','d',1),('22020013','Nguyen Xuan Phu','phu77@gmail.com','120391203901239',0,'1999-11-11','a','s','d',1),('22020014','A','phu66@gmail.com','1235435345',0,'1888-11-11','a','s','d',1),('e7f5bc6b-ad05-4a2f-8085-86c11aea956b','Nguyễn Xuân Phú','admin@gmail.com','0123456789',1,'1988-01-01','Đống Đa','Hà Nội','Việt Nam',1);
 /*!40000 ALTER TABLE `member_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,7 +310,7 @@ CREATE TABLE `serial_number` (
 
 LOCK TABLES `serial_number` WRITE;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
-INSERT INTO `serial_number` VALUES (1,1,'member',15),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',16),(8,8,'feedback',13);
+INSERT INTO `serial_number` VALUES (1,1,'member',15),(2,2,'book',26),(3,3,'author',16),(4,4,'book_location',0),(5,5,'library_card',11),(6,6,'book_reservation',11),(7,7,'book_lending',17),(8,8,'feedback',13);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -323,4 +323,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-03  4:29:59
+-- Dump completed on 2022-03-04 18:17:21

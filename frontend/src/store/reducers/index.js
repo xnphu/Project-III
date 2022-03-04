@@ -13,12 +13,13 @@ import libraryCard from './library-card';
 import bookReserve from './book-reserve';
 import bookLend from './book-lend';
 import feedback from './feedback';
+import member from './member';
 
 const config = {
   key: 'root',
   timeout: 30000,
   storage: storage,
-  whitelist: ['token', 'profile', 'author', 'book', 'libraryCard', 'bookReserve', 'bookLend', 'feedback'],
+  whitelist: ['token', 'profile', 'author', 'book', 'libraryCard', 'bookReserve', 'bookLend', 'feedback', 'member'],
   blacklist: ['form']
 };
 
@@ -45,6 +46,7 @@ const reducers = combineReducers({
   bookReserve,
   bookLend,
   feedback,
+  member,
   layout,
 });
 

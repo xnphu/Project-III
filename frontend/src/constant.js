@@ -6,6 +6,12 @@ export const ROLE = {
     MEMBER: 2,
 };
 
+export const ROLE_LABEL = {
+    ADMIN: 'Admin',
+    LIBRARIAN: 'Librarian',
+    MEMBER: 'Member',
+};
+
 export const BOOK_STATUS = {
     AVAILABLE: 1,
     RESERVED: 2,

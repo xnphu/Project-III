@@ -56,6 +56,12 @@ export const ACTION_EDIT_FEEDBACK = 'feedback/edit';
 export const ACTION_ADD_FEEDBACK = 'feedback/add';
 export const ACTION_DELETE_FEEDBACK = 'feedback/delete';
 
+// MEMBER
+export const ACTION_SAVE_MEMBER = 'member/save';
+export const ACTION_EDIT_MEMBER = 'member/edit';
+export const ACTION_ADD_MEMBER = 'member/add';
+export const ACTION_DELETE_MEMBER = 'member/delete';
+
 // topbar
 export const CHANGE_TOPBAR_THEME = "CHANGE_TOPBAR_THEME";
 

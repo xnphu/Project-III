@@ -98,7 +98,13 @@ export const checkBookLendExist = async (id) => {
 };
 
 export const getBookLendById = async (id) => {
-    const sql = 'SELECT * FROM book_lending WHERE id = ?';
+    const sql = `
+        SELECT bl.*, 
+        mi.name, mi.email, mi.phone 
+        FROM ${DATABASE_NAME}.book_lending bl
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = bl.member_id
+        WHERE bl.id = ?
+    `;
     const libraryCard = await dbUtil.queryOne(sql, [id]);
     return libraryCard;
 };

@@ -3,31 +3,33 @@ import { Link } from "react-router-dom";
 import { Container, Row, Col, Button, Card, CardBody, CardTitle, Modal, Table } from "reactstrap";
 
 import axios from 'axios';
-import { BASE_API_URL, LENDING_STATUS, LENDING_STATUS_LABEL, FORMAT } from '../../constant';
+import { BASE_API_URL, ROLE, ROLE_LABEL, FORMAT } from '../../constant';
 import { useSelector, useDispatch } from 'react-redux';
 import { AvForm, AvField, AvInput } from "availity-reactstrap-validation";
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
 import SweetAlert from "react-bootstrap-sweetalert";
-import { saveBookLend, editBookLend, deleteBookLend } from '../../store/actions/book-lend';
+import { saveMember, editMember, deleteMember } from '../../store/actions/member';
 
-const ManageBookLending = (props) => {
+const ManageMember = () => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.token.token);
-    const bookLends = useSelector(state => state.bookLend.bookLends);
+    const members = useSelector(state => state.member.members);
 
-    const onSaveBookLend = bookLend => dispatch(saveBookLend(bookLend));
-    const onEditBookLend = bookLend => dispatch(editBookLend(bookLend));
-    const onDeleteBookLend = bookLend => dispatch(deleteBookLend(bookLend));
+    const onSaveMember = member => dispatch(saveMember(member));
+    const onEditMember = member => dispatch(editMember(member));
+    const onDeleteMember = member => dispatch(deleteMember(member));
 
-    const [lendingStatus, setLendingStatus] = useState([
-        { value: LENDING_STATUS.LOAN, label: LENDING_STATUS_LABEL.LOAN },
-        { value: LENDING_STATUS.RETURNED, label: LENDING_STATUS_LABEL.RETURNED },
-        { value: LENDING_STATUS.FINISHED, label: LENDING_STATUS_LABEL.FINISHED },
+    const [isReloadData, setIsReloadData] = useState(false);
+
+    const [role, setRole] = useState([
+        { value: ROLE.ADMIN, label: ROLE_LABEL.ADMIN },
+        { value: ROLE.LIBRARIAN, label: ROLE_LABEL.LIBRARIAN },
+        { value: ROLE.MEMBER, label: ROLE_LABEL.MEMBER },
     ]);
 
-    const BOOK_LENDING_PAGE_SIZE = 5;
+    const MEMBER_PAGE_SIZE = 5;
     const [currentPage, setCurrentPage] = useState(0);
     const handleClickPage = (event, index) => {
         event.preventDefault();
@@ -35,29 +37,29 @@ const ManageBookLending = (props) => {
     };
 
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [selectedLendingBook, setSelectedReservationBook] = useState({});
+    const [selectedMember, setSelectedMember] = useState({});
 
     const [modalVisibility, setModalVisibility] = useState(false);
     const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
-        fetchListBookLending();
+        fetchListMember();
     }, []);
 
-    const fetchListBookLending = async () => {
+    const fetchListMember = async () => {
         try {
-            const response = await axios.get(`${BASE_API_URL}/book-lend/`, { headers: { Authorization: `Bearer ${token}` } });
-            console.log('book-lend ', response.data);
+            const response = await axios.get(`${BASE_API_URL}/members/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('members ', response.data);
             if (response.data) {
                 var list = response.data;
                 for (let i = 0; i < list.length; i++) {
-                    for (let j = 0; j < lendingStatus.length; j++) {
-                        if (list[i].status === lendingStatus[j].value) {
-                            list[i].status = lendingStatus[j].label;
+                    for (let j = 0; j < role.length; j++) {
+                        if (list[i].role === role[j].value) {
+                            list[i].role = role[j].label;
                         }
                     }
                 }
-                onSaveBookLend({ bookLends: list });
+                onSaveMember({ members: list });
             }
         } catch (error) {
             console.log('err ', error);
@@ -66,58 +68,60 @@ const ManageBookLending = (props) => {
 
     const editBookLending = async (value) => {
         try {
-            var statusFound = lendingStatus.find((e) => e.label === value.lend_status || e.value === value.lend_status);
-            if (statusFound) {
-                value.lend_status = statusFound.value;
-            }
-            var submitValue = { ...selectedLendingBook };
-            submitValue.status = value.lend_status;
-            submitValue.fine_amount = value.fine_amount ? value.fine_amount : selectedLendingBook.fine_amount;
-            submitValue.create_date = dayjs(selectedLendingBook.create_date).format(FORMAT.DATETIME);
-            submitValue.due_date = dayjs(value.due_date ? value.due_date : selectedLendingBook.due_date).format(FORMAT.DATE);
-            submitValue.return_date = value.return_date
-                ? dayjs(value.return_date).format(FORMAT.DATE)
-                : selectedLendingBook.return_date
-                    ? dayjs(selectedLendingBook.return_date).format(FORMAT.DATE)
-                    : null;
+            console.log('editBookLending', value);
+            // var statusFound = role.find((e) => e.label === value.lend_status || e.value === value.lend_status);
+            // if (statusFound) {
+            //     value.lend_status = statusFound.value;
+            // }
+            // var submitValue = { ...selectedMember };
+            // submitValue.status = value.lend_status;
+            // submitValue.fine_amount = value.fine_amount ? value.fine_amount : selectedMember.fine_amount;
+            // submitValue.create_date = dayjs(selectedMember.create_date).format(FORMAT.DATETIME);
+            // submitValue.due_date = dayjs(value.due_date ? value.due_date : selectedMember.due_date).format(FORMAT.DATE);
+            // submitValue.return_date = value.return_date
+            //     ? dayjs(value.return_date).format(FORMAT.DATE)
+            //     : selectedMember.return_date
+            //         ? dayjs(selectedMember.return_date).format(FORMAT.DATE)
+            //         : null;
 
-            console.log('editBookLending', submitValue);
+            // console.log('editBookLending', submitValue);
 
-            const response = await axios.put(`${BASE_API_URL}/book-lend/${selectedLendingBook.id}`, submitValue, { headers: { Authorization: `Bearer ${token}` } });
-            console.log('res ', response.data);
-            if (response.data) {
-                var editValue = response.data;
+            // const response = await axios.put(`${BASE_API_URL}/book-lend/${selectedMember.id}`, submitValue, { headers: { Authorization: `Bearer ${token}` } });
+            // console.log('res ', response.data);
+            // if (response.data) {
+            //     var editValue = response.data;
 
-                // find index
-                var list = bookLends;
-                const index = list.findIndex((e) => e.id === editValue.id);
+            //     // find index
+            //     var list = members;
+            //     const index = list.findIndex((e) => e.id === editValue.id);
 
-                editValue.index = index;
-                editValue.status = statusFound.label;
-                onEditBookLend(editValue);
-                setAlert(
-                    <SweetAlert
-                        success
-                        title="Edit book lending success!"
-                        onConfirm={() => {
-                            setModalVisibility(false);
-                            setAlert(<></>);
-                        }}
-                        onCancel={() => {
-                            setModalVisibility(false);
-                            setAlert(<></>);
-                        }}
-                    >
-                    </SweetAlert>
-                );
-                setModalVisibility(false);
-            }
+            //     editValue.index = index;
+            //     editValue.status = statusFound.label;
+            //     onEditMember(editValue);
+            //     setAlert(
+            //         <SweetAlert
+            //             success
+            //             title="Edit member success!"
+            //             onConfirm={() => {
+            //                 setModalVisibility(false);
+            //                 setAlert(<></>);
+            //             }}
+            //             onCancel={() => {
+            //                 setModalVisibility(false);
+            //                 setAlert(<></>);
+            //             }}
+            //         >
+            //         </SweetAlert>
+            //     );
+            //     // setIsReloadData(!isReloadData);
+            //     setModalVisibility(false);
+            // }
         } catch (error) {
             console.log('err ', error);
             setAlert(
                 <SweetAlert
                     danger
-                    title="Edit book lending fail!"
+                    title="Edit member fail!"
                     onConfirm={() => setAlert(<></>)}
                     onCancel={() => setAlert(<></>)}
                 >
@@ -126,17 +130,17 @@ const ManageBookLending = (props) => {
         }
     }
 
-    const handleDeleteBookLend = async () => {
+    const handleDeleteMember = async () => {
         try {
-            const response = await axios.delete(`${BASE_API_URL}/book-lend/${selectedLendingBook.id}`, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.delete(`${BASE_API_URL}/members/${selectedMember.id}`, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data.success) {
-                onDeleteBookLend({ id: selectedLendingBook.id });
+                onDeleteMember({ id: selectedMember.id });
                 setModalVisibility(false);
                 setAlert(
                     <SweetAlert
                         success
-                        title="Delete book lend success!"
+                        title="Delete member success!"
                         onConfirm={() => setAlert(<></>)}
                         onCancel={() => setAlert(<></>)}
                     ></SweetAlert>
@@ -147,7 +151,7 @@ const ManageBookLending = (props) => {
             setAlert(
                 <SweetAlert
                     danger
-                    title="Delete book lend fail!"
+                    title="Delete member fail!"
                     onConfirm={() => setAlert(<></>)}
                     onCancel={() => setAlert(<></>)}
                 ></SweetAlert>
@@ -156,12 +160,14 @@ const ManageBookLending = (props) => {
     }
 
     const searchKeywordLowerCase = searchKeyword.toLowerCase();
-    const listBookLendingFilter = bookLends.filter(e =>
-        e.book_id.toLowerCase().includes(searchKeywordLowerCase) ||
+    const listMemberFilter = members.filter(e =>
+        e.id.toLowerCase().includes(searchKeywordLowerCase) ||
         e.name.toLowerCase().includes(searchKeywordLowerCase) ||
         e.email.toLowerCase().includes(searchKeywordLowerCase) ||
         e.phone.toLowerCase().includes(searchKeywordLowerCase)
     );
+
+    console.log('selectedMember  ', selectedMember);
 
     return (
         <>
@@ -170,7 +176,7 @@ const ManageBookLending = (props) => {
                 <Col lg="12">
                     <Card>
                         <CardBody>
-                            <CardTitle className="mt-4 float-sm-left">List of Book Lending </CardTitle>
+                            <CardTitle className="mt-4 float-sm-left">List of Member </CardTitle>
                             <Row className="float-sm-right">
                                 {/* <div onClick={() => setModalCreateVisibility(true)} className="btn btn-primary mt-3 mb-3 mr-4 d-lg-block float-sm-right">Add new author <i className="bx bx-plus"></i></div> */}
                                 <form className="app-search d-none d-lg-block float-sm-right">
@@ -191,27 +197,25 @@ const ManageBookLending = (props) => {
                                     <thead className="thead-light">
                                         <tr>
                                             <th scope="col" style={{ width: "70px" }}>#</th>
-                                            <th scope="col">Book ID</th>
-                                            <th scope="col">Member Information</th>
-                                            <th scope="col">Create date</th>
-                                            <th scope="col">Due date</th>
-                                            <th scope="col">Return date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Fine ($)</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Contact Information</th>
+                                            <th scope="col">Personal Information</th>
+                                            <th scope="col">Account status</th>
+                                            <th scope="col">Role</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            listBookLendingFilter
+                                            listMemberFilter
                                                 .slice(
-                                                    currentPage * BOOK_LENDING_PAGE_SIZE,
-                                                    (currentPage + 1) * BOOK_LENDING_PAGE_SIZE
+                                                    currentPage * MEMBER_PAGE_SIZE,
+                                                    (currentPage + 1) * MEMBER_PAGE_SIZE
                                                 )
                                                 .map((e, i) =>
                                                     <tr
                                                         key={e.id}
                                                         onClick={() => {
-                                                            setSelectedReservationBook(e);
+                                                            setSelectedMember(e);
                                                             setModalVisibility(true);
                                                         }}>
                                                         <td>
@@ -220,7 +224,7 @@ const ManageBookLending = (props) => {
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{e.book_id}</p>
+                                                                <p className="text-muted mb-0">{e.username}</p>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -232,27 +236,30 @@ const ManageBookLending = (props) => {
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{dayjs(e.create_date).format(FORMAT.DATETIME)}</p>
+                                                                <div className="text-muted mb-0">
+                                                                    {e.gender
+                                                                        ? e.gender == 1
+                                                                            ? 'Male'
+                                                                            : 'Female'
+                                                                        : ''}
+                                                                </div>
+                                                                <div className="text-muted mb-0">{dayjs(e.date_of_birth).format(FORMAT.DATE)}</div>
+                                                                <div className="text-muted mb-0">
+                                                                    {
+                                                                        e.street && e.city && e.country
+                                                                            ? `${e.street}, ${e.city}, ${e.country}`
+                                                                            : ''
+                                                                    }</div>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{dayjs(e.due_date).format(FORMAT.DATE)}</p>
+                                                                <p className="text-muted mb-0">{e.status == 1 ? 'Active' : 'Disable' }</p>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{e.return_date ? dayjs(e.return_date).format(FORMAT.DATE) : ''}</p>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <p className="text-muted mb-0">{e.status}</p>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <p className="text-muted mb-0">{e.fine_amount}</p>
+                                                                <p className="text-muted mb-0">{e.role}</p>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -264,8 +271,8 @@ const ManageBookLending = (props) => {
                             <Row>
                                 <Col lg="12">
                                     <TablePagination
-                                        pageSize={BOOK_LENDING_PAGE_SIZE}
-                                        length={listBookLendingFilter.length}
+                                        pageSize={MEMBER_PAGE_SIZE}
+                                        length={listMemberFilter.length}
                                         currentPage={currentPage}
                                         handleClickPage={handleClickPage}
                                     />
@@ -277,9 +284,9 @@ const ManageBookLending = (props) => {
             </Row>
             <Formik
                 initialValues={{
-                    lend_status: selectedLendingBook.status
-                        ? selectedLendingBook.status
-                        : lendingStatus[0].label,
+                    lend_status: selectedMember.status
+                        ? selectedMember.status
+                        : role[0].label,
                 }}
                 onSubmit={(values) => {
                     editBookLending(values);
@@ -323,7 +330,7 @@ const ManageBookLending = (props) => {
                                     type="date"
                                     errorMessage="Enter due date"
                                     validate={{ required: { value: true }, }}
-                                    value={`${dayjs(selectedLendingBook.due_date).format(FORMAT.DATE)}`}
+                                    value={`${dayjs(selectedMember.due_date).format(FORMAT.DATE)}`}
                                     onChange={handleChange}
                                 />
                                 <AvField
@@ -333,21 +340,21 @@ const ManageBookLending = (props) => {
                                     type="date"
                                     errorMessage="Enter publish date"
                                     validate={{ required: { value: false }, }}
-                                    value={selectedLendingBook.return_date ? `${dayjs(selectedLendingBook.return_date).format(FORMAT.DATE)}` : null}
+                                    value={selectedMember.return_date ? `${dayjs(selectedMember.return_date).format(FORMAT.DATE)}` : null}
                                     onChange={handleChange}
                                 />
                                 <AvField
                                     value={
-                                        selectedLendingBook.status !== null
-                                            ? selectedLendingBook.status
-                                            : lendingStatus[0].label
+                                        selectedMember.status !== null
+                                            ? selectedMember.status
+                                            : role[0].label
                                     }
                                     type="select"
                                     name="lend_status"
                                     label="Status"
                                     onChange={handleChange} required>
                                     {
-                                        lendingStatus.map(e => <option key={e.value}>{e.label}</option>)
+                                        role.map(e => <option key={e.value}>{e.label}</option>)
                                     }
                                 </AvField>
                                 {/* <AvField
@@ -383,7 +390,7 @@ const ManageBookLending = (props) => {
                             <button
                                 type="button"
                                 className="btn btn-danger"
-                                onClick={handleDeleteBookLend}
+                                onClick={handleDeleteMember}
                                 data-dismiss="modal"
                             >
                                 Delete this book lend
@@ -396,4 +403,4 @@ const ManageBookLending = (props) => {
     );
 }
 
-export default ManageBookLending;
+export default ManageMember;

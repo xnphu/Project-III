@@ -18,6 +18,8 @@ import logoImg from "../../assets/images/logo.svg";
 import axios from 'axios';
 import SweetAlert from "react-bootstrap-sweetalert";
 
+import { BASE_API_URL, ROLE } from '../../constant';
+
 class Register extends Component {
   constructor(props) {
     super(props);
@@ -46,8 +48,8 @@ class Register extends Component {
   // handleValidSubmit
   async handleValidSubmit(event, values) {
     if (values.password == values.rePassword) {
-      axios.post('http://localhost:8080/auth/signUp', {
-        username: values.username, password: values.password, rePassword: values.rePassword, role: 2
+      axios.post(`${BASE_API_URL}/auth/signUp`, {
+        username: values.username, password: values.password, rePassword: values.rePassword, role: ROLE.MEMBER
       })
         .then((response) => {
           if (response.status == 200) {
