@@ -12,7 +12,7 @@ const defaultState = {
 }
 
 export default (state = defaultState, action) => {
-    const { type, payload, args } = action;
+    const { type, payload } = action;
 
     if (type === ACTION_SAVE_BOOK_LEND) {
         return {
@@ -33,16 +33,17 @@ export default (state = defaultState, action) => {
                 }
             }
         });
+        return {
+            ...state,
+            bookLends: state.bookLends.map(e=> e.id === payload.id ? { ...payload} : e)
+        };
     }
 
     if (type === ACTION_DELETE_BOOK_LEND) {
-        var feedbackFilter = state.feedbacks.filter((e) => e.id != payload.id);
-        console.log('lala ', payload);
-        console.log('lala2 ', feedbackFilter);
+        var bookLendFilter = state.bookLends.filter((e) => e.id != payload.id);
         return {
             ...state,
-            feedbacks: feedbackFilter,
-            total: state.total
+            bookLends: bookLendFilter,
         };
     }
 

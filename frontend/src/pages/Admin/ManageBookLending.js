@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { Formik } from 'formik';
 import TablePagination from '../../components/CommonForBoth/TablePagination';
 import SweetAlert from "react-bootstrap-sweetalert";
-import { saveBookLend, editBookLend } from '../../store/actions/book-lend';
+import { saveBookLend, editBookLend, deleteBookLend } from '../../store/actions/book-lend';
 
 const ManageBookLending = (props) => {
     const dispatch = useDispatch();
@@ -19,12 +19,14 @@ const ManageBookLending = (props) => {
 
     const onSaveBookLend = bookLend => dispatch(saveBookLend(bookLend));
     const onEditBookLend = bookLend => dispatch(editBookLend(bookLend));
+    const onDeleteBookLend = bookLend => dispatch(deleteBookLend(bookLend));
 
     const [isReloadData, setIsReloadData] = useState(false);
 
     const [lendingStatus, setLendingStatus] = useState([
         { value: LENDING_STATUS.LOAN, label: LENDING_STATUS_LABEL.LOAN },
         { value: LENDING_STATUS.RETURNED, label: LENDING_STATUS_LABEL.RETURNED },
+        { value: LENDING_STATUS.FINISHED, label: LENDING_STATUS_LABEL.FINISHED },
     ]);
 
     const BOOK_LENDING_PAGE_SIZE = 5;
@@ -86,10 +88,12 @@ const ManageBookLending = (props) => {
             const response = await axios.put(`${BASE_API_URL}/book-lend/${selectedLendingBook.id}`, submitValue, { headers: { Authorization: `Bearer ${token}` } });
             console.log('res ', response.data);
             if (response.data) {
-                var newBookLend = response.data;
+                var editValue = response.data;
+
+                // find index
                 var list = bookLends;
-                const index = list.findIndex((e) => e.id === newBookLend.id);
-                var editValue = { ...submitValue };
+                const index = list.findIndex((e) => e.id === editValue.id);
+                
                 editValue.index = index;
                 editValue.status = statusFound.label;
                 onEditBookLend(editValue);
@@ -109,7 +113,7 @@ const ManageBookLending = (props) => {
                     </SweetAlert>
                 );
                 // setIsReloadData(!isReloadData);
-                // props.setIsReloadBookData(!props.isReloadBookData);
+                setModalVisibility(false);
             }
         } catch (error) {
             console.log('err ', error);
@@ -121,6 +125,35 @@ const ManageBookLending = (props) => {
                     onCancel={() => setAlert(<></>)}
                 >
                 </SweetAlert>
+            );
+        }
+    }
+
+    const handleDeleteBookLend = async () => {
+        try {
+            const response = await axios.delete(`${BASE_API_URL}/book-lend/${selectedLendingBook.id}`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data.success) {
+                onDeleteBookLend({ id: selectedLendingBook.id });
+                setModalVisibility(false);
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Delete book lend success!"
+                        onConfirm={() => setAlert(<></>)}
+                        onCancel={() => setAlert(<></>)}
+                    ></SweetAlert>
+                );
+            }
+        } catch (error) {
+            console.log('err ', error);
+            setAlert(
+                <SweetAlert
+                    danger
+                    title="Delete book lend fail!"
+                    onConfirm={() => setAlert(<></>)}
+                    onCancel={() => setAlert(<></>)}
+                ></SweetAlert>
             );
         }
     }
@@ -317,7 +350,7 @@ const ManageBookLending = (props) => {
                                         lendingStatus.map(e => <option key={e.value}>{e.label}</option>)
                                     }
                                 </AvField>
-                                <AvField
+                                {/* <AvField
                                     name="fine_amount"
                                     label="Fine ($)"
                                     placeholder="Type fine amount"
@@ -327,7 +360,7 @@ const ManageBookLending = (props) => {
                                     validate={{ required: { value: true } }}
                                     value={selectedLendingBook.fine_amount}
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </AvForm>
                         </div>
                         <div className="modal-footer">
@@ -346,6 +379,14 @@ const ManageBookLending = (props) => {
                                 data-dismiss="modal"
                             >
                                 Close
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={handleDeleteBookLend}
+                                data-dismiss="modal"
+                            >
+                                Delete this book lend
                             </button>
                         </div>
                     </Modal>

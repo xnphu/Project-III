@@ -44,11 +44,13 @@ export const RESERVATION_STATUS_LABEL = {
 export const LENDING_STATUS = {
     LOAN: 1,
     RETURNED: 2,
+    FINISHED: 3,
 };
 
 export const LENDING_STATUS_LABEL = {
     LOAN: 'On loan',
     RETURNED: 'Returned',
+    FINISHED: 'Finished',
 };
 
 export const LIMIT = {

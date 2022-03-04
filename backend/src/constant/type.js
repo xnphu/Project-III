@@ -43,6 +43,7 @@ export const RESERVATION_STATUS = {
 export const LENDING_STATUS = {
     LOAN: 1,
     RETURNED: 2,
+    FINISHED: 3,
 };
 
 export const LIMIT = {

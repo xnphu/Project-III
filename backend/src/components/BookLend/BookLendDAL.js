@@ -54,10 +54,10 @@ export const updateBookLend = async ({ id, book_id,  member_id, create_date, due
 };
 
 export const calculateFine = async (book_id, fine_amount, due_date, return_date, status) => {
-    var fine = fine_amount;
+    var fine = 0;
 
-    if (status === LENDING_STATUS.RETURNED) {
-        return fine;
+    if (status === LENDING_STATUS.FINISHED) {
+        return fine_amount;
     }
 
     var dateFrom = new Date(due_date);
