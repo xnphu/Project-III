@@ -124,6 +124,7 @@ export const getBookReserveByBookId = async (book_id) => {
         FROM ${DATABASE_NAME}.book_reservation br
         LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = br.member_id
         WHERE br.book_id = ? 
+        AND NOT (br.status = ${RESERVATION_STATUS.VERIFIED})
     `;
     return dbUtil.query(sql, [book_id]);
 };

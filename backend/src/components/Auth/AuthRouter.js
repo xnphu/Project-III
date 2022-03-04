@@ -16,6 +16,7 @@ router.post('/signUp', throwAsNext(controller.signUp));
 // --- Refresh Token ---
 router.post('/refresh-token', throwAsNext(controller.refreshToken));
 // registerSubrouter
+router.put('/:id/role', throwAsNext(controller.updateRole));
 
 // export
 export default { path, router };

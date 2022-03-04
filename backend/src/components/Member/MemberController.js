@@ -19,8 +19,8 @@ export const createMember = async (req, res) => {
     if (!id) {
         return Promise.reject(ERRORS.UNAUTHORIZED_ERROR);
     }
-    const { student_id, name, email, phone, gender, date_of_birth, street, city, country, status } = req.body;
-    const member = await dbAccess.createMember({ id, student_id, name, email, phone, gender, date_of_birth, street, city, country, status });
+    const { name, email, phone, gender, date_of_birth, street, city, country, status } = req.body;
+    const member = await dbAccess.createMember({ id, name, email, phone, gender, date_of_birth, street, city, country, status });
     res.status(201).json(member);
 };
 

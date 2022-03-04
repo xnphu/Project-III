@@ -47,6 +47,13 @@ export const updateBookLend = async ({ id, book_id,  member_id, create_date, due
         const sql = 'UPDATE book_lending SET ? WHERE id = ?';
         await dbUtil.query(sql, [bookLendData, id]);
         const libraryCard = await getBookLendById(id);
+
+        // add remain book
+        if(status === LENDING_STATUS.FINISHED) {
+            const changeNumBookRemainSql = `UPDATE books SET remain = remain + 1 WHERE id = ?`;
+            await dbUtil.query(changeNumBookRemainSql, [book_id]);
+        }
+
         return libraryCard;
     } else {
         return Promise.reject(ERRORS.BOOK_LEND_NOT_EXIST);
@@ -132,6 +139,18 @@ export const getBookLendByUserId = async (id) => {
     `;
     const list = await dbUtil.query(sql, [id]);
     return list;
+};
+
+export const getBookLendByBookId = async (book_id) => {
+    const sql = `
+        SELECT bl.*, 
+        mi.name, mi.email, mi.phone 
+        FROM ${DATABASE_NAME}.book_lending bl
+        LEFT JOIN ${DATABASE_NAME}.member_info mi ON mi.id = bl.member_id
+        WHERE bl.book_id = ? 
+        AND NOT (bl.status = ${LENDING_STATUS.FINISHED})
+    `;
+    return dbUtil.query(sql, [book_id]);
 };
 
 export const checkMemberInfoExist = async (id) => {

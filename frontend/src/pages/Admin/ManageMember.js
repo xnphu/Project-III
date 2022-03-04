@@ -23,7 +23,7 @@ const ManageMember = () => {
 
     const [isReloadData, setIsReloadData] = useState(false);
 
-    const [role, setRole] = useState([
+    const [roles, setRole] = useState([
         { value: ROLE.ADMIN, label: ROLE_LABEL.ADMIN },
         { value: ROLE.LIBRARIAN, label: ROLE_LABEL.LIBRARIAN },
         { value: ROLE.MEMBER, label: ROLE_LABEL.MEMBER },
@@ -53,9 +53,9 @@ const ManageMember = () => {
             if (response.data) {
                 var list = response.data;
                 for (let i = 0; i < list.length; i++) {
-                    for (let j = 0; j < role.length; j++) {
-                        if (list[i].role === role[j].value) {
-                            list[i].role = role[j].label;
+                    for (let j = 0; j < roles.length; j++) {
+                        if (list[i].role === roles[j].value) {
+                            list[i].role = roles[j].label;
                         }
                     }
                 }
@@ -66,62 +66,56 @@ const ManageMember = () => {
         }
     }
 
-    const editBookLending = async (value) => {
+    const handleEditMember = async (value) => {
         try {
-            console.log('editBookLending', value);
-            // var statusFound = role.find((e) => e.label === value.lend_status || e.value === value.lend_status);
-            // if (statusFound) {
-            //     value.lend_status = statusFound.value;
-            // }
-            // var submitValue = { ...selectedMember };
-            // submitValue.status = value.lend_status;
-            // submitValue.fine_amount = value.fine_amount ? value.fine_amount : selectedMember.fine_amount;
-            // submitValue.create_date = dayjs(selectedMember.create_date).format(FORMAT.DATETIME);
-            // submitValue.due_date = dayjs(value.due_date ? value.due_date : selectedMember.due_date).format(FORMAT.DATE);
-            // submitValue.return_date = value.return_date
-            //     ? dayjs(value.return_date).format(FORMAT.DATE)
-            //     : selectedMember.return_date
-            //         ? dayjs(selectedMember.return_date).format(FORMAT.DATE)
-            //         : null;
+            console.log('editMember', value);
+            var roleFound = roles.find((e) => e.label === value.role || e.value === value.role);
+            if (roleFound) {
+                value.role = roleFound.value;
+            }
+            var submitValue = {};
+            submitValue.role = value.role;
+            submitValue.username = selectedMember.username;
 
-            // console.log('editBookLending', submitValue);
+            console.log('editMember', submitValue);
 
-            // const response = await axios.put(`${BASE_API_URL}/book-lend/${selectedMember.id}`, submitValue, { headers: { Authorization: `Bearer ${token}` } });
-            // console.log('res ', response.data);
-            // if (response.data) {
-            //     var editValue = response.data;
+            const response = await axios.put(`${BASE_API_URL}/auth/${selectedMember.id}/role`, submitValue, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('res ', response.data);
+            if (response.data) {
+                var editRoleValue = response.data;
 
-            //     // find index
-            //     var list = members;
-            //     const index = list.findIndex((e) => e.id === editValue.id);
+                // find index
+                var list = members;
+                const index = list.findIndex((e) => e.id === editRoleValue.id);
 
-            //     editValue.index = index;
-            //     editValue.status = statusFound.label;
-            //     onEditMember(editValue);
-            //     setAlert(
-            //         <SweetAlert
-            //             success
-            //             title="Edit member success!"
-            //             onConfirm={() => {
-            //                 setModalVisibility(false);
-            //                 setAlert(<></>);
-            //             }}
-            //             onCancel={() => {
-            //                 setModalVisibility(false);
-            //                 setAlert(<></>);
-            //             }}
-            //         >
-            //         </SweetAlert>
-            //     );
-            //     // setIsReloadData(!isReloadData);
-            //     setModalVisibility(false);
-            // }
+                var editValue = selectedMember;
+                editValue.index = index;
+                editValue.role = roleFound.label;
+                onEditMember(editValue);
+                setAlert(
+                    <SweetAlert
+                        success
+                        title="Edit member role success!"
+                        onConfirm={() => {
+                            setModalVisibility(false);
+                            setAlert(<></>);
+                        }}
+                        onCancel={() => {
+                            setModalVisibility(false);
+                            setAlert(<></>);
+                        }}
+                    >
+                    </SweetAlert>
+                );
+                // setIsReloadData(!isReloadData);
+                setModalVisibility(false);
+            }
         } catch (error) {
             console.log('err ', error);
             setAlert(
                 <SweetAlert
                     danger
-                    title="Edit member fail!"
+                    title="Edit member role fail!"
                     onConfirm={() => setAlert(<></>)}
                     onCancel={() => setAlert(<></>)}
                 >
@@ -167,7 +161,7 @@ const ManageMember = () => {
                     e.phone ? e.phone.toLowerCase().includes(searchKeywordLowerCase) : true
     );
 
-    console.log('selectedMember  ', selectedMember);
+    // console.log('selectedMember  ', selectedMember);
 
     return (
         <>
@@ -289,12 +283,12 @@ const ManageMember = () => {
             </Row>
             <Formik
                 initialValues={{
-                    lend_status: selectedMember.status
-                        ? selectedMember.status
-                        : role[0].label,
+                    role: selectedMember.role
+                        ? selectedMember.role
+                        : roles[0].label,
                 }}
                 onSubmit={(values) => {
-                    editBookLending(values);
+                    handleEditMember(values);
                 }}
             >
                 {({
@@ -312,7 +306,7 @@ const ManageMember = () => {
                                 className="modal-title mt-0"
                                 id="myLargeModalLabel"
                             >
-                                Edit Book Lending
+                                Edit Account Role
                             </h5>
                             <button
                                 onClick={() =>
@@ -329,50 +323,19 @@ const ManageMember = () => {
                         <div className="modal-body">
                             <AvForm onValidSubmit={handleSubmit}>
                                 <AvField
-                                    name="due_date"
-                                    label="Due date"
-                                    placeholder="Type due date"
-                                    type="date"
-                                    errorMessage="Enter due date"
-                                    validate={{ required: { value: true }, }}
-                                    value={`${dayjs(selectedMember.due_date).format(FORMAT.DATE)}`}
-                                    onChange={handleChange}
-                                />
-                                <AvField
-                                    name="return_date"
-                                    label="Return date"
-                                    placeholder="Type return date"
-                                    type="date"
-                                    errorMessage="Enter publish date"
-                                    validate={{ required: { value: false }, }}
-                                    value={selectedMember.return_date ? `${dayjs(selectedMember.return_date).format(FORMAT.DATE)}` : null}
-                                    onChange={handleChange}
-                                />
-                                <AvField
                                     value={
-                                        selectedMember.status !== null
-                                            ? selectedMember.status
-                                            : role[0].label
+                                        selectedMember.role !== null
+                                            ? selectedMember.role
+                                            : roles[0].label
                                     }
                                     type="select"
-                                    name="lend_status"
-                                    label="Status"
+                                    name="role"
+                                    label="Account Role"
                                     onChange={handleChange} required>
                                     {
-                                        role.map(e => <option key={e.value}>{e.label}</option>)
+                                        roles.map(e => <option key={e.value}>{e.label}</option>)
                                     }
                                 </AvField>
-                                {/* <AvField
-                                    name="fine_amount"
-                                    label="Fine ($)"
-                                    placeholder="Type fine amount"
-                                    type="number"
-                                    min={0}
-                                    errorMessage="Enter fine amount"
-                                    validate={{ required: { value: true } }}
-                                    value={selectedLendingBook.fine_amount}
-                                    onChange={handleChange}
-                                /> */}
                             </AvForm>
                         </div>
                         <div className="modal-footer">

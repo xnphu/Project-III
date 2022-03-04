@@ -18,6 +18,12 @@ export const getBookLendByUserId = async (req, res) => {
     res.send(bookLend);
 };
 
+export const getBookLendByBookId = async (req, res) => {
+    const { book_id } = req.params;
+    const list = await dbAccess.getBookLendByBookId(book_id);
+    res.send(list);
+};
+
 export const createBookLend = async (req, res) => {
     const member_id = req.userId;
     const { book_id } = req.body;

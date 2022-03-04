@@ -20,6 +20,19 @@ export const signUp = async ({ username, passwordHash, role }) => {
   await dbUtil.query(sql, [id, username, passwordHash, role]);
 };
 
+export const updateRole = async ({ id, username, role }) => {
+  const check = await checkUserExist(username);
+  if (check) {
+    const memberData = { id, username, role }
+    const sql = 'UPDATE member SET ? WHERE id = ?';
+    await dbUtil.query(sql, [memberData, id]);
+    const member = await getUserById(id);
+    return member;
+  } else {
+    return Promise.reject(ERRORS.USER_NOT_EXIST);
+  }
+};
+
 export const checkUserExist = async (username) => {
   const sql = 'SELECT username FROM member WHERE username = ?';
   const result = await dbUtil.query(sql, [username]);

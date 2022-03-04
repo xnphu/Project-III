@@ -37,6 +37,13 @@ export const signUp = async (req, res) => {
   res.ok();
 };
 
+export const updateRole = async (req, res) => {
+  const { id } = req.params;
+  const { username, role } = req.body;
+  const member = await dbAccess.updateRole({ id, username, role });
+  res.status(200).json(member);
+};
+
 export const refreshToken = async (req, res) => {
   const { refreshToken: oldRefreshToken } = req.body;
   res.json(await dbAccess.refreshToken(oldRefreshToken));

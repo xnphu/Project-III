@@ -184,7 +184,7 @@ const ManageBook = (props) => {
                                             <th scope="col">Author</th>
                                             <th scope="col">Language</th>
                                             <th scope="col">Pages</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col">Remain/Total Quantity</th>
 
                                         </tr>
                                     </thead>
@@ -244,7 +244,7 @@ const ManageBook = (props) => {
                                                         </td>
                                                         <td>
                                                             <div>
-                                                                <p className="text-muted mb-0">{book.status}</p>
+                                                                <p className="text-muted mb-0 text-center">{`${book.remain}/${book.total}`}</p>
                                                             </div>
                                                         </td>
 

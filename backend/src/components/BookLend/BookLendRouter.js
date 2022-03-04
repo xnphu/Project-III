@@ -9,6 +9,7 @@ const router = Router();
 router.get('/', checkNotUserRole, throwAsNext(controller.getAllBookLend));
 router.get('/:id', checkNotUserRole, throwAsNext(controller.getBookLendById));
 router.get('/:id/member', throwAsNext(controller.getBookLendByUserId));
+router.get('/:book_id/book', throwAsNext(controller.getBookLendByBookId));
 router.post('', throwAsNext(controller.createBookLend));
 router.put('/:id', checkNotUserRole, throwAsNext(controller.updateBookLend));
 router.delete('/:id', requireAdminRole, throwAsNext(controller.deleteBookLend));

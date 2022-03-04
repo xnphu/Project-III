@@ -8,25 +8,26 @@ export const getAllMember = async () => {
         m.id, m.username, m.role 
         FROM ${DATABASE_NAME}.member m 
         LEFT JOIN ${DATABASE_NAME}.member_info mi ON m.id = mi.id
+        WHERE NOT (m.username = 'admin')
     `;
     return dbUtil.query(sql, []);
 };
 
-export const createMember = async ({ id, student_id, name , email , phone , gender , date_of_birth , street , city , country , status }) => {
+export const createMember = async ({ id, name , email , phone , gender , date_of_birth , street , city , country , status }) => {
     const check = await checkMemberExist(id);
     if (!check) {
         return Promise.reject(ERRORS.USER_NOT_EXIST);
     }
-    const sql = 'INSERT INTO member_info(id, student_id, name , email , phone , gender , date_of_birth , street , city , country , status ) VALUES (?, ?, ?,?, ?, ?,?, ?, ?,?, ?)';
-    await dbUtil.query(sql, [id, student_id, name , email , phone , gender , date_of_birth , street , city , country , status ]);
+    const sql = 'INSERT INTO member_info(id, name , email , phone , gender , date_of_birth , street , city , country , status ) VALUES (?, ?,?, ?, ?,?, ?, ?,?, ?)';
+    await dbUtil.query(sql, [id, name , email , phone , gender , date_of_birth , street , city , country , status ]);
     const member = await getMemberById(id);
     return member;
 };
 
-export const updateMember = async ({ id, student_id, name , email , phone , gender , date_of_birth , street , city , country , status }) => {
+export const updateMember = async ({ id, name , email , phone , gender , date_of_birth , street , city , country , status }) => {
     const check = await checkMemberInfoExist(id);
     if (check) {
-        const memberData = { id, student_id, name , email , phone , gender , date_of_birth , street , city , country , status }
+        const memberData = { id, name , email , phone , gender , date_of_birth , street , city , country , status }
         const sql = 'UPDATE member_info SET ? WHERE id = ?';
         await dbUtil.query(sql, [memberData, id]);
         const member = await getMemberById(id);

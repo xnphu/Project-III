@@ -14,9 +14,11 @@ import classnames from "classnames";
 
 import Pages401 from "../Utility/pages-401";
 import axios from "axios";
-import { ROLE } from "../../constant";
+import { BASE_API_URL, ROLE, LENDING_STATUS, LENDING_STATUS_LABEL } from "../../constant";
 import { useSelector, useDispatch } from "react-redux";
 import { saveAuthor } from "../../store/actions/author";
+import { saveBookLend } from '../../store/actions/book-lend';
+
 import ManageBook from "./ManageBook";
 import ManageAuthor from "./ManageAuthor";
 import ManageBookReservation from "./ManageBookReservation";
@@ -29,6 +31,13 @@ const Admin = () => {
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token.token);
     const saveAuthor = (author) => dispatch(saveAuthor(author));
+    const onSaveBookLend = bookLend => dispatch(saveBookLend(bookLend));
+
+    const [lendingStatus, setLendingStatus] = useState([
+        { value: LENDING_STATUS.LOAN, label: LENDING_STATUS_LABEL.LOAN },
+        { value: LENDING_STATUS.RETURNED, label: LENDING_STATUS_LABEL.RETURNED },
+        { value: LENDING_STATUS.FINISHED, label: LENDING_STATUS_LABEL.FINISHED },
+    ]);
 
     const [isReloadBookData, setIsReloadBookData] = useState(false);
     const [activeTab, setActiveTab] = useState("1");
@@ -38,6 +47,30 @@ const Admin = () => {
             setActiveTab(tab);
         }
     };
+
+    useEffect(() => {
+        fetchListBookLending();
+    }, [isReloadBookData]);
+
+    const fetchListBookLending = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/book-lend/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('book-lend ', response.data);
+            if (response.data) {
+                var list = response.data;
+                for (let i = 0; i < list.length; i++) {
+                    for (let j = 0; j < lendingStatus.length; j++) {
+                        if (list[i].status === lendingStatus[j].value) {
+                            list[i].status = lendingStatus[j].label;
+                        }
+                    }
+                }
+                onSaveBookLend({ bookLends: list });
+            }
+        } catch (error) {
+            console.log('err ', error);
+        }
+    }
 
     return (
         <div className="page-content">

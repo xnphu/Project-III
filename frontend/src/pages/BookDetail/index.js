@@ -19,11 +19,13 @@ const BookDetail = (props) => {
 
     const [book, setBook] = useState({});
     const [listBookReserve, setListBookReserve] = useState([]);
+    const [listBookLend, setListBookLend] = useState([]);
     const [alert, setAlert] = useState(<></>);
 
     useEffect(() => {
         fetchBookById();
         fetchBookReserveByBookId();
+        fetchBookLendByBookId();
     }, []);
 
     const fetchBookById = async () => {
@@ -48,6 +50,19 @@ const BookDetail = (props) => {
             }
         } catch (error) {
             console.log('err fetchBookReserveByBookId', error?.response?.data);
+
+        }
+    }
+
+    const fetchBookLendByBookId = async () => {
+        try {
+            const response = await axios.get(`${BASE_API_URL}/book-lend/${bookId}/book`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('list book lend', response.data);
+            if (response.data) {
+                setListBookLend(response.data);
+            }
+        } catch (error) {
+            console.log('err fetchBookLendByBookId', error);
 
         }
     }
@@ -85,11 +100,12 @@ const BookDetail = (props) => {
     }
 
     const renderWithBookStatus = () => {
-        const listFilter = listBookReserve.filter(e => e.member_id === userId);
+        const listReserveFilter = listBookReserve.filter(e => e.member_id === userId);
+        const listLendFilter = listBookLend.filter(e => e.member_id === userId);
         return (
             <>
                 {
-                    listFilter.length === 0
+                    listReserveFilter.length === 0 && listLendFilter.length === 0
                         ? <div
                             className="mt-3 text-center"
                             style={{ color: '#556ee6', cursor: 'pointer' }}
@@ -143,10 +159,23 @@ const BookDetail = (props) => {
                                 {renderWithBookStatus()}
 
                                 <div>
-                                    <h6 className="mt-3">List of members reserve/lend this book</h6>
+                                    <h6 className="mt-3">List of members reserve this book</h6>
                                     <ul className="list-unstyled product-list">
                                         {
                                             listBookReserve.map((e, index) =>
+                                                <li key={"_li_" + index} >
+                                                    <div >{`${index+1}. ${e.name}`}</div>
+                                                </li>
+                                            )
+                                        }
+                                    </ul>
+                                </div>
+                                <br></br>
+                                <div>
+                                    <h6 className="mt-3">List of members lend this book</h6>
+                                    <ul className="list-unstyled product-list">
+                                        {
+                                            listBookLend.map((e, index) =>
                                                 <li key={"_li_" + index} >
                                                     <div >{`${index+1}. ${e.name}`}</div>
                                                 </li>

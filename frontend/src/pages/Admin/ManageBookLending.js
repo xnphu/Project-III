@@ -111,6 +111,9 @@ const ManageBookLending = (props) => {
                     </SweetAlert>
                 );
                 setModalVisibility(false);
+
+                // reload list book
+                props.setIsReloadBookData(!props.isReloadBookData); 
             }
         } catch (error) {
             console.log('err ', error);
